@@ -1,3 +1,10 @@
+*.questionHistory
+bin
+*.exe
+bin
+build.bat
+logs
+
 # Compiled class file
 *.class
 
