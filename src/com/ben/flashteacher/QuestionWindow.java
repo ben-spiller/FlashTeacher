@@ -47,7 +47,6 @@ import org.apache.log4j.Logger;
 import com.ben.flashteacher.model.AnswerOutcome;
 import com.ben.flashteacher.model.ModelHolder;
 import com.ben.flashteacher.model.Options;
-import com.ben.flashteacher.model.QuestionManager;
 import com.ben.flashteacher.utils.AbstractResourceAction;
 
 public class QuestionWindow extends JFrame {
@@ -190,7 +189,7 @@ public class QuestionWindow extends JFrame {
 		statusProgressBar.setMinimumSize(statusProgressBar.getPreferredSize());
 		
 		statusLabel = new JLabel();
-		statusLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		
 		final int SPACING = 15;
 		JPanel contentPanePanel = new JPanel(new GridBagLayout());
@@ -218,12 +217,13 @@ public class QuestionWindow extends JFrame {
 				1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,0,SPACING), 0, 0
 		));
 		
-		contentPanePanel.add(statusProgressBar, new GridBagConstraints(
-				2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,SPACING), 0, 0
-		));
 
 		contentPanePanel.add(statusLabel, new GridBagConstraints(
-				3, 2, 1, 1, 1.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0
+				2, 2, 1, 1, 1.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0
+		));
+
+		contentPanePanel.add(statusProgressBar, new GridBagConstraints(
+				3, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0,SPACING,0,0), 0, 0
 		));
 
 		/*contentPanePanel.add(aboutButton, new GridBagConstraints(
