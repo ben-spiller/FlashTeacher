@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+	 22 Dec 2006 01:38:35                                                        
+
+	 Apache Ant buildfile 
+				   
+	 Ben                                                                
+	 ====================================================================== -->
+<project name="Apache Ant buildfile" default="default">
+	<!-- - - - - - - - - - - - - - - - - - 
+		  target: init                      
+		 - - - - - - - - - - - - - - - - - -->
+	<target name="init">
+			<property name="classesDirName" value="ant_classes"/>
+			<property name="srcDirName" value="src"/>
+			<property name="xmlDirName" value="question_files"/>
+
+			<property name="libDirName" value="lib"/>
+			<property name="libDir" location="${basedir}/${libDirName}"/>
+
+			<property name="jarName" value="flashteacher1.0.jar"/>
+			<property name="jarPath" location="${basedir}/${jarName}"/>
+
+			<property name="binZipPath" location="${basedir}/flashteacher1.0-bin.zip"/>
+			<property name="srcZipPath" location="${basedir}/flashteacher1.0-src.zip"/>
+
+			<property name="log4jJarName" value="log4j-1.2.14.jar"/>
+			<property name="jgoodiesLooksJarName" value="looks-2.1.1.jar"/>
+			<property name="jgoodiesFormsJarName" value="forms-1.0.7.jar"/>
+			<property name="jdomJarName" value="jdom.jar"/>
+			<property name="freechartJarName" value="jfreechart-1.0.5.jar"/>
+			<property name="jcommonJarName" value="jcommon-1.0.9.jar"/>
+
+			<mkdir dir="${basedir}/${classesDirName}"/>
+		
+			<tstamp>
+				<format property="ISO_DateTime" pattern="yyyy-dd-MM hh:mm:ss" timezone="UTC"/>
+			</tstamp>
+
+	</target>
+
+	
+	<!-- ================================= 
+		  target: default              
+		 ================================= -->
+	<target name="default" depends="init" description="default">
+		<!-- Retrieve, increment and update build number -->
+		<buildnumber file="${basedir}/${srcDirName}/build.number.properties"/>
+		<echo>Building version ${build.number} on ${ISO_DateTime}</echo>
+		
+		<replaceregexp match="BUILD_NUMBER = [^;]*;" replace="BUILD_NUMBER = &quot;${build.number}&quot;;" byline="true">
+			<fileset dir="${basedir}/${srcDirName}">
+				<include name="**/Constants.java"/>
+			</fileset>
+		</replaceregexp>
+		
+		<depend 
+			srcdir="${basedir}/${srcDirName}"
+			destdir="${basedir}/${classesDirName}"
+			classpath="${libDir}/${jgoodiesLooksJarName};${libDir}/${jdomJarName};${libDir}/${log4jJarName};${libDir}/${jgoodiesFormsJarName};${libDir}/${freechartJarName};${libDir}/${jcommonJarName}"
+		/>
+
+		<javac 
+			srcdir="${basedir}/${srcDirName}"
+			destdir="${basedir}/${classesDirName}"
+			classpath="${libDir}/${jgoodiesLooksJarName};${libDir}/${jdomJarName};${libDir}/${log4jJarName};${libDir}/${jgoodiesFormsJarName};${libDir}/${freechartJarName};${libDir}/${jcommonJarName}"
+			debug="on"
+		/>
+		
+		<jar destfile="${jarPath}">
+			<fileset dir="${basedir}/${classesDirName}"/>
+			<fileset dir="${basedir}/${xmlDirName}" includes="*.dtd"/>
+			<fileset dir="${basedir}/${srcDirName}"/>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Build-Date" value="${ISO_DateTime}"/>
+				<attribute name="Class-Path" value="${libDirName}/${jgoodiesLooksJarName} ${libDirName}/${jdomJarName} ${libDirName}/${log4jJarName} ${libDirName}/${jgoodiesFormsJarName} ${libDirName}/${freechartJarName} ${libDirName}/${jcommonJarName}"/>
+				<attribute name="Main-Class" value="com.ben.flashteacher.Main"/>
+			</manifest>
+		</jar>
+
+
+		<zip destfile="${binZipPath}">
+			<fileset dir="${basedir}" includes="${libDirName}/*"/>
+			<fileset dir="${basedir}" includes="${xmlDirName}/*.dtd"/>
+			<fileset dir="${basedir}" includes="${xmlDirName}/hebrew.xsl"/>
+			<fileset dir="${basedir}" includes="${xmlDirName}/hebrew.questions.xml"/>
+			<fileset dir="${basedir}" includes="${jarName}"/>
+			<fileset dir="${basedir}" includes="*.exe"/>
+			<fileset dir="${basedir}" includes="*.txt"/>
+		</zip>
+
+		<zip destfile="${srcZipPath}">
+			<zipgroupfileset file="${binZipPath}"/>
+			<fileset dir="${basedir}" includes="build.xml"/>
+			<fileset dir="${basedir}" includes="launch4j*.xml"/>
+
+			<fileset dir="${basedir}" includes="${srcDirName}/**/*"/>
+
+			<fileset dir="${basedir}" includes=".classpath"/>
+			<fileset dir="${basedir}" includes=".project"/>
+		</zip>
+
+
+	</target>
+
+</project>

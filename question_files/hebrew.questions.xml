@@ -1,0 +1,2038 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="hebrew.xsl"?>
+<!DOCTYPE questionList SYSTEM "questionList.dtd">
+
+<questionList title="Hebrew - English Vocabulary" author="Ben Spiller" answerFontFamily="SBL Hebrew" questionFontFamily="Tahoma" isAnswerRightToLeft="true">
+	<question class="noun gender-m">
+		<questionText>father (m)</questionText>
+		<answerText>אָב</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>father (bound)</questionText>
+		<answerText>
+			<em>אֲ</em>
+			בִי
+		</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>lord, master; owner, husband (m)</questionText>
+		<answerText>בַּ֫עַל</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>priest (m)</questionText>
+		<answerText>כֹּהֵן</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>anointed (m)</questionText>
+		<answerText>מָשִׁיחַ</answerText>
+	</question>
+	<question class="pronoun gender-c">
+		<questionText>I (short)</questionText>
+		<answerText>
+			<em>אֲ</em>
+			נִי
+		</answerText>
+	</question>
+	<question class="pronoun gender-c">
+		<questionText>I (long)</questionText>
+		<answerText>אָנֹכִי</answerText>
+	</question>
+	<question class="pronoun gender-m">
+		<questionText>you (m)</questionText>
+		<answerText>אַתָּה</answerText>
+	</question>
+	<question class="pronoun gender-f">
+		<questionText>you (f)</questionText>
+		<answerText>
+			<em>אַ</em>
+			תְּ
+		</answerText>
+	</question>
+	<question class="pronoun gender-m">
+		<questionText>he</questionText>
+		<answerText>הוּא</answerText>
+	</question>
+	<question class="pronoun gender-f">
+		<questionText>she</questionText>
+		<answerText>הִיא</answerText>
+	</question>
+	<question class="pronoun gender-c">
+		<questionText>we (long)</questionText>
+		<answerText>
+			<em>אֲנַ֫</em>
+			חְנוּ
+		</answerText>
+	</question>
+	<question class="pronoun gender-m">
+		<questionText>you (m pl)</questionText>
+		<answerText>
+			אַ
+			<em>תֶּ</em>
+			ם
+		</answerText>
+	</question>
+	<question class="pronoun gender-f">
+		<questionText>you (f pl 1)</questionText>
+		<answerText>אַתֵּן</answerText>
+	</question>
+	<question class="pronoun gender-f">
+		<questionText>you (f pl 2)</questionText>
+		<answerText>
+			אַתֵּ֫
+			<em>נָ</em>
+			ה
+		</answerText>
+	</question>
+	<question class="pronoun gender-m">
+		<questionText>they (m 1)</questionText>
+		<answerText>הֵם</answerText>
+	</question>
+	<question class="pronoun gender-m">
+		<questionText>they (m 2)</questionText>
+		<answerText>הֵ֫מָּה</answerText>
+	</question>
+	<question class="pronoun gender-f">
+		<questionText>they (f)</questionText>
+		<answerText>הֵ֫נָּה</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>lord, master (m)</questionText>
+		<answerText>אָדוֹן</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>god; God (m, short)</questionText>
+		<answerText>אֵל</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>God, gods (m, long)</questionText>
+		<answerText>אֱלֹהִים</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>covenant (f)</questionText>
+		<answerText>בְּרִית</answerText>
+	</question>
+	<question class="noun">
+		<questionText>life (pl)</questionText>
+		<answerText>חַיִּים</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>man (m)</questionText>
+		<answerText>אִישׁ</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>men (m)</questionText>
+		<answerText>אֲנָשִׁים</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>woman, wife (f)</questionText>
+		<answerText>אִשָּׁה</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>women, wives (f)</questionText>
+		<answerText>נָשִׁים</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>prophet (m)</questionText>
+		<answerText>נָבִיא</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>prophets (m)</questionText>
+		<answerText>נְבִיאִים</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>judge (m)</questionText>
+		<answerText>שׁוֹפֵט</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>judges (m)</questionText>
+		<answerText>שׁוֹפְטִים</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>big, great; important</questionText>
+		<answerText>גָּדוֹל</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>old</questionText>
+		<answerText>זָקֵן</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>elder</questionText>
+		<answerText>זָקֵן</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>wise, clever; skilful</questionText>
+		<answerText>חָכָם</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>good</questionText>
+		<answerText>טוֹב</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>straight, upright, honest</questionText>
+		<answerText>יָשָׁר</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>righteous</questionText>
+		<answerText>צַדִּיק</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>holy</questionText>
+		<answerText>קָדוֹשׁ</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>perfect, whole, complete, sound</questionText>
+		<answerText>שָׁלֵם</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>instruction, teaching, law (f)</questionText>
+		<answerText>תּוֹרָה</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>person, man; mankind (m)</questionText>
+		<answerText>אָדָם</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>brother (m)</questionText>
+		<answerText>אָח</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>brothers (m)</questionText>
+		<answerText>
+			<em>אַ</em>
+			חִים
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>brother (bound)</questionText>
+		<answerText>
+			<em>אֲ</em>
+			חִי
+		</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>commandment (f)</questionText>
+		<answerText>מִצְוָה</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>commandments (f)</questionText>
+		<answerText>מִצְוֹת</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>book (m)</questionText>
+		<answerText>סֵ֫פֶר</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>books (m)</questionText>
+		<answerText>סְפָרִים</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>army, host (m)</questionText>
+		<answerText>צָבָא</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>armies, hosts (m)</questionText>
+		<answerText>צְבָאוֹת</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>song (m)</questionText>
+		<answerText>שִׁיר</answerText>
+	</question>
+	<question class="particle">
+		<questionText>in, at, within, among; with, by</questionText>
+		<answerText>בְּ</answerText>
+	</question>
+	<question class="particle">
+		<questionText>in, at, within, among</questionText>
+		<answerText>בְּ</answerText>
+	</question>
+	<question class="particle">
+		<questionText>with, by</questionText>
+		<answerText>בְּ</answerText>
+	</question>
+	<question class="particle">
+		<questionText>like, as, according to [short form]</questionText>
+		<answerText>כְּ</answerText>
+	</question>
+	<question class="particle">
+		<questionText>to, for; of</questionText>
+		<answerText>לְ</answerText>
+	</question>
+	<question class="particle">
+		<questionText>to, for</questionText>
+		<answerText>לְ</answerText>
+	</question>
+	<question class="particle">
+		<questionText>of</questionText>
+		<answerText>לְ</answerText>
+	</question>
+	<question class="particle">
+		<questionText>no, not</questionText>
+		<answerText>לֹא</answerText>
+	</question>
+	<question class="particle">
+		<questionText>from, out of; than</questionText>
+		<answerText>מִן</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>ground, soil; earth (f)</questionText>
+		<answerText>אֲדָמָה</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>earth; land, country (f)</questionText>
+		<answerText>אֶ֫רֶץ</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>lands, countries (f)</questionText>
+		<answerText>אֲרָצוֹת</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>the earth; the land, country (f)</questionText>
+		<answerText>הָאָ֫רֶץ</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>word (m)</questionText>
+		<answerText>דָּבָר</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>thing (m)</questionText>
+		<answerText>דָּבָר</answerText>
+	</question>
+	<question class="noun gender-c">
+		<questionText>way, road (c)</questionText>
+		<answerText>דֶּ֫רֶךְ</answerText>
+	</question>
+	<question class="noun gender-c">
+		<questionText>ways, roads (c)</questionText>
+		<answerText>דְּרָכִים</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>sword (f)</questionText>
+		<answerText>חֶ֫רֶב</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>swords (f)</questionText>
+		<answerText>חֲרָבוֹת</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>day (m)</questionText>
+		<answerText>יוֹם</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>days (m)</questionText>
+		<answerText>יָמִים</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>vessel, utensil (m)</questionText>
+		<answerText>כְּלִי</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>vessels, utensils (m)</questionText>
+		<answerText>כֵּלִים</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>bread, food (m)</questionText>
+		<answerText>לֶ֫חֶם</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>death (m)</questionText>
+		<answerText>מָ֫וֶת</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>new</questionText>
+		<answerText>חָדָשׁ</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>wicked, criminal, impious, sinful</questionText>
+		<answerText>רָשָׁע</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>very, exceedingly</questionText>
+		<answerText>מְאֹד</answerText>
+	</question>
+	<question class="pronoun gender-m">
+		<questionText>this (m)</questionText>
+		<answerText>זֶה</answerText>
+	</question>
+	<question class="pronoun gender-f">
+		<questionText>this (f)</questionText>
+		<answerText>זֹאת</answerText>
+	</question>
+	<question class="pronoun gender-c">
+		<questionText>these (c)</questionText>
+		<answerText>אֵ֫לֶּה</answerText>
+	</question>
+	<question class="pronoun gender-m">
+		<questionText>that (m)</questionText>
+		<answerText>הַהוּא‎</answerText>
+	</question>
+	<question class="pronoun gender-f">
+		<questionText>that (f)</questionText>
+		<answerText>הַהִיא</answerText>
+	</question>
+	<question class="pronoun gender-m">
+		<questionText>those (m, 3x)</questionText>
+		<answerText>
+			<em>הָ</em>
+			הֵם
+		</answerText>
+	</question>
+	<question class="pronoun gender-m">
+		<questionText>those (m, 4x)</questionText>
+		<answerText>
+			<em>הָ</em>
+			הֵ֫מָּה
+		</answerText>
+	</question>
+	<question class="pronoun gender-f">
+		<questionText>those (f, 4x)</questionText>
+		<answerText>
+			<em>הָ</em>
+			הֵ֫נָּה
+		</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>justice; judgement, legal decision, ordinance (m)</questionText>
+		<answerText>מִשְׁפָּט</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>lad, young man (m)</questionText>
+		<answerText>נַ֫עַר</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>lads, young men (m)</questionText>
+		<answerText>נְעָרִים</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>servant, slave (m)</questionText>
+		<answerText>עֶ֫בֶד</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>servants, slaves (m)</questionText>
+		<answerText>עֲבָדִים</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>eye (f)</questionText>
+		<answerText>עַ֫יִן</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>eyes (f, dual)</questionText>
+		<answerText>עֵינַ֫יִם</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>opening, entrance (m)</questionText>
+		<answerText>פֶּ֫תַח</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>openings, entrances (m)</questionText>
+		<answerText>פְּתָחִים</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>spirit; wind (f)</questionText>
+		<answerText>רוּחַ</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>spirits, winds (f)</questionText>
+		<answerText>רוּחוֹת</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>gate (m)</questionText>
+		<answerText>שַׁ֫עַר</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>gates (m)</questionText>
+		<answerText>שְׁעָרִים</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>stone (f)</questionText>
+		<answerText>אֶ֫בֶן</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>stones (f)</questionText>
+		<answerText>
+			אֲבָנִ
+			<em>ים</em>
+		</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>one (m)</questionText>
+		<answerText>
+			<em>אֶ</em>
+			חָד
+		</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>one (f)</questionText>
+		<answerText>
+			<em>אַחַ</em>
+			ת
+		</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>two (m)</questionText>
+		<answerText>שְׁנַ֫יִם</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>two (f)</questionText>
+		<answerText>
+			שְׁתַּ֫
+			<em>יִם</em>
+		</answerText>
+	</question>
+	<question class="noun gender-m">
+		<questionText>nothing, naught (m)</questionText>
+		<answerText>אַ֫יִן</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>mother (f)</questionText>
+		<answerText>אֵם</answerText>
+	</question>
+	<question class="noun gender-f">
+		<questionText>mothers (f)</questionText>
+		<answerText>
+			אִ
+			<em>מּ</em>
+			וֹת
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>house (m)</questionText>
+		<answerText>
+			בַּ֫יִ
+			<em>ת</em>
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>houses (m)</questionText>
+		<answerText>
+			<em>בָּתִּ</em>
+			ים
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>son</questionText>
+		<answerText>בֵּן</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>sons (m)</questionText>
+		<answerText>
+			<em>בָּ</em>
+			נִים
+		</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>daughter (f)</questionText>
+		<answerText>בַּת</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>daughters (f)</questionText>
+		<answerText>בָּנוֹת</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>kindness, goodwill (f)</questionText>
+		<answerText>טוֹבָה</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>hand (f)</questionText>
+		<answerText>יָד</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>hands (f, dual)</questionText>
+		<answerText>יָדַ֫יִם</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>child, boy (m)</questionText>
+		<answerText>יֶ֫לֶד</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>children, boys (m)</questionText>
+		<answerText>יְלָדִים</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>place (m)</questionText>
+		<answerText>מָקוֹם</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>places (m)</questionText>
+		<answerText>
+			מְקוֹמ
+			<em>וֹת</em>
+		</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>soul, living thing, person; life (f)</questionText>
+		<answerText>נֶ֫פֶשׁ</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>souls, living things, people; lives (f)</questionText>
+		<answerText>נְפָשׁוֹת</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>city (f)</questionText>
+		<answerText>עִיר</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>cities (f)</questionText>
+		<answerText>
+			עָ
+			<em>רִי</em>
+			ם
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>nation, people (m) [with mem]</questionText>
+		<answerText>עַם</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>the nation, people (m) [with mem]</questionText>
+		<answerText>
+			הָ
+			<em>עָ</em>
+			ם
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>nations, peoples (m) [with mem]</questionText>
+		<answerText>
+			עַ
+			<em>מִּ</em>
+			ים
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>head (m)</questionText>
+		<answerText>רֹאשׁ</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>heads (m)</questionText>
+		<answerText>רָאשִׁים</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>hope (f)</questionText>
+		<answerText>תִּקְוָה</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>living (singular form)</questionText>
+		<answerText>חַי</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>living (pl)</questionText>
+		<answerText>חַיִּים</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>strong, mighty</questionText>
+		<answerText>עַז</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>strong, mighty (pl)</questionText>
+		<answerText>
+			עַ
+			<em>זִּ</em>
+			ים
+		</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>numerous, many; great</questionText>
+		<answerText>רַב</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>numerous, many; great (pl)</questionText>
+		<answerText>
+			רַ
+			<em>בִּ</em>
+			ים
+		</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>evil, bad, wicked</questionText>
+		<answerText>רַע</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>evil, bad, wicked (pl)</questionText>
+		<answerText>רָעִים</answerText>
+	</question>
+	<question class="particle">
+		<questionText>there is/are</questionText>
+		<answerText>יֵשׁ</answerText>
+	</question>
+	<question class="particle">
+		<questionText>[there is/are] not/no</questionText>
+		<answerText>אֵין</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>mountain (m)</questionText>
+		<answerText>הַר</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>the mountain (m)</questionText>
+		<answerText>
+			הָ
+			<em>הָ</em>
+			ר
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>mountains (m)</questionText>
+		<answerText>
+			<em>הָ</em>
+			רִים
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>goodness, kindness, grace; faithfulness (m)</questionText>
+		<answerText>חֶ֫סֶד</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>evidences of kindness, faithfulness</questionText>
+		<answerText>חֲסָדִים</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>statute, law (m)</questionText>
+		<answerText>חֹק</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>statues, laws (m)</questionText>
+		<answerText>
+			חֻ
+			<em>קִּ</em>
+			ים
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>wine (m)</questionText>
+		<answerText>יַ֫יִן</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>star (m)</questionText>
+		<answerText>
+			כּוֹכָ
+			<em>ב</em>
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>heart (m)</questionText>
+		<answerText>לֵב</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>hearts (m)</questionText>
+		<answerText>
+			לִ
+			<em>בּוֹת</em>
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>alter (m)</questionText>
+		<answerText>מִזְבֵּחַ</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>alters (m)</questionText>
+		<answerText>
+			מִזְבְּח
+			<em>וֹת</em>
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>water (pl)</questionText>
+		<answerText>מַ֫יִם</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>sanctuary (m)</questionText>
+		<answerText>מִקְדָּשׁ</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>sight; appearance (m)</questionText>
+		<answerText>מַרְאֶה</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>sights; appearances (m)</questionText>
+		<answerText>
+			מַרְא
+			<em>וֹת</em>
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>proverb, parable (m)</questionText>
+		<answerText>מָשָׁל</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>face (pl)</questionText>
+		<answerText>פָּנִים</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>holiness (m)</questionText>
+		<answerText>קֹ֫דֶשׁ</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>holiness (m, pl, reduced)</questionText>
+		<answerText>קֳדָשִׁים</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>holiness (m, pl, long)</questionText>
+		<answerText>קָדָשִׁים</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>voice, sound (m)</questionText>
+		<answerText>קוֹל</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>voices, sounds (m)</questionText>
+		<answerText>
+			קוֹל
+			<em>וֹת</em>
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>field (m)</questionText>
+		<answerText>שָׂדֶה</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>fields (m)</questionText>
+		<answerText>
+			שָׂד
+			<em>וֹת</em>
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>seven (m)</questionText>
+		<answerText>שִׁבְעָה</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>seven (f)</questionText>
+		<answerText>שֶׁ֫בַע</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>name (m)</questionText>
+		<answerText>שֵׁם</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>names (m)</questionText>
+		<answerText>
+			שֵׁמ
+			<em>וֹת</em>
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>heaven, heavens, sky (m, pl)</questionText>
+		<answerText>שָׁמַ֫יִם</answerText>
+	</question>
+	<question class="particle">
+		<questionText>totality, everything; all, the whole, each, every</questionText>
+		<answerText>כֹּל</answerText>
+	</question>
+	<question class="particle">
+		<questionText>on, over, upon</questionText>
+		<answerText>עַל</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>beautiful, handsome (m)</questionText>
+		<answerText>יָפֶה</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>beautiful, handsome (f)</questionText>
+		<answerText>יָפָה</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>first</questionText>
+		<answerText>רִאשׁוֹן</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>high</questionText>
+		<answerText>רָם</answerText>
+	</question>
+	<question class="particle">
+		<questionText>to, toward [attached form]</questionText>
+		<answerText>אֶל־</answerText>
+	</question>
+	<question class="particle">
+		<questionText>with, together with [including tav] (attached form)</questionText>
+		<answerText>אֶת־</answerText>
+	</question>
+	<question class="particle">
+		<questionText>with, together with [including tav]</questionText>
+		<answerText>אֵת</answerText>
+	</question>
+	<question class="particle suffix-form">
+		<questionText>with, together with me [including tav]</questionText>
+		<answerText>אִתִּי</answerText>
+	</question>
+	<question class="particle">
+		<questionText>like, as, according to [long form]</questionText>
+		<answerText>כְּמוֹ</answerText>
+	</question>
+	<question class="particle suffix-form">
+		<questionText>as, like us</questionText>
+		<answerText>כָּמ֫וֹנוּ</answerText>
+	</question>
+	<question class="particle suffix-form">
+		<questionText>as, like you (m pl)</questionText>
+		<answerText>כָּכֶם</answerText>
+	</question>
+	<question class="particle">
+		<questionText>again, yet, still</questionText>
+		<answerText>עוֹד</answerText>
+	</question>
+	<question class="particle">
+		<questionText>with, together with [including mem]</questionText>
+		<answerText>עִם</answerText>
+	</question>
+	<question class="particle suffix-form">
+		<questionText>with, together with me [including mem]</questionText>
+		<answerText>עִמִּי</answerText>
+	</question>
+	<question class="particle">
+		<questionText>under; instead of, in place of</questionText>
+		<answerText>תַּ֫חַת</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>light (m)</questionText>
+		<answerText>אוֹר</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>gold (m)</questionText>
+		<answerText>זָהָב</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>silver; money (m)</questionText>
+		<answerText>כֶּ֫סֶף</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>messenger; angel (m)</questionText>
+		<answerText>מַלְאָךְ</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>time (f)</questionText>
+		<answerText>עֵת</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>time (f, pl)</questionText>
+		<answerText>עִתּוֹת</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>mouth (m)</questionText>
+		<answerText>פֶּה</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>mouths (m, pl)</questionText>
+		<answerText>
+			פִּיּ
+			<em>וֹת</em>
+		</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>your (m, sing) mouth</questionText>
+		<answerText>פִּ֫יךָ</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>fruit (m)</questionText>
+		<answerText>פְּרִי</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>fruits (m)</questionText>
+		<answerText>פֵּרוֹת</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>my fruit</questionText>
+		<answerText>פִּרְיִי</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>evil, trouble, disaster (f)</questionText>
+		<answerText>רָעָה</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>sun (f)</questionText>
+		<answerText>שֶׁ֫מֶשׁ</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>year (f)</questionText>
+		<answerText>שָׁנָה</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>years (f)</questionText>
+		<answerText>שָׁנוֹת</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>ear (f)</questionText>
+		<answerText>אֹ֫זֶן</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>ears (f, dual)</questionText>
+		<answerText>אָזְנַ֫יִם</answerText>
+	</question>
+	<question class="gender-f noun suffix-form">
+		<questionText>my ear</questionText>
+		<answerText>אָזְנִי</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>my word</questionText>
+		<answerText>דְּבָרִי</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>your word (m, sing)</questionText>
+		<answerText>דְּבָֽרְךָ</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>your word (f, sing)</questionText>
+		<answerText>דְּבָרֵךְ</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>his word</questionText>
+		<answerText>דְּבָרוֹ</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>her word</questionText>
+		<answerText>דְּבָרָהּ</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>our word</questionText>
+		<answerText>דְּבָרֵ֫נוּ</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>your word (m, pl)</questionText>
+		<answerText>דְּבַרְכֶם</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>your word (f, pl)</questionText>
+		<answerText>דְּבַרְכֶן</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>their word (m)</questionText>
+		<answerText>דְּבָרָם</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>their word (f)</questionText>
+		<answerText>דְּבָרָן</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>my words</questionText>
+		<answerText>דְּבָרַי</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>your (m, sing) words</questionText>
+		<answerText>דְּבָרֶ֫יךָ</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>your (f, sing) words</questionText>
+		<answerText>דְּבָרַ֫יִךְ</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>his words</questionText>
+		<answerText>דְּבָרָיו</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>her words</questionText>
+		<answerText>דְּבָרֶ֫יהָ</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>our words</questionText>
+		<answerText>דְּבָרֵ֫ינוּ</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>your (m, pl) words</questionText>
+		<answerText>דִּבְרֵיכֶם</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>your (f, pl) words</questionText>
+		<answerText>דִּבְרֵיכֶן</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>their (m) words</questionText>
+		<answerText>דִּבְרֵיהֶם</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>their (f) words</questionText>
+		<answerText>דִּבְרֵיהֶן</answerText>
+	</question>
+	<question class="particle">
+		<questionText>after, behind (3x)</questionText>
+		<answerText>אַחַר</answerText>
+	</question>
+	<question class="particle">
+		<questionText>after, behind (4x)</questionText>
+		<answerText>אַחֲרֵי</answerText>
+	</question>
+	<question class="particle suffix-form">
+		<questionText>after, behind me</questionText>
+		<answerText>אַחֲרַי</answerText>
+	</question>
+	<question class="particle">
+		<questionText>before, in front of</questionText>
+		<answerText>לִפְנֵי</answerText>
+	</question>
+	<question class="particle suffix-form">
+		<questionText>before, in front of me</questionText>
+		<answerText>לְפָנַי</answerText>
+	</question>
+	<question class="particle">
+		<questionText>to, up to, until</questionText>
+		<answerText>עַד</answerText>
+	</question>
+	<question class="particle">
+		<questionText>to, up to, until me</questionText>
+		<answerText>עָדַי</answerText>
+	</question>
+	<question class="particle">
+		<questionText>here</questionText>
+		<answerText>פֹּה</answerText>
+	</question>
+	<question class="particle">
+		<questionText>where? (2x/attached form)</questionText>
+		<answerText>אֵי־</answerText>
+	</question>
+	<question class="particle">
+		<questionText>where? (3x)</questionText>
+		<answerText>אַיֵּה</answerText>
+	</question>
+	<question class="particle">
+		<questionText>where? (4x)</questionText>
+		<answerText>אֵ֫יפֹה</answerText>
+	</question>
+	<question class="particle">
+		<questionText>where from?</questionText>
+		<answerText>מֵאַ֫יִן</answerText>
+	</question>
+	<question class="particle">
+		<questionText>which?</questionText>
+		<answerText>אֵי־זֶה</answerText>
+	</question>
+	<question class="particle">
+		<questionText>question marker</questionText>
+		<answerText>הֲ</answerText>
+	</question>
+	<question class="particle">
+		<questionText>whether ... or</questionText>
+		<answerText>הֲ אִם</answerText>
+	</question>
+	<question class="particle">
+		<questionText>what?</questionText>
+		<answerText>מָה</answerText>
+	</question>
+	<question class="particle">
+		<questionText>who?</questionText>
+		<answerText>מִי</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>sister (f)</questionText>
+		<answerText>אָחוֹת</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>sisters (f, pl)</questionText>
+		<answerText>אֲחָיוֹת</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>thousand (m)</questionText>
+		<answerText>אֶ֫לֶף</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>thousands (m, dual)</questionText>
+		<answerText>אַלְפַּ֫יִם</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>thousands (m, pl)</questionText>
+		<answerText>אֲלָפִים</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>oxen; cows; cattle; domesticated animals (m, pl)</questionText>
+		<answerText>אֲלָפִים</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>truth (f)</questionText>
+		<answerText>אֱמֶת</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>morning (m)</questionText>
+		<answerText>בֹּ֫קֶר</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>mornings (m, pl)</questionText>
+		<answerText>בְּקָרִים</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>my morning</questionText>
+		<answerText>בָּקְרִי</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>blessing (f)</questionText>
+		<answerText>בְּרָכָה</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>palace, temple (m)</questionText>
+		<answerText>הֵיכָל</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>palaces, temples (m, pl)</questionText>
+		<answerText>הֵיכָלוֹת</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>seed, offspring</questionText>
+		<answerText>זֶ֫רַע</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>seeds, offspring (m, pl)</questionText>
+		<answerText>זְרָעִים</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>my seed, offspring</questionText>
+		<answerText>זַרְעִי</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>feast, festival (m)</questionText>
+		<answerText>חַג</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>the feast, festival (m)</questionText>
+		<answerText>הֶחָג</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>feasts, festivals (m)</questionText>
+		<answerText>חַגִּים</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>strength, power, army; capacity, valour (m)</questionText>
+		<answerText>חַ֫יִל</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>strengths, powers, armies; capacities (m, pl)</questionText>
+		<answerText>חֲיָלִים</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>throne, seat (m)</questionText>
+		<answerText>כִּסֵּא</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>thrones, seats (m, pl)</questionText>
+		<answerText>כִּסְאוֹת</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>deed, act (m)</questionText>
+		<answerText>מַעֲשֶׂה</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>eternity (m)</questionText>
+		<answerText>עוֹלָם</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>righteousness, justice (m)</questionText>
+		<answerText>צֶ֫דֶק</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>my righteousness, justice</questionText>
+		<answerText>צִדְקִי</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>righteousness (f)</questionText>
+		<answerText>צְדָקָה</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>Egypt (f)</questionText>
+		<answerText>מִצְרַ֫יִם</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>foot (f)</questionText>
+		<answerText>רֶ֫גֶל</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>feet (f, dual)</questionText>
+		<answerText>רַגְלַ֫יִם</answerText>
+	</question>
+	<question class="gender-f noun suffix-form">
+		<questionText>my foot</questionText>
+		<answerText>רַגְלִי</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>peace; well-being (m)</questionText>
+		<answerText>שָׁלוֹם</answerText>
+	</question>
+	<question class="verb">
+		<questionText>love</questionText>
+		<answerText>אָהַב</answerText>
+	</question>
+	<question class="verb">
+		<questionText>say</questionText>
+		<answerText>אָמַר</answerText>
+	</question>
+	<question class="verb">
+		<questionText>redeem</questionText>
+		<answerText>גָּאַל</answerText>
+	</question>
+	<question class="verb">
+		<questionText>remember</questionText>
+		<answerText>זָכַר</answerText>
+	</question>
+	<question class="verb">
+		<questionText>be/become old</questionText>
+		<answerText>זָקֵן</answerText>
+	</question>
+	<question class="verb">
+		<questionText>be/become straight, upright</questionText>
+		<answerText>יָשַׁר</answerText>
+	</question>
+	<question class="verb">
+		<questionText>cut</questionText>
+		<answerText>כָּרַת</answerText>
+	</question>
+	<question class="verb">
+		<questionText>write</questionText>
+		<answerText>כָּתַב</answerText>
+	</question>
+	<question class="verb">
+		<questionText>reign</questionText>
+		<answerText>מָלַךְ</answerText>
+	</question>
+	<question class="verb">
+		<questionText>anoint</questionText>
+		<answerText>מָשַׁח</answerText>
+	</question>
+	<question class="verb">
+		<questionText>give, set, put; appoint; allow, permit</questionText>
+		<answerText>נָתַן</answerText>
+	</question>
+	<question class="verb">
+		<questionText>work, serve</questionText>
+		<answerText>עָבַד</answerText>
+	</question>
+	<question class="verb">
+		<questionText>kill, slay</questionText>
+		<answerText>קָטַל</answerText>
+	</question>
+	<question class="verb">
+		<questionText>be/become small, unimportant</questionText>
+		<answerText>קָטֹן</answerText>
+	</question>
+	<question class="verb">
+		<questionText>call, proclaim, name, summon; read</questionText>
+		<answerText>
+			קָ
+			<em>רָ</em>
+			א
+		</answerText>
+	</question>
+	<question class="verb">
+		<questionText>hear, listen, understand</questionText>
+		<answerText>שָׁמַע</answerText>
+	</question>
+	<question class="verb">
+		<questionText>watch, guard, keep</questionText>
+		<answerText>שָׁמַר</answerText>
+	</question>
+	<question class="compound verb">
+		<questionText>obey [with bet]</questionText>
+		<answerText>שָׁמַע בְּקוֹל</answerText>
+	</question>
+	<question class="compound verb">
+		<questionText>obey [with lamed]</questionText>
+		<answerText>שָׁמַע לְקוֹל</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>strong, mighty (3x)</questionText>
+		<answerText>חָזָק</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>a little, few</questionText>
+		<answerText>מְעַט</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>a little, few (pl)</questionText>
+		<answerText>מְעַטִּים</answerText>
+	</question>
+	<question class="adjective gender-m">
+		<questionText>small, young, unimportant (m)</questionText>
+		<answerText>קָטֹן</answerText>
+	</question>
+	<question class="adjective gender-f">
+		<questionText>small, young, unimportant (f)</questionText>
+		<answerText>קְטַנָּה</answerText>
+	</question>
+	<question class="particle">
+		<questionText>then, at that time</questionText>
+		<answerText>אָז</answerText>
+	</question>
+	<question class="particle">
+		<questionText>why?</questionText>
+		<answerText>לָ֫מָּה</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>nation, a people (m, 3x) [with yod]</questionText>
+		<answerText>גּוֹי</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>nations, peoples (m, pl) [with yod]</questionText>
+		<answerText>גּוֹיִם</answerText>
+	</question>
+	<question class="gender-c noun">
+		<questionText>camel (c)</questionText>
+		<answerText>גָּמָל</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>door, gate, opening; manuscript column or page (f)</questionText>
+		<answerText>דֶּ֫לֶת</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>nail; hook (m)</questionText>
+		<answerText>וָו</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>palm, sole; pan, dish; handle; twig, branch (f)</questionText>
+		<answerText>כַּף</answerText>
+	</question>
+	<question class="gender-c noun">
+		<questionText>tooth; peak/point of a rock; point of a fork (c)</questionText>
+		<answerText>שֵׁן</answerText>
+	</question>
+	<question class="gender-c noun">
+		<questionText>teeth (c)</questionText>
+		<answerText>שִׁנִּים</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>mark; sign (m)</questionText>
+		<answerText>תַּו</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>dove (f)</questionText>
+		<answerText>יוֹנָה</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>doves (f)</questionText>
+		<answerText>
+			יוֹ
+			<em>נִים</em>
+		</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>fear (f)</questionText>
+		<answerText>יִרְאָה</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>glory, honour; weight, majesty; abundance (m)</questionText>
+		<answerText>כָּבוֹד</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>night (m)</questionText>
+		<answerText>
+			לַ֫יְלָ
+			<em>ה</em>
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>nights (m)</questionText>
+		<answerText>
+			<em>לֵ</em>
+			יל
+			<em>וֹת</em>
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>dwelling-place; tabernacle (m)</questionText>
+		<answerText>מִשְׁכָּן</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>dwelling-places; tabernacles (m)</questionText>
+		<answerText>
+			מִשְׁכָּנ
+			<em>וֹת</em>
+		</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>a Hebrew (m)</questionText>
+		<answerText>עִבְרִי</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>a Hebrew (f)</questionText>
+		<answerText>עִבְרִיָּה</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>Hebrews (m)</questionText>
+		<answerText>עִבְרִים</answerText>
+	</question>
+	<question class="verb">
+		<questionText>eat</questionText>
+		<answerText>אָכַל</answerText>
+	</question>
+	<question class="verb">
+		<questionText>choose</questionText>
+		<answerText>בָּחַר בְּ</answerText>
+	</question>
+	<question class="verb">
+		<questionText>go, walk</questionText>
+		<answerText>הָלַךְ</answerText>
+	</question>
+	<question class="verb">
+		<questionText>know</questionText>
+		<answerText>יָדַע</answerText>
+	</question>
+	<question class="verb">
+		<questionText>come/go out, come/go forth</questionText>
+		<answerText>
+			יָ
+			<em>צָ</em>
+			א
+		</answerText>
+	</question>
+	<question class="verb">
+		<questionText>fear, be afraid</questionText>
+		<answerText>יָרֵא</answerText>
+	</question>
+	<question class="verb">
+		<questionText>sit; dwell, reside</questionText>
+		<answerText>יָשַׁב</answerText>
+	</question>
+	<question class="verb">
+		<questionText>take</questionText>
+		<answerText>לָקַח</answerText>
+	</question>
+	<question class="verb">
+		<questionText>be full/filled (with)</questionText>
+		<answerText>מָלֵא</answerText>
+	</question>
+	<question class="verb">
+		<questionText>find</questionText>
+		<answerText>מָצָא</answerText>
+	</question>
+	<question class="verb">
+		<questionText>stand</questionText>
+		<answerText>עָמַד</answerText>
+	</question>
+	<question class="verb">
+		<questionText>send</questionText>
+		<answerText>שָׁלַח</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>writings</questionText>
+		<answerText>כְּתוּבִים</answerText>
+	</question>
+	<question class="verb">
+		<questionText>I wrote (Qal perfect)</questionText>
+		<answerText>כָּתַ֫בְתִּי</answerText>
+	</question>
+	<question class="verb">
+		<questionText>you (m.s.) wrote (Qal perfect)</questionText>
+		<answerText>כָּתַ֫בְתָּ</answerText>
+	</question>
+	<question class="verb">
+		<questionText>you (f.s.) wrote (Qal perfect)</questionText>
+		<answerText>כָּתַבְתְּ</answerText>
+	</question>
+	<question class="verb">
+		<questionText>he wrote (Qal perfect)</questionText>
+		<answerText>כָּתַב</answerText>
+	</question>
+	<question class="verb">
+		<questionText>she wrote (Qal perfect)</questionText>
+		<answerText>כָּֽתְבָה</answerText>
+	</question>
+	<question class="verb">
+		<questionText>we wrote (Qal perfect)</questionText>
+		<answerText>כָּתַ֫בְנוּ</answerText>
+	</question>
+	<question class="verb">
+		<questionText>you (m.pl) wrote (Qal perfect)</questionText>
+		<answerText>כְּתַבְתֶּם</answerText>
+	</question>
+	<question class="verb">
+		<questionText>you (f.pl.) wrote (Qal perfect)</questionText>
+		<answerText>כְּתַבְתֶּן</answerText>
+	</question>
+	<question class="verb">
+		<questionText>they (m) wrote (Qal perfect)</questionText>
+		<answerText>כָּֽתְבוּ</answerText>
+	</question>
+	<question class="verb">
+		<questionText>they (f) wrote (Qal perfect)</questionText>
+		<answerText>כָּֽתְבוּ</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>heart (m) [3]</questionText>
+		<answerText>לֵבָב</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>hearts (m, pl) [5]</questionText>
+		<answerText>לְבָבוֹת</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>tree, wood, stick (m)</questionText>
+		<answerText>עֵץ</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>trees, woods, sticks (m, pl)</questionText>
+		<answerText>עֵצִים</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>beginning (f)</questionText>
+		<answerText>רֵאשִׁית</answerText>
+	</question>
+	<question class="particle">
+		<questionText>direct definite object marker (attached)</questionText>
+		<answerText>אֶת־</answerText>
+	</question>
+	<question class="intensifier particle">
+		<questionText>surely (intensifier) [4]</questionText>
+		<answerText>אָמְנָם</answerText>
+	</question>
+	<question class="intensifier particle">
+		<questionText>only, except; surely (intensifier) [including qof]</questionText>
+		<answerText>רַק</answerText>
+	</question>
+	<question class="intensifier particle">
+		<questionText>only; surely (intensifier) [including khaf]</questionText>
+		<answerText>אַךְ</answerText>
+	</question>
+	<question class="intensifier particle">
+		<questionText>if; surely (intensifier) [2]</questionText>
+		<answerText>אִם</answerText>
+	</question>
+	<question class="intensifier particle">
+		<questionText>where? where to? [2, with nun]</questionText>
+		<answerText>אָן</answerText>
+	</question>
+	<question class="intensifier particle">
+		<questionText>where? where to? [3, with nun]</questionText>
+		<answerText>אָ֫נָה</answerText>
+	</question>
+	<question class="intensifier particle">
+		<questionText>undoubledly (intensifier); so that; when; because</questionText>
+		<answerText>כִּי</answerText>
+	</question>
+	<question class="particle">
+		<questionText>that; because, since, for, when (conjunction)</questionText>
+		<answerText>כִּי</answerText>
+	</question>
+	<question class="intensifier particle">
+		<questionText>also, too, even; moreover (intensifier)</questionText>
+		<answerText>גַּם</answerText>
+	</question>
+	<question class="intensifier particle">
+		<questionText>indeed (intensifier); behold! look! here!</questionText>
+		<answerText>הִנֵּה</answerText>
+	</question>
+	<question class="particle">
+		<questionText>so, thus</questionText>
+		<answerText>כֹּה</answerText>
+	</question>
+	<question class="particle">
+		<questionText>so, thus; rightly [including nun]</questionText>
+		<answerText>כֵּן</answerText>
+	</question>
+	<question class="intensifier particle">
+		<questionText>truly, indeed (intensifier)</questionText>
+		<answerText>אָכֵן</answerText>
+	</question>
+	<question class="particle">
+		<questionText>there, then</questionText>
+		<answerText>שָׁם</answerText>
+	</question>
+	<question class="particle">
+		<questionText>how?</questionText>
+		<answerText>אֵיךְ</answerText>
+	</question>
+	<question class="particle">
+		<questionText>who, which, that; the one who; what, where</questionText>
+		<answerText>אֲשֶׁר</answerText>
+	</question>
+	<question class="particle">
+		<questionText>for, because (conjunction)</questionText>
+		<answerText>אֲשֶׁר</answerText>
+	</question>
+	<question class="particle">
+		<questionText>because [with n]</questionText>
+		<answerText>יַ֫עַן</answerText>
+	</question>
+	<question class="particle">
+		<questionText>as; when</questionText>
+		<answerText>כַּאֲשֶׁר</answerText>
+	</question>
+	<question class="particle">
+		<questionText>alone</questionText>
+		<answerText>לְבַד</answerText>
+	</question>
+	<question class="particle">
+		<questionText>because [with v]</questionText>
+		<answerText>עֵ֫קֶב</answerText>
+	</question>
+	<question class="particle">
+		<questionText>now (with t)</questionText>
+		<answerText>עַתָּה</answerText>
+	</question>
+	<question class="particle">
+		<questionText>between</questionText>
+		<answerText>בֵּין</answerText>
+	</question>
+	<question class="particle">
+		<questionText>between me</questionText>
+		<answerText>בֵּינִי</answerText>
+	</question>
+	<question class="particle">
+		<questionText>between us</questionText>
+		<answerText>בֵּינֵ֫ינוּ</answerText>
+	</question>
+	<question class="particle">
+		<questionText>no, not (with jussive, immediate specific)</questionText>
+		<answerText>אַל</answerText>
+	</question>
+	<question class="particle">
+		<questionText>please, I/we pray (intensifier)</questionText>
+		<answerText>נָא</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>other, another</questionText>
+		<answerText>אָחֵר</answerText>
+	</question>
+	<question class="adjective">
+		<questionText>perfect, complete, whole [2]</questionText>
+		<answerText>תַּם</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>agreeableness, charm, favour</questionText>
+		<answerText>חֵן</answerText>
+	</question>
+	<question class="gender-m noun suffix-form">
+		<questionText>my agreeableness, charm, favour</questionText>
+		<answerText>חִנִּי</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>prayer (f)</questionText>
+		<answerText>תְּפִלָּה</answerText>
+	</question>
+	<question class="verb">
+		<questionText>come, enter, go in</questionText>
+		<answerText>בּוֹא</answerText>
+	</question>
+	<question class="verb">
+		<questionText>come, enter, go in (Qal perf)</questionText>
+		<answerText>בָּא</answerText>
+	</question>
+	<question class="verb">
+		<questionText>build</questionText>
+		<answerText>בָּנָה</answerText>
+	</question>
+	<question class="verb">
+		<questionText>create</questionText>
+		<answerText>בָּרָא</answerText>
+	</question>
+	<question class="verb">
+		<questionText>be; become; happen</questionText>
+		<answerText>הָיָה</answerText>
+	</question>
+	<question class="verb">
+		<questionText>live</questionText>
+		<answerText>חָיָה</answerText>
+	</question>
+	<question class="verb">
+		<questionText>sell</questionText>
+		<answerText>מָכַר</answerText>
+	</question>
+	<question class="verb">
+		<questionText>cross, pass over; transgress</questionText>
+		<answerText>עָבַר</answerText>
+	</question>
+	<question class="verb">
+		<questionText>go up, ascend</questionText>
+		<answerText>עָלָה</answerText>
+	</question>
+	<question class="verb">
+		<questionText>do, make</questionText>
+		<answerText>עָשָׂה</answerText>
+	</question>
+	<question class="verb">
+		<questionText>stand up, rise up (inf)</questionText>
+		<answerText>קוּם</answerText>
+	</question>
+	<question class="verb">
+		<questionText>stand up, rise up (Qal perf)</questionText>
+		<answerText>קָם</answerText>
+	</question>
+	<question class="verb">
+		<questionText>be/become light, unimportant, despised (Qal perf)</questionText>
+		<answerText>קַל</answerText>
+	</question>
+	<question class="verb">
+		<questionText>see</questionText>
+		<answerText>רָאָה</answerText>
+	</question>
+	<question class="verb">
+		<questionText>put, set; appoint [with mem] (inf)</questionText>
+		<answerText>שִׂים</answerText>
+	</question>
+	<question class="verb">
+		<questionText>put, set, appoint [with mem] (Qal perf)</questionText>
+		<answerText>שָׂם</answerText>
+	</question>
+	<question class="verb">
+		<questionText>return, come back (inf)</questionText>
+		<answerText>שׁוּב</answerText>
+	</question>
+	<question class="verb">
+		<questionText>return, come back (Qal perf)</questionText>
+		<answerText>שָׁב</answerText>
+	</question>
+	<question class="verb">
+		<questionText>dwell</questionText>
+		<answerText>שָׁכַן</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>war, battle (f)</questionText>
+		<answerText>מִלְחָמָה</answerText>
+	</question>
+	<question class="verb">
+		<questionText>gather</questionText>
+		<answerText>אָסַף</answerText>
+	</question>
+	<question class="verb">
+		<questionText>gather [imperfect]</questionText>
+		<answerText>יֶאֱסֹף</answerText>
+	</question>
+	<question class="verb">
+		<questionText>be/become great/big, grow [with a]</questionText>
+		<answerText>גָּדַל</answerText>
+	</question>
+	<question class="verb">
+		<questionText>be/become great/big, grow [with e]</questionText>
+		<answerText>גָּדֵל</answerText>
+	</question>
+	<question class="verb">
+		<questionText>be/become great/big, grow [imperfect]</questionText>
+		<answerText>יִגְדַּל</answerText>
+	</question>
+	<question class="verb">
+		<questionText>seek; inquire</questionText>
+		<answerText>דָּרַשׁ</answerText>
+	</question>
+	<question class="verb">
+		<questionText>learn</questionText>
+		<answerText>לָמַד</answerText>
+	</question>
+	<question class="verb">
+		<questionText>kill [with ch]</questionText>
+		<answerText>רָצַח</answerText>
+	</question>
+	<question class="verb">
+		<questionText>kill [with ch; imperfect]</questionText>
+		<answerText>יִרְצַח</answerText>
+	</question>
+	<question class="verb">
+		<questionText>ask, inquire; request</questionText>
+		<answerText>שָׁאַל</answerText>
+	</question>
+	<question class="verb">
+		<questionText>ask, inquire; request [imperfect]</questionText>
+		<answerText>יִשְׁאַל</answerText>
+	</question>
+	<question class="verb">
+		<questionText>judge</questionText>
+		<answerText>שָׁפַט</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>scribe (m)</questionText>
+		<answerText>סֹפֵר</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>work, service (f)</questionText>
+		<answerText>עֲבוֹדָה</answerText>
+	</question>
+	<question class="verb">
+		<questionText>curse (lexical form)</questionText>
+		<answerText>ארר</answerText>
+	</question>
+	<question class="particle verb">
+		<questionText>cursed (passive participle)</questionText>
+		<answerText>אָרוּר</answerText>
+	</question>
+	<question class="particle verb">
+		<questionText>blessed (passive participle)</questionText>
+		<answerText>בָּרוּךְ</answerText>
+	</question>
+	<question class="verb">
+		<questionText>be/become heavy</questionText>
+		<answerText>כָּבֵד</answerText>
+	</question>
+	<question class="verb">
+		<questionText>be/become heavy (imperfect)</questionText>
+		<answerText>יִכְבַּד</answerText>
+	</question>
+	<question class="verb">
+		<questionText>pursue, persecute</questionText>
+		<answerText>רָדַף</answerText>
+	</question>
+	<question class="verb">
+		<questionText>persue, persecute (imperfect)</questionText>
+		<answerText>יִרְדֹּף</answerText>
+	</question>
+	<question class="verb">
+		<questionText>lie down</questionText>
+		<answerText>שָׁכַב</answerText>
+	</question>
+	<question class="verb">
+		<questionText>lie down (imperfect)</questionText>
+		<answerText>יִשְׁכַּב</answerText>
+	</question>
+	<question class="verb">
+		<questionText>weep</questionText>
+		<answerText>בָּכָה</answerText>
+	</question>
+	<question class="verb">
+		<questionText>flee</questionText>
+		<answerText>בָּרַח</answerText>
+	</question>
+	<question class="verb">
+		<questionText>be able/capable</questionText>
+		<answerText>יָכֹל</answerText>
+	</question>
+	<question class="verb">
+		<questionText>die (inf)</questionText>
+		<answerText>מוּת</answerText>
+	</question>
+	<question class="verb">
+		<questionText>die (Qal perf)</questionText>
+		<answerText>מֵת</answerText>
+	</question>
+	<question class="verb">
+		<questionText>rule (verb, incl particle)</questionText>
+		<answerText>מָשַׁל בְּ</answerText>
+	</question>
+	<question class="verb">
+		<questionText>help (verb, incl particle)</questionText>
+		<answerText>עָזַר לְ</answerText>
+	</question>
+	<question class="verb">
+		<questionText>remember; pay attention; take care of; watch over</questionText>
+		<answerText>פָּקַד</answerText>
+	</question>
+	<question class="verb">
+		<questionText>bury</questionText>
+		<answerText>קָבַר</answerText>
+	</question>
+	<question class="verb">
+		<questionText>forget</questionText>
+		<answerText>שָׁכַח</answerText>
+	</question>
+	<question class="verb">
+		<questionText>he forgets (imperfect)</questionText>
+		<answerText>יִשְׁכַּח</answerText>
+	</question>
+	<question class="particle">
+		<questionText>not, not to (+inf) [5]</questionText>
+		<answerText>לְבִלְתִּי</answerText>
+	</question>
+	<question class="particle">
+		<questionText>not, not to (+inf) [4]</questionText>
+		<answerText>בִּלְתִּי</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>chest, ark (m)</questionText>
+		<answerText>אֲרוֹן</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>the chest, ark (m)</questionText>
+		<answerText>הָאָרוֹן</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>flesh, meat (m)</questionText>
+		<answerText>בָּשָׂר</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>blood (m)</questionText>
+		<answerText>דָּם</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>sacrifice (m)</questionText>
+		<answerText>זֶ֫בַח</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>arm, strength (m)</questionText>
+		<answerText>זְרוֹעַ</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>river (m)</questionText>
+		<answerText>נָהָר</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>rivers (m)</questionText>
+		<answerText>נְהָרוֹת</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>loving, love (f)</questionText>
+		<answerText>אַהֲבָה</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>sign, omen (f)</questionText>
+		<answerText>אוֹת</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>fire (f)</questionText>
+		<answerText>אֵשׁ</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>generation (m)</questionText>
+		<answerText>דּוֹר</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>generations (m, pl)</questionText>
+		<answerText>דּוֹרוֹת</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>mention [of a name] (m)</questionText>
+		<answerText>זֵ֫כֶר</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>living thing, beast, animal (f)</questionText>
+		<answerText>חַיָּה</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>statue (f)</questionText>
+		<answerText>חֻקָּה</answerText>
+	</question>
+	<question class="gender-m noun">
+		<questionText>wilderness, desert (m)</questionText>
+		<answerText>מִדְבָּר</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>birth (f)</questionText>
+		<answerText>מוֹלֶ֫דֶת</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>congregation, assembly (f)</questionText>
+		<answerText>עֵדָה</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>hatred (f)</questionText>
+		<answerText>שִׁנְאָה</answerText>
+	</question>
+	<question class="gender-f noun">
+		<questionText>day of rest, Sabbath (f)</questionText>
+		<answerText>שַׁבָּת</answerText>
+	</question>
+	<question class="verb">
+		<questionText>he sinned</questionText>
+		<answerText>חָטָא</answerText>
+	</question>
+	<question class="verb">
+		<questionText>he will sin (imperfect)</questionText>
+		<answerText>יֶחְטָא</answerText>
+	</question>
+	<question class="verb">
+		<questionText>bear, give birth</questionText>
+		<answerText>יָלַד</answerText>
+	</question>
+	<question class="verb">
+		<questionText>leave, abandon</questionText>
+		<answerText>עָזַב</answerText>
+	</question>
+	<question class="verb">
+		<questionText>hate</questionText>
+		<answerText>שָׂנֵא</answerText>
+	</question>
+	<question class="verb">
+		<questionText>burn</questionText>
+		<answerText>שָׂרַף</answerText>
+	</question>
+	<question class="particle">
+		<questionText>in order that; for the sake of [with r]</questionText>
+		<answerText>בַּעֲבוּר</answerText>
+	</question>
+	<question class="particle">
+		<questionText>in order that; for the sake of [with n]</questionText>
+		<answerText>לְמַ֫עַן</answerText>
+	</question>
+	<question class="particle">
+		<questionText>lest, in order not</questionText>
+		<answerText>פֶּן</answerText>
+	</question>
+</questionList>
+

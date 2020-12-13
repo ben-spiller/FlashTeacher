@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="xhosa.xsl"?>
+<!DOCTYPE questionList SYSTEM "questionList.dtd">
+
+<questionList title="Musical intervals" author="Ben Spiller" isCaseSensitive="false" answerFontFamily="Tahoma" questionFontFamily="Tahoma" isAnswerRightToLeft="false">
+
+
+	<question>
+		<questionText>C II</questionText>
+		<answerText>D</answerText>
+	</question>
+	<question>
+		<questionText>C III</questionText>
+		<answerText>E</answerText>
+	</question>
+	<question>
+		<questionText>C IV</questionText>
+		<answerText>F</answerText>
+	</question>
+	<question>
+		<questionText>C V</questionText>
+		<answerText>G</answerText>
+	</question>
+	<question>
+		<questionText>C VI</questionText>
+		<answerText>A</answerText>
+	</question>
+	<question>
+		<questionText>C VII</questionText>
+		<answerText>B</answerText>
+	</question>
+
+
+	<question>
+		<questionText>E II</questionText>
+		<answerText>F#</answerText>
+	</question>
+	<question>
+		<questionText>E III</questionText>
+		<answerText>G#</answerText>
+	</question>
+	<question>
+		<questionText>E IV</questionText>
+		<answerText>A</answerText>
+	</question>
+	<question>
+		<questionText>E V</questionText>
+		<answerText>B</answerText>
+	</question>
+	<question>
+		<questionText>E VI</questionText>
+		<answerText>C#</answerText>
+	</question>
+	<question>
+		<questionText>E VII</questionText>
+		<answerText>D#</answerText>
+	</question>
+
+
+	<question>
+		<questionText>Eb II</questionText>
+		<answerText>F</answerText>
+	</question>
+	<question>
+		<questionText>Eb III</questionText>
+		<answerText>G</answerText>
+	</question>
+	<question>
+		<questionText>Eb IV</questionText>
+		<answerText>Ab</answerText>
+	</question>
+	<question>
+		<questionText>Eb V</questionText>
+		<answerText>Bb</answerText>
+	</question>
+	<question>
+		<questionText>Eb VI</questionText>
+		<answerText>C</answerText>
+	</question>
+	<question>
+		<questionText>Eb VII</questionText>
+		<answerText>D</answerText>
+	</question>
+
+	<question>
+		<questionText>A II</questionText>
+		<answerText>B</answerText>
+	</question>
+	<question>
+		<questionText>A III</questionText>
+		<answerText>C#</answerText>
+	</question>
+	<question>
+		<questionText>A IV</questionText>
+		<answerText>D</answerText>
+	</question>
+	<question>
+		<questionText>A V</questionText>
+		<answerText>E</answerText>
+	</question>
+	<question>
+		<questionText>A VI</questionText>
+		<answerText>F#</answerText>
+	</question>
+	<question>
+		<questionText>A VII</questionText>
+		<answerText>G#</answerText>
+	</question>
+
+
+	<question>
+		<questionText>D II</questionText>
+		<answerText>E</answerText>
+	</question>
+	<question>
+		<questionText>D III</questionText>
+		<answerText>F#</answerText>
+	</question>
+	<question>
+		<questionText>D IV</questionText>
+		<answerText>G</answerText>
+	</question>
+	<question>
+		<questionText>D V</questionText>
+		<answerText>A</answerText>
+	</question>
+	<question>
+		<questionText>D VI</questionText>
+		<answerText>B</answerText>
+	</question>
+	<question>
+		<questionText>D VII</questionText>
+		<answerText>C#</answerText>
+	</question>
+
+
+	<question><questionText>G II</questionText><answerText>A</answerText></question>
+	<question><questionText>G III</questionText><answerText>B</answerText></question>
+	<question><questionText>G IV</questionText><answerText>C</answerText></question>
+	<question><questionText>G V</questionText><answerText>D</answerText></question>
+	<question><questionText>G VI</questionText><answerText>E</answerText></question>
+	<question><questionText>G VII</questionText><answerText>F#</answerText></question>
+
+	<question><questionText>F II</questionText><answerText>G</answerText></question>
+	<question><questionText>F III</questionText><answerText>A</answerText></question>
+	<question><questionText>F IV</questionText><answerText>Bb</answerText></question>
+	<question><questionText>F V</questionText><answerText>C</answerText></question>
+	<question><questionText>F VI</questionText><answerText>D</answerText></question>
+	<question><questionText>F VII</questionText><answerText>E</answerText></question>
+
+	<question><questionText>B II</questionText> <answerText>C#</answerText></question>
+	<question><questionText>B III</questionText><answerText>D#</answerText></question>
+	<question><questionText>B IV</questionText> <answerText>E</answerText></question>
+	<question><questionText>B V</questionText>  <answerText>F#</answerText></question>
+	<question><questionText>B VI</questionText> <answerText>G#</answerText></question>
+	<question><questionText>B VII</questionText><answerText>A#</answerText></question>
+
+	<question><questionText>Bb II</questionText> <answerText>C</answerText></question>
+	<question><questionText>Bb III</questionText><answerText>D</answerText></question>
+	<question><questionText>Bb IV</questionText> <answerText>Eb</answerText></question>
+	<question><questionText>Bb V</questionText>  <answerText>F</answerText></question>
+	<question><questionText>Bb VI</questionText> <answerText>G</answerText></question>
+	<question><questionText>Bb VII</questionText><answerText>A</answerText></question>
+
+	<question><questionText>F# II</questionText><answerText>G#</answerText></question>
+	<question><questionText>F# III</questionText><answerText>A#</answerText></question>
+	<question><questionText>F# IV</questionText><answerText>B</answerText></question>
+	<question><questionText>F# V</questionText><answerText>C#</answerText></question>
+	<question><questionText>F# VI</questionText><answerText>D#</answerText></question>
+	<question><questionText>F# VII</questionText><answerText>F</answerText></question>
+
+	<question><questionText>Gb II</questionText><answerText>Ab</answerText></question>
+	<question><questionText>Gb III</questionText><answerText>Bb</answerText></question>
+	<question><questionText>Gb IV</questionText><answerText>B</answerText></question>
+	<question><questionText>Gb V</questionText><answerText>Db</answerText></question>
+	<question><questionText>Gb VI</questionText><answerText>Eb</answerText></question>
+	<question><questionText>Gb VII</questionText><answerText>F</answerText></question>
+
+
+	<question><questionText>The major key with 1 # is:</questionText><answerText>G</answerText></question>
+	<question><questionText>The major key with 2 #s is:</questionText><answerText>D</answerText></question>
+	<question><questionText>The major key with 3 #s is:</questionText><answerText>A</answerText></question>
+	<question><questionText>The major key with 4 #s is:</questionText><answerText>E</answerText></question>
+	<question><questionText>The major key with 5 #s is:</questionText><answerText>B</answerText></question>
+	<question><questionText>The major key with 6 #s is:</questionText><answerText>F#</answerText></question>
+	<question><questionText>The major key with 7 #s is:</questionText><answerText>C#</answerText></question>
+
+	<question><questionText>The major key with 1 b is:</questionText><answerText>F</answerText></question>
+	<question><questionText>The major key with 2 b's is:</questionText><answerText>Bb</answerText></question>
+	<question><questionText>The major key with 3 b's is:</questionText><answerText>Eb</answerText></question>
+	<question><questionText>The major key with 4 b's is:</questionText><answerText>Ab</answerText></question>
+	<question><questionText>The major key with 5 b's is:</questionText><answerText>Db</answerText></question>
+	<question><questionText>The major key with 6 b's is:</questionText><answerText>Gb</answerText></question>
+	<question><questionText>The major key with 7 b's is:</questionText><answerText>Cb</answerText></question>
+
+	<question>
+		<questionText>9th</questionText>
+		<answerText>2</answerText>
+	</question>
+	<question>
+		<questionText>10th</questionText>
+		<answerText>3</answerText>
+	</question>
+	<question>
+		<questionText>11th</questionText>
+		<answerText>4</answerText>
+	</question>
+	<question>
+		<questionText>12th</questionText>
+		<answerText>5</answerText>
+	</question>
+	<question>
+		<questionText>13th</questionText>
+		<answerText>6</answerText>
+	</question>
+
+</questionList>
+
