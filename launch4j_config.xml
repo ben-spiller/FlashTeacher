@@ -1,0 +1,32 @@
+<launch4jConfig>
+  <dontWrapJar>true</dontWrapJar>
+  <headerType>0</headerType>
+  <jar>flashteacher1.0.jar</jar>
+  <outfile>FlashTeacher.exe</outfile>
+  <errTitle></errTitle>
+  <jarArgs></jarArgs>
+  <chdir>.</chdir>
+  <customProcName>true</customProcName>
+  <stayAlive>false</stayAlive>
+  <icon>src\com\ben\flashteacher\resources\flashteacher.ico</icon>
+  <jre>
+    <path></path>
+    <minVersion>1.6.0</minVersion>
+    <maxVersion></maxVersion>
+    <initialHeapSize>0</initialHeapSize>
+    <maxHeapSize>0</maxHeapSize>
+    <args></args>
+  </jre>
+  <versionInfo>
+    <fileVersion>1.0.2.0</fileVersion>
+    <txtFileVersion>1.0</txtFileVersion>
+    <fileDescription>FlashTeacher executable wrapper</fileDescription>
+    <copyright>(c) Ben Spiller 2007, 2009</copyright>
+    <productVersion>1.0.2.0</productVersion>
+    <txtProductVersion>1.0</txtProductVersion>
+    <productName>FlashTeacher</productName>
+    <companyName></companyName>
+    <internalName>FlashTeacher</internalName>
+    <originalFilename>FlashTeacher.exe</originalFilename>
+  </versionInfo>
+</launch4jConfig>
