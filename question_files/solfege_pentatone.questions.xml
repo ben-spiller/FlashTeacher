@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE questionList SYSTEM "questionList.dtd">
+
+<questionList title="Solfege dictation" author="Ben Spiller" isCaseSensitive="false" answerFontFamily="Tahoma" questionFontFamily="Tahoma" isAnswerRightToLeft="false">
+
+	<plugin class="com.ben.flashteacher.plugins.SolfegeDictationPlugin">
+		<!-- Use "ti," to indicate solfege in a lower octave and "re'" to indicate higher octave -->
+		<property name="solfegeValues" value="do re me so la"/>
+
+		<!-- Don't set this too large or the number of questions will be enormous -->
+		<property name="notesPerQuestion" value="4"/>
+
+		<!--  TODO - eventually support this as a range to allow randomization -->
+		<property name="timeBetweenNotesMillis" value="500"/>
+		
+		<!-- The pitch or pitches to use for the (bottom) "do" - you may wish to customize this based on your singing range. 
+		Can use a MIDI pitch e.g. 60 = C4 (middle C). A range can be specified using a hyphen.  -->
+		<property name="do" value="60"/>
+		
+		<!-- A comma-separated list of MIDI instruments to use (substring, case insensitive) -->
+		<property name="instruments" value="piano, Steel-str.Gt, trumpet, Voice Oohs, Choir Aahs"/>
+	</plugin>
+
+</questionList>
+

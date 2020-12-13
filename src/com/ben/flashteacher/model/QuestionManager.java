@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.jdom.Attribute;
 import org.jdom.Comment;
 import org.jdom.Content;
 import org.jdom.Element;
@@ -138,6 +141,16 @@ public class QuestionManager
 	int questionsAnswered = 0;
 	long startTimeMillis;
 
+	/** This is a mechanism to allow plugins to be notified when the entire application 
+	 * shuts down, in case they have backgound threads or shared static state to dispose of. */
+	private static final List<Plugin> pluginsToShutdown = new ArrayList<>();
+	
+	public static void shutdownPlugins()
+	{
+		for (Plugin p: pluginsToShutdown)
+			p.onShutdown();
+	}
+	
 	/**
 	 * @param questionListElement The XML element containing the list of 
 	 * question data the user has selected.
@@ -152,47 +165,87 @@ public class QuestionManager
 		
 		caseSensitive = options.isCaseSensitive();
 
+		Map<String, Question> loadedQuestions = new HashMap<>(); // keyed by question string 
+		
 		int question = 0; // for error messages
-		//BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("testOutput.txt"), "UTF-8"));
-		//boolean isAnswerRightToLeft = Boolean.valueOf(questionListElement.getAttributeValue("isAnswerRightToLeft", "false"));
 		for (Element questionElement: (List<Element>)questionListElement.getChildren())
 		{
-			question++;
-			String questionText = questionElement.getChildTextNormalize("questionText");
-			
-			StringBuilder answerText = new StringBuilder();
-			Element answerTextElement = questionElement.getChild("answerText");
-			if (answerTextElement != null)
-				for (Content c: (List<Content>)answerTextElement.getContent())
+			if ("plugin".equals(questionElement.getName()))
+			{
+				Map<String, String> props = new HashMap<>();
+				for (Object a: questionElement.getAttributes())
+					props.put( ((Attribute)a).getName(), ((Attribute)a).getValue());
+				for (Element prop: (List<Element>)questionElement.getChildren())
+					if ("property".equals(prop.getName()))
+						props.put(prop.getAttributeValue("name"), prop.getAttributeValue("value"));
+					else
+						throw new IOException("Unexpected element under plugin: '"+prop.getName()+"'");
+				
+				logger.info("Loading plugin with properties: "+props);
+				
+				Plugin p;
+				try
 				{
-					String contentText = null;
-					if (c instanceof Text)
-						contentText = ((Text)c).getTextNormalize();
-					else if (c instanceof Element)
-						contentText = ((Element)c).getTextNormalize();
-					// otherwise ignore
-					
-					if (contentText != null)
-					{
-						//if (isAnswerRightToLeft)
-						//	answerText.insert(0, contentText);
-						//else
-							answerText.append(contentText);
-					}
+					Class<?> c = Class.forName(props.remove("class"));
+					p = (Plugin)c.newInstance();
+				} catch (Exception ex)
+				{
+					throw new IOException("Cannot instantiate <plugin> class: "+ex, ex);
 				}
-			
-			if (questionText == null || answerText.length() == 0) // probably never happens due to DTD validation
-				throw new IOException("Invalid question file - question or answer value #"+question+" is null");
-			
-			QuestionHistory newQuestion = new QuestionHistory( new Question(questionText, answerText.toString()) );
-			if (allQuestions.contains(newQuestion))
-				throw new IOException("Invalid question file - question appears more than once: \""+newQuestion.question.getQuestion()+"\"");
-
-			//w.write("["+newQuestion.getQuestion()+"] = ["+newQuestion.getAnswer()+"]"+"\r\n");
-			
-			allQuestions.add(newQuestion);
+				pluginsToShutdown.add(p); // add it here in case there are exceptions later
+				try {
+					// TODO: would be better to add these without the history wrapper to begin with, just using loadedQuestions
+					for (Question q: p.loadQuestions(props, questionElement))
+						allQuestions.add( new QuestionHistory(q));
+				} catch (Exception ex)
+				{
+					throw new IOException("Plugin failed to load questions: "+ex, ex);
+				}
+				logger.info("Loaded "+allQuestions.size()+" questions using plugin");
+				
+			} else if (!"question".equals(questionElement.getName()))
+			{
+				throw new IOException("Unknown element: "+questionElement.getName());
+			} else { // <question> element
+				
+				question++;
+				String questionText = questionElement.getChildTextNormalize("questionText");
+				
+				StringBuilder answerText = new StringBuilder();
+				Element answerTextElement = questionElement.getChild("answerText");
+				if (answerTextElement != null)
+					for (Content c: (List<Content>)answerTextElement.getContent())
+					{
+						String contentText = null;
+						if (c instanceof Text)
+							contentText = ((Text)c).getTextNormalize();
+						else if (c instanceof Element)
+							contentText = ((Element)c).getTextNormalize();
+						// otherwise ignore
+						
+						if (contentText != null)
+						{
+							//if (isAnswerRightToLeft)
+							//	answerText.insert(0, contentText);
+							//else
+								answerText.append(contentText);
+						}
+					}
+				
+				if (questionText == null || answerText.length() == 0) // probably never happens due to DTD validation
+					throw new IOException("Invalid question file - question or answer value #"+question+" is null");
+				
+				QuestionHistory newQuestion = new QuestionHistory( new Question(questionText, answerText.toString()) );
+				allQuestions.add(newQuestion);
+			}
 		}
-		//w.close();
+		
+		for (QuestionHistory q: allQuestions)
+		{
+			Question duplicateQuestion = loadedQuestions.put(q.question.getQuestion(), q.question);
+			if (duplicateQuestion != null)
+				throw new IOException("Invalid question file - question appears more than once: \""+duplicateQuestion+"\"");
+		}
 		
 		if (allQuestions.size() < 2)
 			throw new IOException("Invalid test file - the file contains less than two questions!");
@@ -206,26 +259,28 @@ public class QuestionManager
 				{
 					String questionText = historyElement.getAttributeValue("questionText");
 					String answerText = historyElement.getAttributeValue("answerText");
-					QuestionHistory newQuestion = new QuestionHistory( new Question(questionText, answerText), historyElement);
+					
+					Question existingQuestion = loadedQuestions.get(questionText);
 					
 					// ignore history if the question or answer has changed - the 
 					// question list is the only authoritative source of data
 					
-					int qIndex = allQuestions.indexOf(newQuestion);
-					if (qIndex < 0)
+					if (existingQuestion == null)
 					{
-						logger.info("Ignoring question which is no longer in the question file: \""+newQuestion.question+"\"");
+						logger.info("Ignoring question which is no longer in the question file: \""+questionText+"\"");
 						continue;
 					}
-					if (!newQuestion.question.isAnswerCorrect( allQuestions.get(qIndex).question.getAnswer(), caseSensitive ))
+					if (!existingQuestion.isAnswerCorrect(answerText, caseSensitive))
 					{
-						logger.info("Answer has changed, so ignoring history for question: \""+newQuestion.question+"\"");
+						logger.info("Answer has changed, so ignoring history for question: \""+existingQuestion+"\"");
 						continue;
 					}
 	
 					// remove existing QH object and replace with one that includes 
-					// history from file
-					allQuestions.remove(qIndex);
+					// history from this file (this relies on QH equality being based only on the questionText; it's also a bit inefficient)
+					QuestionHistory newQuestion = new QuestionHistory( existingQuestion, historyElement);
+					if (!allQuestions.remove(newQuestion))
+						throw new RuntimeException("Logic error in application - attempted to remove non-existent item: "+newQuestion);
 					allQuestions.add(newQuestion);
 				}
 			
@@ -467,8 +522,10 @@ public class QuestionManager
 	 * character of the answer. Used as part of an ongoing estimate of what 
 	 * grace period to allow for each character in the answer. 
 	 * @return
+	 * @throws IllegalArgumentException If the specified answer is not merely incorrect but actually not a permitted answer 
+	 * (this doesn't count as a wrong answer)
 	 */
-	public AnswerOutcome answerQuestion(String answer, long timeToAnswer, List<Long> characterTimes)
+	public AnswerOutcome answerQuestion(String answer, long timeToAnswer, List<Long> characterTimes) throws IllegalArgumentException
 	{
 		boolean result = currentQuestion.question.isAnswerCorrect(answer, caseSensitive);
 		

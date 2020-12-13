@@ -47,6 +47,7 @@ import org.apache.log4j.Logger;
 import com.ben.flashteacher.model.AnswerOutcome;
 import com.ben.flashteacher.model.ModelHolder;
 import com.ben.flashteacher.model.Options;
+import com.ben.flashteacher.model.QuestionManager;
 import com.ben.flashteacher.utils.AbstractResourceAction;
 
 public class QuestionWindow extends JFrame {
@@ -152,6 +153,9 @@ public class QuestionWindow extends JFrame {
 			public void windowClosed(WindowEvent e)
 			{
 				logger.info("windowClosed");
+				
+				QuestionManager.shutdownPlugins();
+				 
 				// Move to the stopped state, so that timers are stopped, etc. 
 				// and so we try to save any state
 				moveToState(States.ReadyToStart);
@@ -336,8 +340,7 @@ public class QuestionWindow extends JFrame {
 		
 		switch (newState)
 		{
-		case ReadyToStart:
-
+		case ReadyToStart:			
 			questionField.setText(Messages.getString("QuestionWindow.readyMessage")); //$NON-NLS-1$
 			answerField.setText("");
 			answerField.setEnabled(false);
@@ -524,15 +527,24 @@ public class QuestionWindow extends JFrame {
 					long timeToAnswer = answerTimer.stopTiming(characterTimes);
 					String correctAnswer = model.getQuestionManager().getCurrentAnswer();
 					
-					AnswerOutcome outcome = model.getQuestionManager().answerQuestion(answerField.getText(), timeToAnswer, characterTimes);
-					if (outcome.isCorrect())
-					{
-						// display the canonical version, which may or may not be the same (e.g. capitalization may be incorrect yet allowed in user answer)
-						answerField.setText(correctAnswer); 
-						moveToState(States.AnsweredCorrect);
+					try {
+						AnswerOutcome outcome = model.getQuestionManager().answerQuestion(answerField.getText(), timeToAnswer, characterTimes);
+						if (outcome.isCorrect())
+						{
+							// display the canonical version, which may or may not be the same (e.g. capitalization may be incorrect yet allowed in user answer)
+							answerField.setText(correctAnswer); 
+							moveToState(States.AnsweredCorrect);
+						}
+						else
+							moveToState(States.AnsweredWrong);
+					} catch (IllegalArgumentException ex) {
+						JOptionPane.showMessageDialog(
+								QuestionWindow.this, 
+								"This answer was not entered in the expected format: "+ex.getMessage(), 
+								"Invalid answer", 
+								JOptionPane.ERROR_MESSAGE);
+
 					}
-					else
-						moveToState(States.AnsweredWrong);
 					break;
 			}
 			

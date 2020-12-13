@@ -1,4 +1,4 @@
-<!ELEMENT questionList (question*)>
+<!ELEMENT questionList (question*|plugin)>
 
 <!ELEMENT question (questionText,answerText)>
 <!ELEMENT questionText (#PCDATA|em)*>
@@ -16,3 +16,11 @@
 <!ATTLIST questionList isCaseSensitive (false|true) "true">
 
 <!ATTLIST question class CDATA "">
+
+
+<!ELEMENT plugin (property*)>
+<!ATTLIST plugin class CDATA #IMPLIED>
+<!ELEMENT property (#PCDATA)>
+<!ATTLIST property name CDATA #IMPLIED>
+<!ATTLIST property value CDATA #IMPLIED>
+

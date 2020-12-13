@@ -6,7 +6,14 @@ import java.text.Normalizer.Form;
 
 import org.apache.log4j.Logger;
 
-class Question 
+/**
+ * A question and answer. 
+ * 
+ * Can be subclassed by plugins, however the question and answer strings must still be valid. 
+ * 
+ * @author Ben
+ */
+public class Question 
 {
 	static final Logger logger = Logger.getLogger(Question.class);
 	
@@ -24,7 +31,15 @@ class Question
 	}
 	
 	
-	protected boolean isAnswerCorrect(String answer, boolean caseSensitive)
+
+	/**
+	 * @param answer
+	 * @param caseSensitive
+	 * @return
+	 * @throws IllegalArgumentException If the specified answer is not merely incorrect but actually not a permitted answer 
+	 * (this doesn't count as a wrong answer)
+	 */
+	protected boolean isAnswerCorrect(String answer, boolean caseSensitive) throws IllegalArgumentException
 	{
 		/*logger.trace("isAnswerCorrect: user answer = \""+answer+"\", correct answer = \""+this.answer+"\"");
 		for (char x: answer.toCharArray())

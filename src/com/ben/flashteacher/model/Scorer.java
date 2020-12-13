@@ -56,7 +56,9 @@ class Scorer
 		
 		int knownAnswers = result.totalQuestions - result.unknownAnswers;
 		
-		result.averageTimeToAnswer = result.averageTimeToAnswer / knownAnswers;
+		if (knownAnswers > 0)
+			result.averageTimeToAnswer = result.averageTimeToAnswer / knownAnswers;
+		
 		result.averageTimePerCharacter = qm.getAverageTimePerCharacter();
 		
 		// now calculate derived values - the overall scores
