@@ -47,6 +47,7 @@ import org.apache.log4j.Logger;
 import com.ben.flashteacher.model.AnswerOutcome;
 import com.ben.flashteacher.model.ModelHolder;
 import com.ben.flashteacher.model.Options;
+import com.ben.flashteacher.model.QuestionManager;
 import com.ben.flashteacher.utils.AbstractResourceAction;
 
 public class QuestionWindow extends JFrame {
@@ -241,7 +242,7 @@ public class QuestionWindow extends JFrame {
 		contentPanePanel.getActionMap().put("handleEnterKeyPress", enterKeyPressedAction);
 		contentPanePanel.getActionMap().put("handleSpaceKeyPress", spaceKeyPressedAction);
 
-		setPreferredSize(new Dimension(650, 300));
+		setPreferredSize(new Dimension(750, 300));
 		pack();
 		setLocationRelativeTo(owner);
 		
@@ -336,6 +337,7 @@ public class QuestionWindow extends JFrame {
 		switch (newState)
 		{
 		case ReadyToStart:
+
 			questionField.setText(Messages.getString("QuestionWindow.readyMessage")); //$NON-NLS-1$
 			answerField.setText("");
 			answerField.setEnabled(false);
@@ -444,11 +446,16 @@ public class QuestionWindow extends JFrame {
 			{
 				JOptionPane.showMessageDialog(this, ioe.getMessage(), "Failed to save question history", JOptionPane.ERROR_MESSAGE);
 			}
-		
+
 		if (newState == States.ReadyToStart)
 			startStopButton.requestFocusInWindow();
 		else
 			answerField.requestFocusInWindow();
+		
+		String title = Messages.getString("QuestionWindow.title"); //$NON-NLS-1$
+		if (model.isLoaded())
+			title += model.getQuestionManager().getSessionStatus();
+		setTitle(title);
 		
 	}
 	

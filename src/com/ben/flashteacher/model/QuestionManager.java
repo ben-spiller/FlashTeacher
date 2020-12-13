@@ -20,6 +20,8 @@ import com.ben.flashteacher.utils.Utils;
  * QuestionManager is the main model class, holding the list of available questions and 
  * answers, and also information about how the user is or has performed on each question.  
  * 
+ * A new instance is created every time the user clicks the "start" button. 
+ * 
  * @author Ben
  */
 public class QuestionManager 
@@ -131,6 +133,9 @@ public class QuestionManager
 	final KnowledgeIndexHistory knowledgeIndexHistory;
 	
 	final boolean caseSensitive;
+	
+	int questionsAnswered = 0;
+	long startTimeMillis;
 
 	/**
 	 * @param questionListElement The XML element containing the list of 
@@ -142,6 +147,8 @@ public class QuestionManager
 	@SuppressWarnings("unchecked")
 	public QuestionManager(Element questionListElement, Element questionHistoryElement, Options options) throws IOException
 	{
+		startTimeMillis = System.currentTimeMillis();
+		
 		caseSensitive = options.isCaseSensitive();
 
 		int question = 0; // for error messages
@@ -484,6 +491,8 @@ public class QuestionManager
 			
 			if (timeToAnswer > getMaximumAnswerTime())
 				timeToAnswer = getMaximumAnswerTime();
+			
+			questionsAnswered++;
 		}
 		else
 			timeToAnswer = getTimePenaltyForWrongAnswers();
@@ -640,5 +649,11 @@ public class QuestionManager
 	public boolean shouldDisplayTimer()
 	{
 		return firstAttemptAtQuestion;
+	}
+	
+	public String getSessionStatus()
+	{
+		if (questionsAnswered == 0) return "";
+		return " - answered "+questionsAnswered+" in "+((System.currentTimeMillis()-startTimeMillis)/1000/60)+" mins";
 	}
 }
