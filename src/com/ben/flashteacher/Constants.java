@@ -14,12 +14,12 @@ public final class Constants
 	/**
 	 * Automatically incremented by the build
 	 */
-	private static final String BUILD_NUMBER = "61";
+	private static final String BUILD_NUMBER = "63";
 	
 	/**
 	 * The full 4-part version number
 	 */
-	public static final String VERSION_NUMBER = "1.0.4."+BUILD_NUMBER;
+	public static final String VERSION_NUMBER = "1.1."+BUILD_NUMBER;
 	
 	public static final String COPYRIGHT = "Copyright (c) 2007, 2009, 2015 Ben Spiller. All rights reserved.";
 	

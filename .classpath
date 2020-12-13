@@ -2,12 +2,16 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry excluding="FlashTeacher.exe|FlashTeacherEditor.exe|ant_classes/|backup/" including="build.xml|launch4j_config.xml|launch4j_editor_config.xml|logs/|question_files/" kind="src" path=""/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="3RD_PARTY/looks-2.1.1/looks-2.1.1.jar"/>
-	<classpathentry kind="var" path="3RD_PARTY/jdom-1.0/build/jdom.jar" sourcepath="/3RD_PARTY/jdom-1.0/src/java"/>
-	<classpathentry kind="var" path="3RD_PARTY/logging-log4j-1.2.14/dist/lib/log4j-1.2.14.jar" sourcepath="/3RD_PARTY/logging-log4j-1.2.14/src/java"/>
-	<classpathentry kind="var" path="3RD_PARTY/jfreechart-1.0.5/lib/jcommon-1.0.9.jar"/>
-	<classpathentry kind="var" path="3RD_PARTY/jfreechart-1.0.5/lib/jfreechart-1.0.5.jar" sourcepath="/3RD_PARTY/jfreechart-1.0.5/source"/>
-	<classpathentry kind="var" path="3RD_PARTY/forms-1.0.7/forms-1.0.7.jar" sourcepath="/3RD_PARTY/forms-1.0.7/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/forms-1.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/jcommon-1.0.9.jar"/>
+	<classpathentry kind="lib" path="lib/jdom.jar"/>
+	<classpathentry kind="lib" path="lib/jfreechart-1.0.5.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="lib/looks-2.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
