@@ -453,7 +453,7 @@ public class QuestionWindow extends JFrame {
 			answerField.requestFocusInWindow();
 		
 		String title = Messages.getString("QuestionWindow.title"); //$NON-NLS-1$
-		if (model.isLoaded())
+		if (model.isLoaded() && currentState != States.ReadyToStart)
 			title += model.getQuestionManager().getSessionStatus();
 		setTitle(title);
 		
