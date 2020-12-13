@@ -1,0 +1,18 @@
+<!ELEMENT questionList (question*)>
+
+<!ELEMENT question (questionText,answerText)>
+<!ELEMENT questionText (#PCDATA|em)*>
+<!ELEMENT answerText (#PCDATA|em)*>
+
+<!ELEMENT em (#PCDATA)>
+
+<!ATTLIST questionList title CDATA "Question List">
+<!ATTLIST questionList author CDATA #IMPLIED>
+<!ATTLIST questionList questionFontFamily CDATA #IMPLIED>
+<!ATTLIST questionList answerFontFamily CDATA #IMPLIED>
+<!ATTLIST questionList questionFontSize CDATA "25">
+<!ATTLIST questionList answerFontSize CDATA "40">
+<!ATTLIST questionList isAnswerRightToLeft (false|true) "false">
+<!ATTLIST questionList isCaseSensitive (false|true) "true">
+
+<!ATTLIST question class CDATA "">
