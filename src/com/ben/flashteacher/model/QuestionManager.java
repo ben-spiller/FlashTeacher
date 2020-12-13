@@ -10,6 +10,7 @@ import java.util.Random;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.jdom.Comment;
 import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Text;
@@ -259,7 +260,9 @@ public class QuestionManager
 		
 		// add Q history; first sort by time to answer so we can look inside the file manually and see which are worse 
 		Element questionHistoryListElement = new Element("questionHistoryList");
+		questionHistoryListElement.addContent(new Comment("Question history is sorted with longest time-to-answer (including penalties from wrong answers) at the top: "));
 		Collections.sort(allQuestions, QuestionHistory.AVERAGE_TIME_TO_ANSWER_COMPARATOR);
+		Collections.reverse(allQuestions);
 		for (QuestionHistory q: allQuestions)
 			questionHistoryListElement.addContent(q.saveToXMLElement());
 
