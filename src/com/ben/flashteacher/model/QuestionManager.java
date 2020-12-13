@@ -250,8 +250,9 @@ public class QuestionManager
 	{
 		calculateScores();
 		
-		// add Q history
+		// add Q history; first sort by time to answer so we can look inside the file manually and see which are worse 
 		Element questionHistoryListElement = new Element("questionHistoryList");
+		Collections.sort(allQuestions, QuestionHistory.AVERAGE_TIME_TO_ANSWER_COMPARATOR);
 		for (QuestionHistory q: allQuestions)
 			questionHistoryListElement.addContent(q.saveToXMLElement());
 
