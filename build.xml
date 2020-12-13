@@ -92,6 +92,7 @@
 			<fileset dir="${basedir}" includes="${jarName}"/>
 			<fileset dir="${basedir}" includes="*.exe"/>
 			<fileset dir="${basedir}" includes="*.txt"/>
+			<fileset dir="${basedir}" includes="*.md"/>
 		</zip>
 
 		<zip destfile="${srcZipPath}">
@@ -103,6 +104,8 @@
 
 			<fileset dir="${basedir}" includes=".classpath"/>
 			<fileset dir="${basedir}" includes=".project"/>
+			<fileset dir="${basedir}" includes="*.txt"/>
+			<fileset dir="${basedir}" includes="*.md"/>
 		</zip>
 
 
