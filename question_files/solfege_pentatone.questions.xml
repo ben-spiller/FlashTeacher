@@ -19,6 +19,7 @@
 		
 		<!-- A comma-separated list of MIDI instruments to use (substring, case insensitive) -->
 		<property name="instruments" value="piano, Steel-str.Gt, trumpet, Voice Oohs, Choir Aahs"/>
+		
 	</plugin>
 
 </questionList>

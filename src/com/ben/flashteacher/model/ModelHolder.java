@@ -2,12 +2,21 @@ package com.ben.flashteacher.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
-import org.apache.log4j.Logger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import javax.swing.JPanel;
+
+import org.apache.log4j.Logger;
+import org.jdom.Attribute;
+import org.jdom.Content;
 import org.jdom.DocType;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.Text;
 
 import com.ben.flashteacher.utils.XMLUtils;
 
@@ -38,19 +47,6 @@ public class ModelHolder
 		this.historyFile = new File(questionFile.getParentFile(), questionFile.getName().replace("."+EXTENSION_QUESTION_FILES, "")+"."+EXTENSION_HISTORY_FILES);
 	}
 	
-	/*private File getHistoryFile()
-	{
-		return historyFile;
-	}
-	private File getQuestionFile()
-	{
-		return questionFile;
-	}
-	private File getOptionsFile()
-	{
-		return optionsFile;
-	}*/
-	
 	private Date lastLoaded = null;
 	
 	/**
@@ -65,7 +61,7 @@ public class ModelHolder
 	
 	/**
 	 * Force the options only to be loaded. Throws an exception on error. If no 
-	 * exception is thrown here, the getOptions() method may be called safely 
+	 * exception is thrown here, then getOptions() method may be called safely 
 	 * without fear of exceptions. 
 	 * @throws IOException
 	 */
@@ -88,9 +84,11 @@ public class ModelHolder
 	 * Force everything to be loaded. Throws an exception on error. If no 
 	 * exception is thrown here, the other get* methods may be called safely 
 	 * without fear of exceptions. 
+	 * @param questionFieldPanel The UI for the question field in case a plugin 
+	 * wants to customize it. 
 	 * @throws IOException
 	 */
-	public void load() throws IOException
+	public void load(JPanel questionFieldPanel) throws IOException
 	{
 		logger.info(getClass().getSimpleName()+ ".load()");
 		long time1 = System.currentTimeMillis();
@@ -118,17 +116,95 @@ public class ModelHolder
 
 		long time2 = System.currentTimeMillis();
 		logger.info("Loaded XML data in "+(time2-time1)+" ms.");
+
 		
+		int question = 0; // for error messages
+		List<Question> allQuestions = new ArrayList<>();
+		for (Element questionElement: (List<Element>)questionListElement.getChildren())
+		{
+			if ("plugin".equals(questionElement.getName()))
+			{
+				Map<String, String> props = new HashMap<>();
+				if (questionElement.getTextNormalize().trim().length() != 0)
+					props.put("xmlText", questionElement.getTextNormalize().trim());
+				for (Object a: questionElement.getAttributes())
+					props.put( ((Attribute)a).getName(), ((Attribute)a).getValue());
+				for (Element prop: (List<Element>)questionElement.getChildren())
+					if ("property".equals(prop.getName()))
+						props.put(prop.getAttributeValue("name"), prop.getAttributeValue("value"));
+					else
+						throw new IOException("Unexpected element under plugin: '"+prop.getName()+"'");
+				
+				logger.info("Loading plugin with properties: "+props);
+				
+				Plugin p;
+				try
+				{
+					Class<?> c = Class.forName(props.remove("class"));
+					p = (Plugin)c.newInstance();
+				} catch (Exception ex)
+				{
+					throw new IOException("Cannot instantiate <plugin> class: "+ex, ex);
+				}
+				pluginsToShutdown.add(p); // add it here in case there are exceptions later
+				try {
+					for (Question q: p.loadQuestions(questionFile, props, questionFieldPanel))
+						allQuestions.add( q);
+				} catch (Exception ex)
+				{
+					throw new IOException("Plugin failed to load questions: "+ex, ex);
+				}
+				logger.info("Loaded "+allQuestions.size()+" questions using plugin");
+				
+			} else if (!"question".equals(questionElement.getName()))
+			{
+				throw new IOException("Unknown element: "+questionElement.getName());
+			} else { // <question> element
+				
+				question++;
+				String questionText = questionElement.getChildTextNormalize("questionText");
+				
+				StringBuilder answerText = new StringBuilder();
+				Element answerTextElement = questionElement.getChild("answerText");
+				if (answerTextElement != null)
+					for (Content c: (List<Content>)answerTextElement.getContent())
+					{
+						String contentText = null;
+						if (c instanceof Text)
+							contentText = ((Text)c).getTextNormalize();
+						else if (c instanceof Element)
+							contentText = ((Element)c).getTextNormalize();
+						// otherwise ignore
+						
+						if (contentText != null)
+						{
+							//if (isAnswerRightToLeft)
+							//	answerText.insert(0, contentText);
+							//else
+								answerText.append(contentText);
+						}
+					}
+				
+				if (questionText == null || answerText.length() == 0) // probably never happens due to DTD validation
+					throw new IOException("Invalid question file - question or answer value #"+question+" is null");
+				
+				allQuestions.add(new Question(questionText, answerText.toString()));
+			}
+		}
+
+		
+		logger.info("Loaded questions in "+(System.currentTimeMillis()-time2)+" ms.");
+
 		try
 		{
 			options = new Options(questionListElement); // this will probably be v quick so no point reporting the time
 
 			time2 = System.currentTimeMillis();
-			qm = new QuestionManager(questionListElement, historyListElement, options);
+			qm = new QuestionManager(allQuestions, historyListElement, options, questionFieldPanel);
 			
 			long time3 = System.currentTimeMillis();
 			logger.info("Loaded QuestionManager in "+(time3-time2)+" ms.");
-			logger.info("Loaded model in "+(time3-time1)+" ms.");
+			logger.info("Loaded entire model in "+(time3-time1)+" ms.");
 		} catch (NumberFormatException e)
 		{
 			logger.error("Failed to load data from files: "+e.getMessage());
@@ -139,6 +215,17 @@ public class ModelHolder
 		lastLoaded = new Date();
 		logger.debug(getClass().getSimpleName()+".load() done");
 	}
+	
+	/** This is a mechanism to allow plugins to be notified when the entire application 
+	 * shuts down, in case they have backgound threads or shared static state to dispose of. */
+	private static final List<Plugin> pluginsToShutdown = new ArrayList<>();
+	
+	public static void shutdownPlugins()
+	{
+		for (Plugin p: pluginsToShutdown)
+			p.onShutdown();
+	}
+
 	
 	public void saveHistory() throws IOException
 	{

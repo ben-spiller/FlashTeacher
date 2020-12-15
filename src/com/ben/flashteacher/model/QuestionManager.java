@@ -1,5 +1,6 @@
 package com.ben.flashteacher.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+
+import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
@@ -141,16 +144,6 @@ public class QuestionManager
 	int questionsAnswered = 0;
 	long startTimeMillis;
 
-	/** This is a mechanism to allow plugins to be notified when the entire application 
-	 * shuts down, in case they have backgound threads or shared static state to dispose of. */
-	private static final List<Plugin> pluginsToShutdown = new ArrayList<>();
-	
-	public static void shutdownPlugins()
-	{
-		for (Plugin p: pluginsToShutdown)
-			p.onShutdown();
-	}
-	
 	/**
 	 * @param questionListElement The XML element containing the list of 
 	 * question data the user has selected.
@@ -159,98 +152,21 @@ public class QuestionManager
 	 * @throws IOException If the input file is invalid
 	 */
 	@SuppressWarnings("unchecked")
-	public QuestionManager(Element questionListElement, Element questionHistoryElement, Options options) throws IOException
+	public QuestionManager(List<Question> questions, Element questionHistoryElement, Options options, JPanel questionFieldPanel) throws IOException
 	{
 		startTimeMillis = System.currentTimeMillis();
-		
+	
 		caseSensitive = options.isCaseSensitive();
 
 		Map<String, Question> loadedQuestions = new HashMap<>(); // keyed by question string 
-		
-		int question = 0; // for error messages
-		for (Element questionElement: (List<Element>)questionListElement.getChildren())
+		for (Question q: questions)
 		{
-			if ("plugin".equals(questionElement.getName()))
-			{
-				Map<String, String> props = new HashMap<>();
-				for (Object a: questionElement.getAttributes())
-					props.put( ((Attribute)a).getName(), ((Attribute)a).getValue());
-				for (Element prop: (List<Element>)questionElement.getChildren())
-					if ("property".equals(prop.getName()))
-						props.put(prop.getAttributeValue("name"), prop.getAttributeValue("value"));
-					else
-						throw new IOException("Unexpected element under plugin: '"+prop.getName()+"'");
-				
-				logger.info("Loading plugin with properties: "+props);
-				
-				Plugin p;
-				try
-				{
-					Class<?> c = Class.forName(props.remove("class"));
-					p = (Plugin)c.newInstance();
-				} catch (Exception ex)
-				{
-					throw new IOException("Cannot instantiate <plugin> class: "+ex, ex);
-				}
-				pluginsToShutdown.add(p); // add it here in case there are exceptions later
-				try {
-					// TODO: would be better to add these without the history wrapper to begin with, just using loadedQuestions
-					for (Question q: p.loadQuestions(props, questionElement))
-						allQuestions.add( new QuestionHistory(q));
-				} catch (Exception ex)
-				{
-					throw new IOException("Plugin failed to load questions: "+ex, ex);
-				}
-				logger.info("Loaded "+allQuestions.size()+" questions using plugin");
-				
-			} else if (!"question".equals(questionElement.getName()))
-			{
-				throw new IOException("Unknown element: "+questionElement.getName());
-			} else { // <question> element
-				
-				question++;
-				String questionText = questionElement.getChildTextNormalize("questionText");
-				
-				StringBuilder answerText = new StringBuilder();
-				Element answerTextElement = questionElement.getChild("answerText");
-				if (answerTextElement != null)
-					for (Content c: (List<Content>)answerTextElement.getContent())
-					{
-						String contentText = null;
-						if (c instanceof Text)
-							contentText = ((Text)c).getTextNormalize();
-						else if (c instanceof Element)
-							contentText = ((Element)c).getTextNormalize();
-						// otherwise ignore
-						
-						if (contentText != null)
-						{
-							//if (isAnswerRightToLeft)
-							//	answerText.insert(0, contentText);
-							//else
-								answerText.append(contentText);
-						}
-					}
-				
-				if (questionText == null || answerText.length() == 0) // probably never happens due to DTD validation
-					throw new IOException("Invalid question file - question or answer value #"+question+" is null");
-				
-				QuestionHistory newQuestion = new QuestionHistory( new Question(questionText, answerText.toString()) );
-				allQuestions.add(newQuestion);
-			}
-		}
-		
-		for (QuestionHistory q: allQuestions)
-		{
-			Question duplicateQuestion = loadedQuestions.put(q.question.getQuestion(), q.question);
+			Question duplicateQuestion = loadedQuestions.put(q.getQuestion(), q);
 			if (duplicateQuestion != null)
 				throw new IOException("Invalid question file - question appears more than once: \""+duplicateQuestion+"\"");
 		}
 		
-		if (allQuestions.size() < 2)
-			throw new IOException("Invalid test file - the file contains less than two questions!");
-		
-		// Then, load history file
+		// Then, load history file and start populating allQuestions
 		if (questionHistoryElement != null)
 		{
 			Element historyListElement = questionHistoryElement.getChild("questionHistoryList");
@@ -279,8 +195,7 @@ public class QuestionManager
 					// remove existing QH object and replace with one that includes 
 					// history from this file (this relies on QH equality being based only on the questionText; it's also a bit inefficient)
 					QuestionHistory newQuestion = new QuestionHistory( existingQuestion, historyElement);
-					if (!allQuestions.remove(newQuestion))
-						throw new RuntimeException("Logic error in application - attempted to remove non-existent item: "+newQuestion);
+					loadedQuestions.remove(questionText);
 					allQuestions.add(newQuestion);
 				}
 			
@@ -292,6 +207,16 @@ public class QuestionManager
 			previousQuestionSetScores = new QuestionSetScores();
 			knowledgeIndexHistory = new KnowledgeIndexHistory();
 		}
+		
+		// finally add new questions that aren't in the history yet
+		for (Question q: loadedQuestions.values()) {
+			logger.info("Adding new question: "+q);
+			allQuestions.add(new QuestionHistory(q));
+		}
+		
+		if (allQuestions.size() < 2)
+			throw new IOException("Invalid question file - the file contains less than two questions!");
+
 		
 		averageTimePerCharacter = previousQuestionSetScores.averageTimePerCharacter;
 		

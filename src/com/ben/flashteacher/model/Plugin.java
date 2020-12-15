@@ -1,9 +1,10 @@
 package com.ben.flashteacher.model;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
-import org.jdom.Element;
+import javax.swing.JPanel;
 
 /**
  * This interface can be implemented to allow dynamic/programmatic creation 
@@ -26,12 +27,18 @@ public interface Plugin
 	 * A new instance of the plugin class is constructed every time the question 
 	 * file is reloaded. 
 	 * 
-	 * @param e The DOM element containing the "plugin"
+	 * @param questionFile The full path of the question file (in case you 
+	 * want to load some other files relative to that location).
 	 * @param properties Any plugin configuration, typically specified using 
-	 * XML attributes on the plugin element. 
+	 * XML attributes on the plugin element. If any XML text is present in the 
+	 * plugin node, it is available as an item with key xmlText. 
+	 * @param questionFieldPanel The panel containing the question field. 
+	 * Plugins can customize this by calling removeAll() to hide the usual 
+	 * question text field and add additional controls (nothing that the parent 
+	 * panel is configured as a GridBagLayout)
 	 * @return The list of questions. Plugin must ensure these are unique. 
 	 */
-	public Collection<Question> loadQuestions(Map<String, String> properties, Element e) throws Exception;
+	public Collection<Question> loadQuestions(File questionFile, Map<String, String> properties, JPanel questionFieldPanel) throws Exception;
 	
 	/** Called during application shutdown to free any static OS resources (e.g. MIDI) 
 	 * and/or background threads allocated by this plugin. */

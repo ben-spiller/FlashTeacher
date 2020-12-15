@@ -66,6 +66,7 @@ public class QuestionWindow extends JFrame {
 	
 	protected ModelHolder model;
 	
+	final JPanel questionFieldPanel;
 	final JTextPane questionField;
 	final JTextField answerField;
 	
@@ -154,7 +155,7 @@ public class QuestionWindow extends JFrame {
 			{
 				logger.info("windowClosed");
 				
-				QuestionManager.shutdownPlugins();
+				ModelHolder.shutdownPlugins();
 				 
 				// Move to the stopped state, so that timers are stopped, etc. 
 				// and so we try to save any state
@@ -201,11 +202,11 @@ public class QuestionWindow extends JFrame {
 		
 		setContentPane(contentPanePanel);
 		
-		JPanel questionFieldPanel = new JPanel(new GridBagLayout());
+		questionFieldPanel = new JPanel(new GridBagLayout());
 		questionFieldPanel.setBackground(questionField.getBackground());
 		questionFieldPanel.setBorder(BorderFactory.createLoweredBevelBorder());
 		questionFieldPanel.add(questionField, new GridBagConstraints(
-				0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5,20,5,20), 0, 0
+				0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5,20,5,20), 0, 100
 		));
 		
 		contentPanePanel.add(questionFieldPanel, new GridBagConstraints(
@@ -222,8 +223,8 @@ public class QuestionWindow extends JFrame {
 		));
 		
 
-		contentPanePanel.add(statusLabel, new GridBagConstraints(
-				2, 2, 1, 1, 1.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0
+		contentPanePanel.add(statusLabel, new GridBagConstraints( // set x pad to ensure it has room to grow
+				2, 2, 1, 1, 1.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 550, 0
 		));
 
 		contentPanePanel.add(statusProgressBar, new GridBagConstraints(
@@ -246,7 +247,6 @@ public class QuestionWindow extends JFrame {
 		contentPanePanel.getActionMap().put("handleEnterKeyPress", enterKeyPressedAction);
 		contentPanePanel.getActionMap().put("handleSpaceKeyPress", spaceKeyPressedAction);
 
-		setPreferredSize(new Dimension(750, 300));
 		pack();
 		setLocationRelativeTo(owner);
 		
@@ -313,6 +313,9 @@ public class QuestionWindow extends JFrame {
 	    StyleConstants.setFontSize(questionAttributes, options.getQuestionFontSize());
 	    questionField.setParagraphAttributes( questionAttributes, false);
 	    
+	    // This is really just so that plugins can look up the default font info if they want to
+	    questionFieldPanel.setFont(new Font(options.getQuestionFontFamily(), 0, options.getQuestionFontSize()));
+	    
 	    Font answerFont = new Font(options.getAnswerFontFamily(), 0, options.getAnswerFontSize());
 	    answerField.setFont(answerFont);
 	    if (options.isAnswerRightToLeft())
@@ -342,6 +345,11 @@ public class QuestionWindow extends JFrame {
 		{
 		case ReadyToStart:			
 			questionField.setText(Messages.getString("QuestionWindow.readyMessage")); //$NON-NLS-1$
+			if (questionField.getParent() == null)
+				questionFieldPanel.removeAll();
+				questionFieldPanel.add(questionField, new GridBagConstraints(
+						0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5,20,5,20), 0, 0
+				));
 			answerField.setText("");
 			answerField.setEnabled(false);
 			answerField.setForeground(ANSWER_COLOR_STANDARD);
@@ -474,9 +482,12 @@ public class QuestionWindow extends JFrame {
 				return;
 			}
 			try {
-				model.load();
+				model.load(questionFieldPanel);
+				
+				QuestionWindow.this.pack();
 			} catch (IOException ioe)
 			{
+				logger.error("Failed to load questions: ", ioe);
 				JOptionPane.showMessageDialog(QuestionWindow.this, ioe.getMessage(), "Invalid File Format", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -610,9 +621,10 @@ public class QuestionWindow extends JFrame {
 			if (!model.isLoaded())
 			{
 				try {
-					model.load();
+					model.load(questionFieldPanel);
 				} catch (IOException ioe)
 				{
+					logger.error("Failed to load questions: ", ioe);
 					JOptionPane.showMessageDialog(QuestionWindow.this, ioe.getMessage(), "Invalid File Format", JOptionPane.ERROR_MESSAGE);
 					return;
 				}

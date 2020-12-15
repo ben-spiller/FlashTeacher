@@ -18,7 +18,7 @@
 <!ATTLIST question class CDATA "">
 
 
-<!ELEMENT plugin (property*)>
+<!ELEMENT plugin (#PCDATA|property)*>
 <!ATTLIST plugin class CDATA #IMPLIED>
 <!ELEMENT property (#PCDATA)>
 <!ATTLIST property name CDATA #IMPLIED>

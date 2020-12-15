@@ -1,16 +1,33 @@
 package com.ben.flashteacher.plugins;
 
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.font.TextAttribute;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.sound.midi.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
+import javax.swing.text.StyleConstants;
 
 import org.apache.log4j.Logger;
-import org.jdom.Element;
 
 import com.ben.flashteacher.model.Plugin;
 import com.ben.flashteacher.model.Question;
@@ -26,8 +43,8 @@ public class SolfegeDictationPlugin implements Plugin
 {
 	private static final Logger logger = Logger.getLogger(SolfegeDictationPlugin.class);
 
-	long timeBetweenNotesMillisMin;
-	long timeBetweenNotesMillisMax;
+	int timeBetweenNotesMillisMin;
+	int timeBetweenNotesMillisMax;
 
 	int doMin;
 	int doMax;
@@ -35,7 +52,9 @@ public class SolfegeDictationPlugin implements Plugin
 	/** The instrument patches selected in the question file. If more then one, a random one is picked for each question. */
 	Patch[] midiPatches;
 	
+	Patch currentPatch;
 	
+	/*
 	enum Solfege
 	{
 
@@ -49,12 +68,12 @@ public class SolfegeDictationPlugin implements Plugin
 
 		public final int semitonesAboveDo;
 		Solfege(int semitonesAboveDo) { this.semitonesAboveDo=semitonesAboveDo; }
-	}
-
-	public Collection<Question> loadQuestions(Map<String, String> properties, Element e) throws Exception
+	}*/
+	
+	public Collection<Question> loadQuestions(File questionFile, Map<String, String> properties, JPanel questionFieldPanel) throws Exception
 	{
 		initMIDI();
-		timeBetweenNotesMillisMin = timeBetweenNotesMillisMax = Long.parseLong(properties.remove("timeBetweenNotesMillis"));
+		timeBetweenNotesMillisMin = timeBetweenNotesMillisMax = Integer.parseInt(properties.remove("timeBetweenNotesMillis"));
 
 		doMin = doMax = Integer.parseInt(properties.remove("do")); // TODO: randomly pick a starting note within the range
 
@@ -75,26 +94,12 @@ public class SolfegeDictationPlugin implements Plugin
 				}
 			if (midiPatches[p] == null) throw new IllegalArgumentException("Cannot find any instrument name on this machine containing: \""+instruments[p]+"\"");
 		}
+		currentPatch = midiPatches[0]; // TODO: select randomly
 			
-        new MidiSequenceBuilder(midiPatches[0])
+        new MidiSequenceBuilder(currentPatch)
     		.addNote(60, 1000).addNote(60+12, 250).addNote(60+24, 750).play();
 
-		// question = numbers, answer = words, and we normalize answer when checking
-		String[] solfegeValues = properties.remove("solfegeValues").toLowerCase().split(" ");
-		for (int i = 0; i < solfegeValues.length; i++)
-			switch(solfegeValues[i])
-			{
-			case "t": solfegeValues[i] = "ti"; break;
-			case "l": solfegeValues[i] = "la"; break;
-			case "s": solfegeValues[i] = "so"; break;
-			case "f": solfegeValues[i] = "fa"; break;
-			case "m": solfegeValues[i] = "me"; break;
-			case "r": solfegeValues[i] = "re"; break;
-			case "d": solfegeValues[i] = "do"; break;
-			case "ti": case "la": case "so": case "fa": case "me": case "re": case "do": break;
-			default:
-				throw new IllegalArgumentException("Expecting a solfege symbol such as 'do' but got: '"+solfegeValues[i]+"'");
-			}
+		String[] solfegeValues = normalizeSolfegeString(properties.remove("solfegeValues")).split(" ");
 		
 		/*
 		int i = 0;
@@ -125,7 +130,114 @@ public class SolfegeDictationPlugin implements Plugin
 		List<Question> qs = new ArrayList<>();
 		generateQuestionsFor(new String[0], solfegeValues, notesPerQuestion, qs);
 		
+		initQuestionUI(new File(questionFile.getParentFile(), "solfege_hand_signs"), questionFieldPanel, solfegeValues);
+
 		return qs;
+	}
+	
+	/**
+	 * Initialize the UI by replacing the normal question textual display with 
+	 * controls for playing individual solfege notes, in case the user wants to 
+	 * remind themselves what "do" sounds like or try something out. 
+	 * @param questionFieldPanel
+	 * @param solfegeValues
+	 */
+	void initQuestionUI(File handSignsDir, JPanel questionFieldPanel, String[] solfegeValues)
+	{
+		questionFieldPanel.removeAll();
+		
+		// TODO: customize based on solfegeValues
+		
+		int y = 100;
+		
+
+		Insets insets = new Insets(5,20,5,5);
+		// TODO: put correct key in
+		JLabel l = new JLabel("<html><br>Listen to this sequence, and enter the solfege symbols. \"Do\" is C4. <br>"
+				+ "(e.g. \""+String.join(" ", solfegeValues)+"\"; the shorthand \"drm\" is equivalent to \"do re me\")</html>");
+		questionFieldPanel.add(l, new GridBagConstraints(
+				1, y++, 1, 1, 1.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.HORIZONTAL, insets, 0, 0
+		));
+		
+		JButton playbutton = new JButton("Play again");
+		playbutton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+			}
+		});
+		questionFieldPanel.add(playbutton, new GridBagConstraints(
+				2, y-1, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHEAST, 0, insets, 0, 0
+		));
+
+		y = 0;
+		
+		// we want to display all solfege values from low->high, not merely the ones that are included as possible answers 
+		// (to avoid confusing user's mental model)
+		List<String> labels = new ArrayList<>();
+		
+		// TODO: will need some extra logic here to cope with additional do/re/me items. TODO: also we should make sure that solfegeValues doesn't include duplicates
+		List<String> allSolfege = Arrays.asList("do", "re", "me", "fa", "so", "la", "ti");
+		int solfegeIndex = allSolfege.indexOf(solfegeValues[0]);
+		while (!allSolfege.get(solfegeIndex).equals(solfegeValues[solfegeValues.length-1]))
+		{
+			labels.add(allSolfege.get(solfegeIndex));
+			solfegeIndex++;
+			if (solfegeIndex == allSolfege.size()-1) solfegeIndex = 0;
+		}
+		Collections.reverse(labels);
+		
+		for (final String s : labels)
+		{
+			l = new JLabel(s);
+			l.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			l.setHorizontalAlignment(SwingConstants.CENTER);
+			l.setFont(questionFieldPanel.getFont());
+			if (s.startsWith("do"))
+				l.setFont(l.getFont().deriveFont(Font.BOLD).deriveFont(Collections.singletonMap(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON)));
+			
+			l.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e)
+				{
+					try {
+						// TODO: play correct note
+				        new MidiSequenceBuilder(currentPatch)
+				        	.addNote(60, timeBetweenNotesMillisMax).play();
+					} catch (Exception ex)
+					{
+						logger.error("Failed to play MIDI: ", ex);
+						throw new RuntimeException(ex);
+					}
+				}
+			});
+			questionFieldPanel.add(l, new GridBagConstraints(
+					1, y++, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0
+			));
+		}
+	}
+	
+	String normalizeSolfegeString(String s)
+	{
+		s = s.toLowerCase();
+		// TODO: cope with optional lack of spaces
+		String[] solfegeValues = s.split(" ");
+		for (int i = 0; i < solfegeValues.length; i++)
+			switch(solfegeValues[i])
+			{
+			case "t": solfegeValues[i] = "ti"; break;
+			case "l": solfegeValues[i] = "la"; break;
+			case "s": solfegeValues[i] = "so"; break;
+			case "f": solfegeValues[i] = "fa"; break;
+			case "m": solfegeValues[i] = "me"; break;
+			case "r": solfegeValues[i] = "re"; break;
+			case "d": solfegeValues[i] = "do"; break;
+			case "ti": case "la": case "so": case "fa": case "me": case "re": case "do": break;
+			default:
+				throw new IllegalArgumentException("Expecting a solfege symbol such as 'do' but got: '"+solfegeValues[i]+"'");
+			}
+		return String.join(" ", solfegeValues);
+
 	}
 	
 	/**
@@ -155,6 +267,7 @@ public class SolfegeDictationPlugin implements Plugin
 	@Override
 	public void onShutdown()
 	{
+		if (midiSynth == null) return;
 		logger.info("Shutting down MIDI");
 		midiSynth.close();
 		midiSynth = null;
