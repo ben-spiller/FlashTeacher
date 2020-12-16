@@ -281,7 +281,7 @@ public class EditWindow extends JFrame {
 			}
 			
 			SortedSet<String> classes = new TreeSet<String>();
-			for (Object s: classList.getSelectedValues())
+			for (Object s: classList.getSelectedValuesList())
 				classes.add((String)s);
 			
 			// Generate the XML

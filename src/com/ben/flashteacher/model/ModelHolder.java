@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JPanel;
 
@@ -88,6 +90,7 @@ public class ModelHolder
 	 * wants to customize it. 
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unchecked")
 	public void load(JPanel questionFieldPanel) throws IOException
 	{
 		logger.info(getClass().getSimpleName()+ ".load()");
@@ -117,6 +120,9 @@ public class ModelHolder
 		long time2 = System.currentTimeMillis();
 		logger.info("Loaded XML data in "+(time2-time1)+" ms.");
 
+		// Stash the plugin class names we had before, as to keep things simple we 
+		// don't support changing the plugin class names each time the question file is loaded
+		Set<String> pluginClasses = new HashSet<>(plugins.keySet());
 		
 		int question = 0; // for error messages
 		List<Question> allQuestions = new ArrayList<>();
@@ -195,6 +201,9 @@ public class ModelHolder
 			}
 		}
 
+
+		if (!pluginClasses.isEmpty() && !plugins.keySet().equals(pluginClasses))
+			throw new RuntimeException("The question file was changed to have different plugin classes; please restart the application after making such changes");
 		
 		logger.info("Loaded questions in "+(System.currentTimeMillis()-time2)+" ms.");
 
@@ -227,6 +236,12 @@ public class ModelHolder
 	{
 		for (Plugin p: plugins.values())
 			p.close();
+	}
+
+	public void onQuestionChanged()
+	{
+		for (Plugin p: plugins.values())
+			p.onQuestionChanged(getQuestionManager().getCurrentQuestion());
 	}
 
 	

@@ -44,6 +44,15 @@ public interface Plugin
 	 */
 	public Collection<Question> loadQuestions(File questionFile, Map<String, String> properties, JPanel questionFieldPanel) throws Exception;
 	
+	/** 
+	 * Notifies the plugin that a new question is being displayed. 
+	 * This allows plugins to make a sound or update the questionFieldPanel 
+	 * if they use a non-textual way of presenting questions. 
+	 * 
+	 * @param question
+	 */
+	default public void onQuestionChanged(Question question) {}
+	
 	/** Called during application shutdown to free any static OS resources (e.g. MIDI) 
 	 * and/or background threads allocated by this plugin. */
 	default public void close() {}

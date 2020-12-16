@@ -1,6 +1,5 @@
 package com.ben.flashteacher.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,11 +14,8 @@ import java.util.Set;
 import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
-import org.jdom.Attribute;
 import org.jdom.Comment;
-import org.jdom.Content;
 import org.jdom.Element;
-import org.jdom.Text;
 
 import com.ben.flashteacher.utils.Utils;
 
@@ -255,8 +251,8 @@ public class QuestionManager
 		return historyRootElement;
 	}
 	
-	public String getCurrentQuestion() {
-		return currentQuestion.question.getQuestion();
+	public Question getCurrentQuestion() {
+		return currentQuestion.question;
 	}
 	
 	public String getCurrentAnswer() {

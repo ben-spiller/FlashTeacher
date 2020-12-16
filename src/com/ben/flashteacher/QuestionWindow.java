@@ -361,8 +361,6 @@ public class QuestionWindow extends JFrame {
 			break;
 			
 		case Answering:
-			questionField.setText(model.getQuestionManager().getCurrentQuestion());
-			
 			// leave the old text in place if they answered wrongly
 			if (oldState != States.AnsweredWrong)
 			{
@@ -385,6 +383,11 @@ public class QuestionWindow extends JFrame {
 			passButton.setEnabled(true);
 			aboutAction.setEnabled(false);
 			statusProgressBar.setVisible(false);
+
+			if (!questionField.getText().equals(model.getQuestionManager().getCurrentQuestion().getQuestion())) {
+				questionField.setText(model.getQuestionManager().getCurrentQuestion().getQuestion());
+				model.onQuestionChanged();
+			}
 
 			answerTimer.startTiming();
 			updateTimeTimer.start();

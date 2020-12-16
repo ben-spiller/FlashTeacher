@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.sound.midi.*;
@@ -23,6 +24,8 @@ import org.apache.log4j.Logger;
 
 import com.ben.flashteacher.model.Plugin;
 import com.ben.flashteacher.model.Question;
+
+// TODO: midi can take forever to initialize, so display progress if it does
 
 /**
  * A FlashTeacher plugin that asks questions by playing some notes (using MIDI) 
@@ -49,6 +52,8 @@ public class SolfegeDictationPlugin implements Plugin
 	/** The pitch used for "do" in this session, where 60 = C4. */
 	int currentDo;
 	
+	Random random = new Random();
+	
 	public Collection<Question> loadQuestions(File questionFile, Map<String, String> properties, JPanel questionFieldPanel) throws Exception
 	{
 		initMIDI();
@@ -74,11 +79,8 @@ public class SolfegeDictationPlugin implements Plugin
 				}
 			if (midiPatches[p] == null) throw new IllegalArgumentException("Cannot find any instrument name on this machine containing: \""+instruments[p]+"\"");
 		}
-		currentPatch = midiPatches[0]; // TODO: select randomly
+		currentPatch = midiPatches[0]; // TODO: select randomly, per question
 			
-        new MidiSequenceBuilder(currentPatch)
-    		.addNote(60, 1000).addNote(60+12, 250).addNote(60+24, 750).play();
-
 		String[] solfegeValues = normalizeSolfegeString(properties.remove("solfegeValues")).split(" ");
 		
 		/*
@@ -128,14 +130,10 @@ public class SolfegeDictationPlugin implements Plugin
 	{
 		questionFieldPanel.removeAll();
 		
-		// TODO: customize based on solfegeValues
-		
 		int y = 100;
 		
-
 		Insets insets = new Insets(5,20,5,5);
-		// TODO: put correct key in
-		JLabel l = new JLabel("<html><br>Listen to this sequence, and enter the solfege symbols. \"Do\" is C4. <br>"
+		JLabel l = new JLabel("<html><br>Listen to this sequence, and enter the solfege symbols. \"Do\" is "+midiNoteToDisplayName(currentDo)+". <br>"
 				+ "(e.g. \""+String.join(" ", solfegeValues)+"\"; the shorthand \"drm\" is equivalent to \"do re me\")</html>");
 		questionFieldPanel.add(l, new GridBagConstraints(
 				1, y++, 1, 1, 1.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.HORIZONTAL, insets, 0, 0
@@ -146,6 +144,7 @@ public class SolfegeDictationPlugin implements Plugin
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				currentQuestionMidiSequence.play();
 			}
 		});
 		questionFieldPanel.add(playbutton, new GridBagConstraints(
@@ -212,6 +211,30 @@ public class SolfegeDictationPlugin implements Plugin
 		}
 	}
 	
+	/** Returns a random integer within the specified range inclusive */
+	private int randomInt(int from, int to)
+	{
+		return random.nextInt(1+from-to)+from;
+	}
+	
+	MidiSequenceBuilder currentQuestionMidiSequence;
+	@Override
+	public void onQuestionChanged(Question question)
+	{
+		// TODO: pick a patch at random
+		try {
+			currentQuestionMidiSequence = new MidiSequenceBuilder(currentPatch);
+			// TODO: first question
+			
+			for (String solfege: question.getQuestion().split(" "))
+				currentQuestionMidiSequence.addNote(currentDo+solfegeToSemitonesAboveDo(solfege), randomInt(timeBetweenNotesMillisMin, timeBetweenNotesMillisMin));
+			currentQuestionMidiSequence.play();
+		} catch (Exception ex)
+		{
+			throw new RuntimeException(ex);
+		}
+	}
+	
 	String normalizeSolfegeString(String s)
 	{
 		s = s.toLowerCase();
@@ -265,11 +288,18 @@ public class SolfegeDictationPlugin implements Plugin
 		}
 		return semitones;
 	}
+	
+	String midiNoteToDisplayName(int note)
+	{
+		// TODO: make this work
+		return "C4";
+	}
 
 	@Override
 	public void close()
 	{
 		if (midiSynth == null) return;
+		
 		logger.info("Shutting down MIDI");
 		midiSynth.close();
 		midiSynth = null;
@@ -370,6 +400,7 @@ public class SolfegeDictationPlugin implements Plugin
     	
     	MidiSequenceBuilder addNote(int note, int noteMillis) throws Exception
     	{
+    		logger.info("MIDI sequence: adding note "+note+" with duration "+noteMillis+" ms to "+sequence);
     	    int velocity = 127; // loudest
    		    track.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, note, velocity), lastTickMillis));
    		    lastTickMillis += noteMillis;
@@ -384,10 +415,17 @@ public class SolfegeDictationPlugin implements Plugin
     		return this;
     	}
     	/** Asynchronously play this sequence. Any currently playing sequence is implicitly stopped first. */
-    	void play() throws Exception
+    	void play()
     	{
-    	    sequencer.setSequence(sequence);
-    	    sequencer.start();
+    		try {
+	    	    sequencer.setSequence((Sequence)null);
+	    	    sequencer.setSequence(sequence);
+	    	    sequencer.start();
+    		} catch (Exception ex)
+    		{
+    			logger.error("Cannot play midi sequence: ", ex);
+    			throw new RuntimeException(ex);
+    		}
     	}
 
     }
@@ -398,19 +436,25 @@ public class SolfegeDictationPlugin implements Plugin
 
 		long startTime = System.currentTimeMillis();
 
-		logger.debug("Loading MIDI synthesizer");
-		// Gathering the instruments list takes a while; then initalizing the sequencer, even longer
-		midiSynth = MidiSystem.getSynthesizer();
-		midiSynth.open();
-		Instrument[] instr = midiSynth.getDefaultSoundbank().getInstruments();
-		// NB: if we want to support other banks we need to use multiple ShortMessage.CONTROL messages to do it; probably not worth the hassle
-		logger.info(instr.length+" MIDI instruments are available in bank 0: "+
-				Arrays.asList(instr).stream().filter(i -> i.getPatch().getBank()==0) .map(i -> i.getName().trim()).collect(Collectors.joining(", ")));
-		
 		logger.debug("Loading MIDI sequencer");
         sequencer = MidiSystem.getSequencer();
         sequencer.setTempoInBPM(60.0f); // 1 beat per second
         sequencer.open();
-        logger.info("Loaded MIDI system in "+(System.currentTimeMillis()-startTime)+" ms");
+        logger.info("Loaded MIDI sequencer in "+(System.currentTimeMillis()-startTime)+" ms");
+
+        startTime = System.currentTimeMillis();
+		logger.debug("Loading MIDI synthesizer");
+		// Gathering the instruments list takes a while; then initalizing the sequencer, even longer
+		midiSynth = MidiSystem.getSynthesizer();
+		midiSynth.open();
+        logger.info("Loaded MIDI synthesizer in "+(System.currentTimeMillis()-startTime)+" ms");
+
+        startTime = System.currentTimeMillis();
+        Instrument[] instr = midiSynth.getDefaultSoundbank().getInstruments();
+		// NB: if we want to support other banks we need to use multiple ShortMessage.CONTROL messages to do it; probably not worth the hassle
+		logger.info(instr.length+" MIDI instruments are available in bank 0: "+
+				Arrays.asList(instr).stream().filter(i -> i.getPatch().getBank()==0) .map(i -> i.getName().trim()).collect(Collectors.joining(", ")));
+        logger.info("Loaded MIDI instruments in "+(System.currentTimeMillis()-startTime)+" ms");
+		
 	}
 }
