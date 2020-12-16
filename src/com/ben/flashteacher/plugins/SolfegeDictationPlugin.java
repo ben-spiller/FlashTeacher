@@ -152,10 +152,6 @@ public class SolfegeDictationPlugin implements Plugin
 
 		y = 0;
 		
-		// we want to display all solfege values from low->high, not merely the ones that are included as possible answers 
-		// (to avoid confusing user's mental model)
-		List<String> labels = new ArrayList<>();
-		
 		// TODO: will need some extra logic here to cope with additional do/re/me octaves. TODO: also we should make sure that solfegeValues doesn't include duplicates
 		List<String> allSolfege = Arrays.asList("do", "re", "me", "fa", "so", "la", "ti");
 		if (solfegeIcons == null) // load on first use; save in a static to avoid having to dispose them
@@ -168,10 +164,19 @@ public class SolfegeDictationPlugin implements Plugin
 			}
 		}
 		
+		// we want to display all solfege values from low->high, not merely the ones that are included as possible answers 
+		// (to avoid confusing user's mental model by having gaps)
+		List<String> labels = new ArrayList<>();
 		int solfegeIndex = allSolfege.indexOf(solfegeValues[0]);
-		while (!allSolfege.get(solfegeIndex).equals(solfegeValues[solfegeValues.length-1]))
+		String finalDisplayedSolfege = solfegeValues[solfegeValues.length-1];
+		if (allSolfege.indexOf(finalDisplayedSolfege) < 0) throw new RuntimeException("Assertion failure - cannot find '"+finalDisplayedSolfege+"'"); // to avoid infinite looping
+		while (true)
 		{
 			labels.add(allSolfege.get(solfegeIndex));
+			
+			if (allSolfege.get(solfegeIndex).equals(finalDisplayedSolfege))
+				break;
+			
 			solfegeIndex++;
 			if (solfegeIndex == allSolfege.size()-1) solfegeIndex = 0;
 		}
@@ -414,8 +419,8 @@ public class SolfegeDictationPlugin implements Plugin
     	{
     		try {
 	    	    sequencer.setSequence(sequence);
-	            sequencer.setTempoInBPM(60.0f); // 1 beat per second
 				sequencer.setTickPosition(0);
+	            sequencer.setTempoInBPM(60.0f); // 1 beat per second
 	    	    sequencer.start();
     		} catch (Exception ex)
     		{
