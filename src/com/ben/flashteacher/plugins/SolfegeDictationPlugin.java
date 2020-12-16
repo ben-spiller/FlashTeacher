@@ -52,6 +52,9 @@ public class SolfegeDictationPlugin implements Plugin
 	
 	Random random = new Random();
 	
+	/** True if this is the first question since this set of questions was loaded/started. */
+	boolean isFirstQuestion;
+	
 	public Collection<Question> loadQuestions(File questionFile, Map<String, String> properties, JPanel questionFieldPanel) throws Exception
 	{
 		initMIDI();
@@ -59,6 +62,7 @@ public class SolfegeDictationPlugin implements Plugin
 
 		doMin = doMax = Integer.parseInt(properties.remove("do")); // TODO: randomly pick a starting note within the range
 		currentDo = doMin;
+		isFirstQuestion = true;
 
 		String[] instruments = properties.remove("instruments").toLowerCase().split(",");
 		if (instruments.length==0) instruments = new String[] {"Piano"};
@@ -78,31 +82,9 @@ public class SolfegeDictationPlugin implements Plugin
 			if (midiPatches[p] == null) throw new IllegalArgumentException("Cannot find any instrument name on this machine containing: \""+instruments[p]+"\"");
 		}
 		logger.debug("Loaded instruments in "+(System.currentTimeMillis()-startTime)+" ms");
-		currentPatch = midiPatches[0]; // TODO: select randomly, per question
 			
 		String[] solfegeValues = normalizeSolfegeString(properties.remove("solfegeValues")).split(" ");
 		
-		/*
-		int i = 0;
-		for (String s: solfegeValues)
-		{
-			int semitones = 0;
-			switch(s)
-			{
-			case "t": case "ti": semitones += 2;
-			case "l": case "la": semitones += 2;
-			case "s": case "so": semitones += 2;
-			case "f": case "fa": semitones += 1;
-			case "m": case "me": semitones += 2;
-			case "r": case "re": semitones += 2;
-			case "d": case "do": break;
-			default:
-				throw new IllegalArgumentException("Expecting a solfege symbol such as 'do' but got: '"+s+"'");
-			}
-			semitonesFromDo[i++] = semitones;
-		}
-		*/
-			
 		int notesPerQuestion = Integer.parseInt(properties.remove("notesPerQuestion"));
 
 		if (!properties.isEmpty())
@@ -116,7 +98,7 @@ public class SolfegeDictationPlugin implements Plugin
 		return qs;
 	}
 	
-	Map<String, Icon> solfegeIcons = null;
+	protected Map<String, Icon> solfegeIcons = null;
 	
 	/**
 	 * Initialize the UI by replacing the normal question textual display with 
@@ -125,7 +107,7 @@ public class SolfegeDictationPlugin implements Plugin
 	 * @param questionFieldPanel
 	 * @param solfegeValues
 	 */
-	void initQuestionUI(File handSignsDir, JPanel questionFieldPanel, String[] solfegeValues)
+	protected void initQuestionUI(File handSignsDir, JPanel questionFieldPanel, String[] solfegeValues)
 	{
 		questionFieldPanel.removeAll();
 		
@@ -221,14 +203,26 @@ public class SolfegeDictationPlugin implements Plugin
 		return random.nextInt(1+from-to)+from;
 	}
 	
-	MidiSequenceBuilder currentQuestionMidiSequence;
+	protected MidiSequenceBuilder currentQuestionMidiSequence;
 	@Override
 	public void onQuestionChanged(Question question)
 	{
-		// TODO: pick a patch at random
+		// select instrument patch randomly per question
+		currentPatch = midiPatches[random.nextInt(midiPatches.length)];
+
 		try {
 			currentQuestionMidiSequence = new MidiSequenceBuilder(currentPatch);
-			// TODO: first question
+			
+			if (isFirstQuestion)
+			{
+				// anchor the tonic for the first question
+				currentQuestionMidiSequence.addNote(currentDo+solfegeToSemitonesAboveDo("do"), timeBetweenNotesMillisMin);
+				currentQuestionMidiSequence.addNote(currentDo-1, timeBetweenNotesMillisMin); // "ti,"
+				currentQuestionMidiSequence.addNote(currentDo+solfegeToSemitonesAboveDo("re"), timeBetweenNotesMillisMin);
+				currentQuestionMidiSequence.addNote(currentDo+solfegeToSemitonesAboveDo("do"), timeBetweenNotesMillisMin);
+				currentQuestionMidiSequence.addRest(timeBetweenNotesMillisMax);
+				isFirstQuestion = false;
+			}
 			
 			for (String solfege: question.getQuestion().split(" "))
 				currentQuestionMidiSequence.addNote(currentDo+solfegeToSemitonesAboveDo(solfege), randomInt(timeBetweenNotesMillisMin, timeBetweenNotesMillisMin));
@@ -239,7 +233,7 @@ public class SolfegeDictationPlugin implements Plugin
 		}
 	}
 	
-	String normalizeSolfegeString(String s)
+	protected String normalizeSolfegeString(String s)
 	{
 		s = s.toLowerCase();
 		// TODO: cope with optional lack of spaces
