@@ -25,7 +25,7 @@ class Scorer
 		if (result < 0) result = 0;
 		if (result > 100) result = 100;
 		
-		logger.info("Assigning score of "+result+" for question: "+q);
+		logger.info("Calculated score of "+result+" for question: "+q);
 
 		return result;
 	}

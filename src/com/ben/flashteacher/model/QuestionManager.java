@@ -430,6 +430,7 @@ public class QuestionManager
 		lastQuestionPreviousButOneScore = lastQuestionPreviousScore;
 		lastQuestionPreviousScore = Scorer.getQuestionScore(currentQuestion);
 		nextQuestion.timeLastAsked = new Date();
+		nextQuestion.totalTimesAsked++;
 		firstAttemptAtQuestion = true;
 	}
 	

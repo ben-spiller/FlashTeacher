@@ -36,6 +36,7 @@ class QuestionHistory
 	public boolean isPrioritized;
 	
 	public Date timeLastAsked;
+	public long totalTimesAsked;
 	
 	public final Question question;
 	
@@ -49,6 +50,7 @@ class QuestionHistory
 		this.isPrioritized = false;
 		this.timeLastAsked = null;
 		this.question = question;
+		this.totalTimesAsked = 0;
 	}
 	
 	/**
@@ -61,6 +63,7 @@ class QuestionHistory
 		this.passModeCounter = Integer.valueOf(questionHistoryElement.getAttributeValue("passModeCounter", "1"));
 		this.averageTimeToAnswer = Long.valueOf(questionHistoryElement.getAttributeValue("averageTimeToAnswer", "0"));
 		this.isPrioritized = Boolean.valueOf(questionHistoryElement.getAttributeValue("isPrioritized", "false"));
+		this.totalTimesAsked = Long.valueOf(questionHistoryElement.getAttributeValue("totalTimesAsked", "0"));
 		long timeLastAsked = Long.valueOf(questionHistoryElement.getAttributeValue("timeLastAsked", "0"));
 		if (timeLastAsked > 0)
 			this.timeLastAsked = new Date(timeLastAsked);
@@ -75,6 +78,7 @@ class QuestionHistory
 		Element result = new Element(ELEMENT_NAME);
 		result.setAttribute("passModeCounter", String.valueOf(passModeCounter));
 		result.setAttribute("averageTimeToAnswer", String.valueOf(averageTimeToAnswer));
+		result.setAttribute("totalTimesAsked", String.valueOf(totalTimesAsked));
 		result.setAttribute("isPrioritized", String.valueOf(isPrioritized));
 		result.setAttribute("questionText", question.getQuestion());
 		result.setAttribute("answerText", question.getAnswer());
@@ -94,6 +98,7 @@ class QuestionHistory
 		"passModeCounter="+passModeCounter+", "+
 		"isPrioritized="+isPrioritized+", "+
 		"averageTimeToAnswer="+averageTimeToAnswer+", "+
+		"totalTimesAsked="+totalTimesAsked+", "+
 		"timeLastAsked="+timeLastAsked+
 		")";
 	}
