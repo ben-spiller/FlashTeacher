@@ -9,13 +9,17 @@ import javax.swing.JPanel;
 /**
  * This interface can be implemented to allow dynamic/programmatic creation 
  * of Questions (based on plugin-specific configuration from a question file) 
- * and/or customization of the UI for displaying questions. 
+ * and/or customization of the UI for displaying questions. Plugins classes 
+ * must provide a no-args public constructor. 
+ * 
+ * A single instance of the plugin is created for the lifetime of the process. 
+ * Each time the question file needs to be loaded, {@link #loadQuestions(File, Map, JPanel)} 
+ * is called, which acts as the entry point where plugins can initialize 
+ * themselves.   
  * 
  * Although each question must still be described by a string, it can be 
  * an internal/non-user visible string for plugins that use mediums such as 
- * sound or image for the questions. 
- * 
- * Answers must always be given as a string. 
+ * sound or image for the questions. Answers must always be given as a string. 
  * 
  * @author Ben
  */
@@ -42,5 +46,5 @@ public interface Plugin
 	
 	/** Called during application shutdown to free any static OS resources (e.g. MIDI) 
 	 * and/or background threads allocated by this plugin. */
-	default public void onShutdown() {}
+	default public void close() {}
 }

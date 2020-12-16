@@ -137,16 +137,19 @@ public class ModelHolder
 				
 				logger.info("Loading plugin with properties: "+props);
 				
-				Plugin p;
-				try
-				{
-					Class<?> c = Class.forName(props.remove("class"));
-					p = (Plugin)c.newInstance();
-				} catch (Exception ex)
-				{
-					throw new IOException("Cannot instantiate <plugin> class: "+ex, ex);
-				}
-				pluginsToShutdown.add(p); // add it here in case there are exceptions later
+				String className = props.remove("class");
+				Plugin p = plugins.get(className);
+				if (p == null)
+					try
+					{
+						logger.info("Creating plugin class: "+className);
+						Class<?> c = Class.forName(className);
+						p = (Plugin)c.newInstance();
+						plugins.put(className, p); // add it here in case there are exceptions later
+					} catch (Exception ex)
+					{
+						throw new IOException("Cannot instantiate <plugin> class: "+ex, ex);
+					}
 				try {
 					for (Question q: p.loadQuestions(questionFile, props, questionFieldPanel))
 						allQuestions.add( q);
@@ -216,14 +219,14 @@ public class ModelHolder
 		logger.debug(getClass().getSimpleName()+".load() done");
 	}
 	
-	/** This is a mechanism to allow plugins to be notified when the entire application 
-	 * shuts down, in case they have backgound threads or shared static state to dispose of. */
-	private static final List<Plugin> pluginsToShutdown = new ArrayList<>();
+	/** This ensures we have a singleton of each plugin class (typically just one), 
+	 * and also allows us to provide a shutdown mechanism, in case they have background threads or shared static state to dispose of. */
+	private static final Map<String, Plugin> plugins = new HashMap<>();
 	
 	public static void shutdownPlugins()
 	{
-		for (Plugin p: pluginsToShutdown)
-			p.onShutdown();
+		for (Plugin p: plugins.values())
+			p.close();
 	}
 
 	

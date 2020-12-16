@@ -1,10 +1,5 @@
 package com.ben.flashteacher.plugins;
 
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -15,17 +10,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.sound.midi.*;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
-import javax.swing.text.StyleConstants;
+import java.awt.*;
+import javax.swing.*;
 
 import org.apache.log4j.Logger;
 
@@ -52,23 +44,10 @@ public class SolfegeDictationPlugin implements Plugin
 	/** The instrument patches selected in the question file. If more then one, a random one is picked for each question. */
 	Patch[] midiPatches;
 	
+	/** The instrument patch used for this question. */
 	Patch currentPatch;
-	
-	/*
-	enum Solfege
-	{
-
-		Do(0),
-		re(2),
-		me(4),
-		fa(5),
-		so(7),
-		la(9),
-		ti(11);
-
-		public final int semitonesAboveDo;
-		Solfege(int semitonesAboveDo) { this.semitonesAboveDo=semitonesAboveDo; }
-	}*/
+	/** The pitch used for "do" in this session, where 60 = C4. */
+	int currentDo;
 	
 	public Collection<Question> loadQuestions(File questionFile, Map<String, String> properties, JPanel questionFieldPanel) throws Exception
 	{
@@ -76,6 +55,7 @@ public class SolfegeDictationPlugin implements Plugin
 		timeBetweenNotesMillisMin = timeBetweenNotesMillisMax = Integer.parseInt(properties.remove("timeBetweenNotesMillis"));
 
 		doMin = doMax = Integer.parseInt(properties.remove("do")); // TODO: randomly pick a starting note within the range
+		currentDo = doMin;
 
 		String[] instruments = properties.remove("instruments").toLowerCase().split(",");
 		if (instruments.length==0) instruments = new String[] {"Piano"};
@@ -135,6 +115,8 @@ public class SolfegeDictationPlugin implements Plugin
 		return qs;
 	}
 	
+	Map<String, Icon> solfegeIcons = null;
+	
 	/**
 	 * Initialize the UI by replacing the normal question textual display with 
 	 * controls for playing individual solfege notes, in case the user wants to 
@@ -176,8 +158,18 @@ public class SolfegeDictationPlugin implements Plugin
 		// (to avoid confusing user's mental model)
 		List<String> labels = new ArrayList<>();
 		
-		// TODO: will need some extra logic here to cope with additional do/re/me items. TODO: also we should make sure that solfegeValues doesn't include duplicates
+		// TODO: will need some extra logic here to cope with additional do/re/me octaves. TODO: also we should make sure that solfegeValues doesn't include duplicates
 		List<String> allSolfege = Arrays.asList("do", "re", "me", "fa", "so", "la", "ti");
+		if (solfegeIcons == null) // load on first use; save in a static to avoid having to dispose them
+		{
+			solfegeIcons = new HashMap<>();
+			for (String s: allSolfege) {
+				File f = new File(handSignsDir, s+".png");
+				if (f.exists())
+					solfegeIcons.put(s, new ImageIcon(f.getPath()));
+			}
+		}
+		
 		int solfegeIndex = allSolfege.indexOf(solfegeValues[0]);
 		while (!allSolfege.get(solfegeIndex).equals(solfegeValues[solfegeValues.length-1]))
 		{
@@ -187,6 +179,8 @@ public class SolfegeDictationPlugin implements Plugin
 		}
 		Collections.reverse(labels);
 		
+		insets.bottom = insets.top = 0;
+		
 		for (final String s : labels)
 		{
 			l = new JLabel(s);
@@ -195,15 +189,16 @@ public class SolfegeDictationPlugin implements Plugin
 			l.setFont(questionFieldPanel.getFont());
 			if (s.startsWith("do"))
 				l.setFont(l.getFont().deriveFont(Font.BOLD).deriveFont(Collections.singletonMap(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON)));
+			l.setIcon(solfegeIcons.get(s));
+			//l.setBorder(BorderFactory.createLineBorder(Color.black));
 			
 			l.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e)
 				{
 					try {
-						// TODO: play correct note
 				        new MidiSequenceBuilder(currentPatch)
-				        	.addNote(60, timeBetweenNotesMillisMax).play();
+				        	.addNote(currentDo + solfegeToSemitonesAboveDo(s), timeBetweenNotesMillisMax).play();
 					} catch (Exception ex)
 					{
 						logger.error("Failed to play MIDI: ", ex);
@@ -212,7 +207,7 @@ public class SolfegeDictationPlugin implements Plugin
 				}
 			});
 			questionFieldPanel.add(l, new GridBagConstraints(
-					1, y++, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 0
+					1, y++, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 15
 			));
 		}
 	}
@@ -240,32 +235,39 @@ public class SolfegeDictationPlugin implements Plugin
 
 	}
 	
+	static final String OCTAVE_DOWN = ",";
+	static final String OCTAVE_UP = "'";
+	String stripSolfegeOctaves(String s)
+	{
+		return s.replace(OCTAVE_DOWN, "").replace(OCTAVE_UP, "");
+	}
+	
 	/**
 	 * Assumes s is already normalized to lowercase
 	 * @param s
 	 * @return
 	 */
-	/*
 	int solfegeToSemitonesAboveDo(String s)
 	{
 		int semitones = 0;
+		// TODO: support multiple octaves here
 		switch(s)
 		{
-		case "t": case "ti": semitones += 2;
-		case "l": case "la": semitones += 2;
-		case "s": case "so": semitones += 2;
-		case "f": case "fa": semitones += 1;
-		case "m": case "me": semitones += 2;
-		case "r": case "re": semitones += 2;
-		case "d": case "do": break;
+		case "ti": semitones += 2;
+		case "la": semitones += 2;
+		case "so": semitones += 2;
+		case "fa": semitones += 1;
+		case "me": semitones += 2;
+		case "re": semitones += 2;
+		case "do": break;
 		default: 
 			throw new IllegalArgumentException("Expecting a solfege symbol such as 'do' but got: '"+s+"'");
 		}
 		return semitones;
-	}*/
+	}
 
 	@Override
-	public void onShutdown()
+	public void close()
 	{
 		if (midiSynth == null) return;
 		logger.info("Shutting down MIDI");
@@ -326,7 +328,7 @@ public class SolfegeDictationPlugin implements Plugin
 	class SolfegeQuestion extends Question
 	{
 		public SolfegeQuestion(String[] solfege) {
-			super(String.join(" ", solfege), String.join(" ", solfege));
+			super(String.join(" ", solfege), stripSolfegeOctaves(String.join(" ", solfege)));
 			logger.debug("Added question: "+this);
 		}
 		
@@ -335,17 +337,15 @@ public class SolfegeDictationPlugin implements Plugin
 		{
 			// TODO: can support answers without spaces and the chromatic solfege symbols later, by normalizing the answer before validating it
 			// TODO: test error handling here
+			answer = stripSolfegeOctaves(answer);
 			if (!answer.contains(" "))
 				throw new IllegalArgumentException("Enter answers with spaces e.g. do re me");
-			if (answer.contains(",") || answer.contains("'"))
-				throw new IllegalArgumentException("Solfege symbols with ' and , not yet supported"); // will want to strip these out of the answer but not the question
 			return super.isAnswerCorrect(answer, true);
 		}
 	}
 	
-	// Uses a static to avoid lifetime issues
-	protected static Synthesizer midiSynth;
-	protected static Sequencer sequencer;
+	protected Synthesizer midiSynth;
+	protected Sequencer sequencer;
 	
     protected static MidiEvent makeMidiEvent(int command, int channel, int note, int velocity, int tick) throws Exception
     { 
@@ -354,7 +354,7 @@ public class SolfegeDictationPlugin implements Plugin
 		return new MidiEvent(a, tick); 	
     } 
 	
-    static class MidiSequenceBuilder
+    class MidiSequenceBuilder
     {
     	private long lastTickMillis;
     	
@@ -392,7 +392,7 @@ public class SolfegeDictationPlugin implements Plugin
 
     }
     
-	static void initMIDI() throws MidiUnavailableException, Exception
+	void initMIDI() throws MidiUnavailableException, Exception
 	{
 		if (midiSynth != null) return;
 
