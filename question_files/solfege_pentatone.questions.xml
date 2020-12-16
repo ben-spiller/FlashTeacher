@@ -11,7 +11,7 @@
 		<property name="notesPerQuestion" value="4"/>
 
 		<!--  TODO - eventually support this as a range to allow randomization -->
-		<property name="timeBetweenNotesMillis" value="1000"/>
+		<property name="timeBetweenNotesMillis" value="800"/>
 		
 		<!-- The pitch or pitches to use for the (bottom) "do" - you may wish to customize this based on your singing range. 
 		Can use a MIDI pitch e.g. 60 = C4 (middle C). A range can be specified using a hyphen.  -->

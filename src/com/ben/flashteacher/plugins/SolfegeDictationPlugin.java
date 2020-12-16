@@ -25,8 +25,6 @@ import org.apache.log4j.Logger;
 import com.ben.flashteacher.model.Plugin;
 import com.ben.flashteacher.model.Question;
 
-// TODO: midi can take forever to initialize, so display progress if it does
-
 /**
  * A FlashTeacher plugin that asks questions by playing some notes (using MIDI) 
  * and requesting the user to convert them into solfege (do, re, me, etc) 
@@ -66,19 +64,20 @@ public class SolfegeDictationPlugin implements Plugin
 		if (instruments.length==0) instruments = new String[] {"Piano"};
 		
 		midiPatches = new Patch[instruments.length];
-		Instrument[] availableInstruments = midiSynth.getDefaultSoundbank().getInstruments();
+		long startTime = System.currentTimeMillis();
 		for (int p = 0; p < midiPatches.length; p++)
 		{
 			String patchName = instruments[p].toLowerCase().trim();
-			for (Instrument i: availableInstruments)
+			for (Instrument i: allInstruments)
 				if (i.getName().toLowerCase().contains(patchName))
 				{
 					midiPatches[p] = i.getPatch();
-					logger.info("Found requested MIDI instrument: "+i.getName().trim());
+					logger.info("Found requested MIDI instrument '"+i.getName().trim()+"' at program "+i.getPatch().getProgram());
 					break;
 				}
 			if (midiPatches[p] == null) throw new IllegalArgumentException("Cannot find any instrument name on this machine containing: \""+instruments[p]+"\"");
 		}
+		logger.debug("Loaded instruments in "+(System.currentTimeMillis()-startTime)+" ms");
 		currentPatch = midiPatches[0]; // TODO: select randomly, per question
 			
 		String[] solfegeValues = normalizeSolfegeString(properties.remove("solfegeValues")).split(" ");
@@ -298,11 +297,9 @@ public class SolfegeDictationPlugin implements Plugin
 	@Override
 	public void close()
 	{
-		if (midiSynth == null) return;
+		if (sequencer == null) return;
 		
 		logger.info("Shutting down MIDI");
-		midiSynth.close();
-		midiSynth = null;
 		sequencer.close();
 		sequencer = null;
 		logger.debug("Done shutting down MIDI");
@@ -374,8 +371,6 @@ public class SolfegeDictationPlugin implements Plugin
 		}
 	}
 	
-	protected Synthesizer midiSynth;
-	protected Sequencer sequencer;
 	
     protected static MidiEvent makeMidiEvent(int command, int channel, int note, int velocity, int tick) throws Exception
     { 
@@ -418,8 +413,9 @@ public class SolfegeDictationPlugin implements Plugin
     	void play()
     	{
     		try {
-	    	    sequencer.setSequence((Sequence)null);
 	    	    sequencer.setSequence(sequence);
+	            sequencer.setTempoInBPM(60.0f); // 1 beat per second
+				sequencer.setTickPosition(0);
 	    	    sequencer.start();
     		} catch (Exception ex)
     		{
@@ -430,31 +426,35 @@ public class SolfegeDictationPlugin implements Plugin
 
     }
     
+	protected Sequencer sequencer;
+	protected Instrument[] allInstruments;
+    
 	void initMIDI() throws MidiUnavailableException, Exception
 	{
-		if (midiSynth != null) return;
-
+		if (sequencer != null) return; // it's time-consuming, so use cached version from a previous load
+		
 		long startTime = System.currentTimeMillis();
-
 		logger.debug("Loading MIDI sequencer");
         sequencer = MidiSystem.getSequencer();
-        sequencer.setTempoInBPM(60.0f); // 1 beat per second
         sequencer.open();
         logger.info("Loaded MIDI sequencer in "+(System.currentTimeMillis()-startTime)+" ms");
+        
+		if (logger.isDebugEnabled())
+			for (MidiDevice.Info i : MidiSystem.getMidiDeviceInfo())
+				logger.debug("Got MIDI device: "+i.getName());
 
-        startTime = System.currentTimeMillis();
 		logger.debug("Loading MIDI synthesizer");
-		// Gathering the instruments list takes a while; then initalizing the sequencer, even longer
-		midiSynth = MidiSystem.getSynthesizer();
-		midiSynth.open();
+		startTime = System.currentTimeMillis();
+		Synthesizer midiSynth = MidiSystem.getSynthesizer();
         logger.info("Loaded MIDI synthesizer in "+(System.currentTimeMillis()-startTime)+" ms");
 
         startTime = System.currentTimeMillis();
-        Instrument[] instr = midiSynth.getDefaultSoundbank().getInstruments();
-		// NB: if we want to support other banks we need to use multiple ShortMessage.CONTROL messages to do it; probably not worth the hassle
-		logger.info(instr.length+" MIDI instruments are available in bank 0: "+
-				Arrays.asList(instr).stream().filter(i -> i.getPatch().getBank()==0) .map(i -> i.getName().trim()).collect(Collectors.joining(", ")));
-        logger.info("Loaded MIDI instruments in "+(System.currentTimeMillis()-startTime)+" ms");
 		
+        allInstruments = midiSynth.getDefaultSoundbank().getInstruments();
+		// NB: if we want to support other banks we need to use multiple ShortMessage.CONTROL messages to do it; probably not worth the hassle
+		logger.info(allInstruments.length+" MIDI instruments are available in bank 0: "+
+				Arrays.asList(allInstruments).stream().filter(i -> i.getPatch().getBank()==0) .map(i -> i.getName().trim()).collect(Collectors.joining(", ")));
+        logger.info("Loaded MIDI instruments in "+(System.currentTimeMillis()-startTime)+" ms");
+
 	}
 }

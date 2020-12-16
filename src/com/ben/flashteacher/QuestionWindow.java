@@ -279,7 +279,7 @@ public class QuestionWindow extends JFrame {
 	
 	/**
 	 * Must be called before showing the dialog each time. 
-	 * @param model Assumes load() has already been called
+	 * @param model
 	 */
 	public void initialize(ModelHolder model)
 	{
@@ -289,7 +289,9 @@ public class QuestionWindow extends JFrame {
 		// try to load the model now so we can initialize the display, but if 
 		// there's a problem don't tell the user till they press Start
 		try {
-			model.loadOptionsOnly();
+			// we used to initialize only the options here, but as it can take a long time (1-2seconds) to initialize 
+			// some plugins, better to do it up front so they can cache any data
+			model.load(questionFieldPanel);
 			initializeFromOptions();
 		} catch (IOException e)
 		{
@@ -485,8 +487,12 @@ public class QuestionWindow extends JFrame {
 				return;
 			}
 			try {
+				// This is slightly inefficient the first time Start is called since model was 
+				// already only just loaded during initializing... but in practice probably not 
+				// worth optimizing it since it's usually only a slow operation the very 
+				// first time (in case there is a plugin that needs to do some slow initialization). 
 				model.load(questionFieldPanel);
-				
+						
 				QuestionWindow.this.pack();
 			} catch (IOException ioe)
 			{
