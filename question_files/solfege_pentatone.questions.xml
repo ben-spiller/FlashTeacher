@@ -18,7 +18,7 @@
 		<property name="do" value="60"/>
 		
 		<!-- A comma-separated list of MIDI instruments to use (substring, case insensitive) -->
-		<property name="instruments" value="piano, Steel-str.Gt, trumpet, Voice Oohs, Choir Aahs"/>
+		<property name="instruments" value="piano 1, piano 3, E.Piano 2, organ, Steel-str.Gt, violin, strings, trumpet, Choir Aahs"/>
 		
 	</plugin>
 

@@ -2,8 +2,6 @@ package com.ben.flashteacher.plugins;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
@@ -163,14 +161,7 @@ public class SolfegeDictationPlugin implements Plugin
 				@Override
 				public void mouseClicked(MouseEvent e)
 				{
-					try {
-				        new MidiSequenceBuilder(currentPatch)
-				        	.addNote(currentDo + solfegeToSemitonesAboveDo(s), timeBetweenNotesMillisMax).play();
-					} catch (Exception ex)
-					{
-						logger.error("Failed to play MIDI: ", ex);
-						throw new RuntimeException(ex);
-					}
+					playOneNote(currentDo + solfegeToSemitonesAboveDo(s));
 				}
 			});
 			questionFieldPanel.add(l, new GridBagConstraints(
@@ -182,7 +173,7 @@ public class SolfegeDictationPlugin implements Plugin
 		
 		insets = new Insets(5,20,5,5);
 
-		l = new JLabel("<html><br>Listen to this sequence, and enter the solfege symbols. \"Do\" is "+midiNoteToDisplayName(currentDo)+". <br>"
+		l = new JLabel("<html><br>Listen to this sequence, and enter the solfege symbols. \"Do\" is "+Note.NOTES[currentDo]+". <br>"
 				+ "(e.g. \""+String.join(" ", solfegeValues)+"\"; the shorthand \"drm\" is equivalent to \"do re me\")</html>");
 		questionFieldPanel.add(l, new GridBagConstraints(
 				1, y++, 1, 1, 1.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.HORIZONTAL, insets, 0, 0
@@ -290,12 +281,6 @@ public class SolfegeDictationPlugin implements Plugin
 			throw new IllegalArgumentException("Expecting a solfege symbol such as 'do' but got: '"+s+"'");
 		}
 		return semitones;
-	}
-	
-	String midiNoteToDisplayName(int note)
-	{
-		// TODO: make this work
-		return "C4";
 	}
 
 	@Override
@@ -424,9 +409,21 @@ public class SolfegeDictationPlugin implements Plugin
     			throw new RuntimeException(ex);
     		}
     	}
-
     }
-    
+
+	protected void playOneNote(int note)
+	{
+		try {
+	        new MidiSequenceBuilder(currentPatch)
+	        	.addNote(note, timeBetweenNotesMillisMax).play();
+		} catch (Exception ex)
+		{
+			logger.error("Failed to play MIDI: ", ex);
+			throw new RuntimeException(ex);
+		}
+
+	}
+	
 	protected Sequencer sequencer;
 	protected Instrument[] allInstruments;
     
@@ -500,22 +497,33 @@ public class SolfegeDictationPlugin implements Plugin
 			));
 			JComboBox<Instrument> instrumentCombo = new JComboBox<>(allInstruments);
 			instrumentCombo.setMaximumRowCount(20);
-			instrumentCombo.addItemListener(new ItemListener() {
+			instrumentCombo.addActionListener(new ActionListener() {
 				@Override
-				public void itemStateChanged(ItemEvent e)
+				public void actionPerformed(ActionEvent e)
 				{
-					currentPatch = ((Instrument)e.getItem()).getPatch();
-					try {
-				        new MidiSequenceBuilder(currentPatch)
-				        	.addNote(currentDo, timeBetweenNotesMillisMax).play();
-					} catch (Exception ex)
-					{
-						logger.error("Failed to play MIDI: ", ex);
-						throw new RuntimeException(ex);
-					}
+					currentPatch = instrumentCombo.getItemAt(instrumentCombo.getSelectedIndex()).getPatch();
+					playOneNote(currentDo);
 				}
 			});
 			contentPanePanel.add(instrumentCombo, new GridBagConstraints(
+					1, y++, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,SPACING,0), 0, 0
+			));
+
+			contentPanePanel.add(new JLabel("Note for 'do' (C4 = middle C):"), new GridBagConstraints(
+					0, y, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,SPACING,SPACING), 0, 0
+			));
+			JComboBox<Note> doNoteCombo = new JComboBox<>(Note.NOTES);
+			doNoteCombo.setMaximumRowCount(20);
+			doNoteCombo.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					currentDo = doNoteCombo.getItemAt(doNoteCombo.getSelectedIndex()).midiNote;
+					playOneNote(currentDo);
+				}
+			});
+			doNoteCombo.setSelectedItem(Note.find("C4"));
+			contentPanePanel.add(doNoteCombo, new GridBagConstraints(
 					1, y++, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,SPACING,0), 0, 0
 			));
 
@@ -534,5 +542,58 @@ public class SolfegeDictationPlugin implements Plugin
 	public static void main(String[] args)
 	{
 		new SolfegeDictationPlugin().showStandaloneGUI();
+	}
+	
+	static class Note
+	{
+		final int midiNote;
+		/** In "scientific" notation i.e. C4=middle C (NB: some MIDI software uses C3 or C5 for middle C) */
+		final String displayName;
+		Note(int midiNote)
+		{
+			this.midiNote = midiNote;
+			String note;
+			// For simplicity, don't support both # and b designations; b's is better to standardize 
+			// on because it matches the names of the associated keys (e.g. Bb not A#)
+			switch(midiNote % 12)
+			{
+			case 0: note = "C"; break;
+			case 1: note = "Db"; break;
+			case 2: note = "D"; break;
+			case 3: note = "Eb"; break;
+			case 4: note = "E"; break;
+			case 5: note = "F"; break;
+			case 6: note = "Gb"; break;
+			case 7: note = "G"; break;
+			case 8: note = "Ab"; break;
+			case 9: note = "A"; break;
+			case 10: note = "Bb"; break;
+			case 11: note = "B"; break;
+			default: throw new RuntimeException("Logic error in application");
+			}
+			int octave = -1 + (midiNote-(midiNote%12))/12;
+			displayName = note+octave;
+		}
+		@Override
+		public String toString()
+		{
+			return displayName+" (MIDI "+midiNote+")";
+		}
+		
+		/** All possible MIDI notes */
+		public static final Note[] NOTES;
+		static {
+			NOTES = new Note[127];
+			for (int i = 0; i < 127; i++) NOTES[i] = new Note(i);
+		}
+		
+		public static Note find(String displayName)
+		{
+			displayName = displayName.replace(" ", "");
+			if (displayName.contains("#")) throw new IllegalArgumentException("Notes must be specified with 'b' not '#'");
+			for (int i = 0; i < 127; i++) 
+				if (NOTES[i].displayName.equalsIgnoreCase(displayName)) return NOTES[i];
+			throw new IllegalArgumentException("Unknown note: '"+displayName+"'; correct format for notes is C4, Bb6, etc");
+		}
 	}
 }
