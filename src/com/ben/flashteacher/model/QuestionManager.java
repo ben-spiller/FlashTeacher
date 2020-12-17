@@ -296,7 +296,7 @@ public class QuestionManager
 	
 	protected QuestionSetScores questionSetScores = null;
 	/**
-	 * Must not be called until calculateScores() has bene called. 
+	 * Must not be called until calculateScores() has been called. 
 	 * @return
 	 */
 	public QuestionSetScores getQuestionSetScores() {
