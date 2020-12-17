@@ -72,8 +72,8 @@ public class EditWindow extends JFrame {
 	final JButton newQuestionButton;
 	final JToggleButton emButton; 
 	
-	final JList classList;
-	final DefaultListModel classModel = new DefaultListModel();
+	final JList<String> classList;
+	final DefaultListModel<String> classModel = new DefaultListModel<>();
 	
 	final SimpleAttributeSet questionAttributes = new SimpleAttributeSet();
 	final SimpleAttributeSet answerAttributes = new SimpleAttributeSet();
@@ -126,7 +126,7 @@ public class EditWindow extends JFrame {
 		statusLabel = new JLabel();
 		statusLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		
-		classList = new JList(classModel);
+		classList = new JList<>(classModel);
 		classList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		final JTextField newClassField = new JTextField();
 
@@ -281,8 +281,8 @@ public class EditWindow extends JFrame {
 			}
 			
 			SortedSet<String> classes = new TreeSet<String>();
-			for (Object s: classList.getSelectedValuesList())
-				classes.add((String)s);
+			for (String s: classList.getSelectedValuesList())
+				classes.add(s);
 			
 			// Generate the XML
 			Element questionElement = new Element("question");
