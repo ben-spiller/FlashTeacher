@@ -47,7 +47,6 @@ import org.apache.log4j.Logger;
 import com.ben.flashteacher.model.AnswerOutcome;
 import com.ben.flashteacher.model.ModelHolder;
 import com.ben.flashteacher.model.Options;
-import com.ben.flashteacher.model.QuestionManager;
 import com.ben.flashteacher.utils.AbstractResourceAction;
 
 public class QuestionWindow extends JFrame {

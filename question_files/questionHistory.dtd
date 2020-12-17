@@ -10,6 +10,7 @@
 <!ATTLIST question passModeCounter CDATA #IMPLIED>
 <!ATTLIST question isPrioritized (false|true) #IMPLIED>
 <!ATTLIST question timeLastAsked CDATA #IMPLIED>
+<!ATTLIST question totalTimesAsked CDATA "0">
 
 <!ATTLIST question questionText CDATA #REQUIRED>
 <!ATTLIST question answerText CDATA #REQUIRED>

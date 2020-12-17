@@ -56,7 +56,7 @@ public class PerformanceWindow extends JDialog
 	final JButton closeButton;
 	final JProgressBar summaryBar;
 	final DefaultXYDataset xyDataSet;
-	final JComboBox timeWindowComboBox;
+	final JComboBox<TimeWindow> timeWindowComboBox;
 	
 	private static final int DEFAULT_TIME_WINDOW_INDEX = 3;
 	private static final int TIME_WINDOW_INDEX_ALL = 0;
@@ -167,7 +167,7 @@ public class PerformanceWindow extends JDialog
 		graphPanel.setPreferredSize(initialSize);
 		
 		JPanel timeWindowComboBoxPanel = new JPanel(new BorderLayout());
-		timeWindowComboBox = new JComboBox(TIME_WINDOWS);
+		timeWindowComboBox = new JComboBox<>(TIME_WINDOWS);
 		timeWindowComboBox.setSelectedIndex(DEFAULT_TIME_WINDOW_INDEX);
 		timeWindowComboBoxPanel.add(timeWindowComboBox, BorderLayout.WEST);
 

@@ -16,7 +16,6 @@ import javax.swing.JPanel;
 import org.apache.log4j.Logger;
 import org.jdom.Comment;
 import org.jdom.Element;
-
 import com.ben.flashteacher.utils.Utils;
 
 /**
@@ -318,7 +317,8 @@ public class QuestionManager
 	private enum QuestionTypeSelectionMethod
 	{
 		UNKNOWN("<unknown question selection method>"),
-		PRIORITIZED_LIST("Question is from the prioritised/unknown question list"),
+		PRIORITIZED_LIST_PASSED("Question is from the prioritised 'passed' question list"),
+		PRIORITIZED_LIST_NEVER_ASKED("Question is from the prioritised 'never asked' question list"),
 		BAD_TIMES_LIST("Question is from the bad times question list"),
 		LEAST_RECENTLY_ASKED_LIST("Question had not been asked for a long time"),
 		RANDOM("Question selected randomly");
@@ -367,13 +367,13 @@ public class QuestionManager
 		
 		if (questionTypeSelectValue < QUESTION_SELECTION_PROBABILITY_PRIORITIZED)
 		{
-			questionTypeSelectionMethod = QuestionTypeSelectionMethod.PRIORITIZED_LIST;
 			logger.debug("QuestionManager.moveToNextQuestion: selecting from Qs in prioritized list");
 			
 			// select randomly from the prioritized list
 			if (prioritizedQuestions.size() > 0)
 			{
 				nextQuestion = Utils.getElementAt(random.nextInt(prioritizedQuestions.size()), prioritizedQuestions);
+				questionTypeSelectionMethod = (nextQuestion.timeLastAsked==null)? QuestionTypeSelectionMethod.PRIORITIZED_LIST_NEVER_ASKED : QuestionTypeSelectionMethod.PRIORITIZED_LIST_PASSED;
 			}
 			else
 				logger.debug("QuestionManager.moveToNextQuestion: prioritized list is empty, trying another strategy");
@@ -545,7 +545,7 @@ public class QuestionManager
 	
 	/**
 	 * Checks that the number of questions marked as prioritized is the minimum 
-	 * of the number of bad questions and the maximum allowed prioritized Qs - 
+	 * of the number of passed/new questions and the maximum allowed prioritized Qs - 
 	 * and prioritizes more questions if it is not. 
 	 * 
 	 */
@@ -554,18 +554,43 @@ public class QuestionManager
 		if (prioritizedQuestions.size() < MAXIMUM_PRIORITIZED_QUESTIONS_BUCKET_SIZE)
 		{
 			logger.debug("checkPrioritization: trying to find question(s) to prioritize");
-			for (QuestionHistory qh: allQuestions)
-			{
-				if (qh.passModeCounter > 0 && !qh.isPrioritized)
+			
+			try {
+				
+				// Before including new/never-asked questions, first try to fill the prioritized bucket 
+				// with already-asked questions that were passed, since 
+				// otherwise the newly added questions (perhaps hundreds at a time) would starve  
+				// our ability to focus on fixing question the user "passes" - getting 
+				// those fixed is more improtant than introducing new material
+				
+				for (QuestionHistory qh: allQuestions)
 				{
-					logger.trace("checkPrioritization: prioritizing "+qh.question);
-					qh.isPrioritized = true;
-					prioritizedQuestions.add(qh);
-					
-					if (prioritizedQuestions.size() >= MAXIMUM_PRIORITIZED_QUESTIONS_BUCKET_SIZE) break;
+					if (qh.passModeCounter > 0 && !qh.isPrioritized && qh.timeLastAsked != null)
+					{
+						logger.trace("checkPrioritization: prioritizing passed question "+qh.question);
+						qh.isPrioritized = true;
+						prioritizedQuestions.add(qh);
+						
+						if (prioritizedQuestions.size() >= MAXIMUM_PRIORITIZED_QUESTIONS_BUCKET_SIZE) return;
+					}
 				}
+				
+				for (QuestionHistory qh: allQuestions)
+				{
+					if (qh.passModeCounter > 0 && !qh.isPrioritized)
+					{
+						logger.trace("checkPrioritization: prioritizing new/never-asked "+qh.question);
+						qh.isPrioritized = true;
+						prioritizedQuestions.add(qh);
+						
+						if (prioritizedQuestions.size() >= MAXIMUM_PRIORITIZED_QUESTIONS_BUCKET_SIZE) return;
+					}
+				}
+			} 
+			finally 
+			{
+				logger.debug("checkPrioritization: total prioritized questions = "+prioritizedQuestions.size());
 			}
-			logger.debug("checkPrioritization: total prioritized questions = "+prioritizedQuestions.size());
 			
 		}
 	}
