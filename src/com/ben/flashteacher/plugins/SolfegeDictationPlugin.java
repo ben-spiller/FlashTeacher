@@ -2,6 +2,8 @@ package com.ben.flashteacher.plugins;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
@@ -21,7 +23,6 @@ import java.awt.*;
 import javax.swing.*;
 
 import org.apache.log4j.Logger;
-
 import com.ben.flashteacher.model.Plugin;
 import com.ben.flashteacher.model.Question;
 
@@ -36,11 +37,11 @@ public class SolfegeDictationPlugin implements Plugin
 {
 	private static final Logger logger = Logger.getLogger(SolfegeDictationPlugin.class);
 
-	int timeBetweenNotesMillisMin;
-	int timeBetweenNotesMillisMax;
+	int timeBetweenNotesMillisMin = 800;
+	int timeBetweenNotesMillisMax = timeBetweenNotesMillisMin;
 
-	int doMin;
-	int doMax;
+	int doMin = 60;
+	int doMax = doMin;
 	
 	/** The instrument patches selected in the question file. If more then one, a random one is picked for each question. */
 	Patch[] midiPatches;
@@ -93,7 +94,7 @@ public class SolfegeDictationPlugin implements Plugin
 		List<Question> qs = new ArrayList<>();
 		generateQuestionsFor(new String[0], solfegeValues, notesPerQuestion, qs);
 		
-		initQuestionUI(new File(questionFile.getParentFile(), "solfege_hand_signs"), questionFieldPanel, solfegeValues);
+		initQuestionUI(new File(questionFile.getParentFile(), "solfege_hand_signs"), questionFieldPanel, solfegeValues, false);
 
 		return qs;
 	}
@@ -106,33 +107,16 @@ public class SolfegeDictationPlugin implements Plugin
 	 * remind themselves what "do" sounds like or try something out. 
 	 * @param questionFieldPanel
 	 * @param solfegeValues
+	 * @param solfegePlayerOnly true if this UI is being used as a standalone application (not from FlashTeacher)
 	 */
-	protected void initQuestionUI(File handSignsDir, JPanel questionFieldPanel, String[] solfegeValues)
+	protected void initQuestionUI(File handSignsDir, JPanel questionFieldPanel, String[] solfegeValues, boolean solfegePlayerOnly)
 	{
 		questionFieldPanel.removeAll();
 		
-		int y = 100;
-		
-		Insets insets = new Insets(5,20,5,5);
-		JLabel l = new JLabel("<html><br>Listen to this sequence, and enter the solfege symbols. \"Do\" is "+midiNoteToDisplayName(currentDo)+". <br>"
-				+ "(e.g. \""+String.join(" ", solfegeValues)+"\"; the shorthand \"drm\" is equivalent to \"do re me\")</html>");
-		questionFieldPanel.add(l, new GridBagConstraints(
-				1, y++, 1, 1, 1.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.HORIZONTAL, insets, 0, 0
-		));
-		
-		JButton playbutton = new JButton("Play again");
-		playbutton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				currentQuestionMidiSequence.play();
-			}
-		});
-		questionFieldPanel.add(playbutton, new GridBagConstraints(
-				2, y-1, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHEAST, 0, insets, 0, 0
-		));
+		int y = 0;
 
-		y = 0;
+		JLabel l;
+		Insets insets = new Insets(0,20,0,5);
 		
 		// TODO: will need some extra logic here to cope with additional do/re/me octaves. TODO: also we should make sure that solfegeValues doesn't include duplicates
 		List<String> allSolfege = Arrays.asList("do", "re", "me", "fa", "so", "la", "ti");
@@ -160,11 +144,9 @@ public class SolfegeDictationPlugin implements Plugin
 				break;
 			
 			solfegeIndex++;
-			if (solfegeIndex == allSolfege.size()-1) solfegeIndex = 0;
+			if (solfegeIndex == allSolfege.size()) solfegeIndex = 0;
 		}
 		Collections.reverse(labels);
-		
-		insets.bottom = insets.top = 0;
 		
 		for (final String s : labels)
 		{
@@ -195,6 +177,29 @@ public class SolfegeDictationPlugin implements Plugin
 					1, y++, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, insets, 0, 15
 			));
 		}
+		
+		if (solfegePlayerOnly) return;
+		
+		insets = new Insets(5,20,5,5);
+
+		l = new JLabel("<html><br>Listen to this sequence, and enter the solfege symbols. \"Do\" is "+midiNoteToDisplayName(currentDo)+". <br>"
+				+ "(e.g. \""+String.join(" ", solfegeValues)+"\"; the shorthand \"drm\" is equivalent to \"do re me\")</html>");
+		questionFieldPanel.add(l, new GridBagConstraints(
+				1, y++, 1, 1, 1.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.HORIZONTAL, insets, 0, 0
+		));
+		
+		JButton playbutton = new JButton("Play again");
+		playbutton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				currentQuestionMidiSequence.play();
+			}
+		});
+		questionFieldPanel.add(playbutton, new GridBagConstraints(
+				2, y-1, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHEAST, 0, insets, 0, 0
+		));
+
 	}
 	
 	/** Returns a random integer within the specified range inclusive */
@@ -370,31 +375,25 @@ public class SolfegeDictationPlugin implements Plugin
 		}
 	}
 	
-	
-    protected static MidiEvent makeMidiEvent(int command, int channel, int note, int velocity, int tick) throws Exception
-    { 
-		ShortMessage a = new ShortMessage(); 
-		a.setMessage(command, channel, note, velocity); 
-		return new MidiEvent(a, tick); 	
-    } 
-	
     class MidiSequenceBuilder
     {
     	private long lastTickMillis;
     	
     	private final Sequence sequence;
-    	private Track track;
+    	private final Track track;
+    	private final List<String> contents = new ArrayList<>();
     	MidiSequenceBuilder(Patch instrumentPatch) throws Exception
     	{
             sequence = new Sequence(Sequence.PPQ, 1000); // each tick is 1/1000 of a second
     	    track = sequence.createTrack();
 
-    	    track.add(makeMidiEvent(ShortMessage.PROGRAM_CHANGE, 0, instrumentPatch.getProgram(), 0, 0));
+    	    contents.add("patch="+instrumentPatch.getProgram());
+    	    track.add(new MidiEvent(new ShortMessage(ShortMessage.PROGRAM_CHANGE, 0, instrumentPatch.getProgram(), 0), 0));
     	}
     	
     	MidiSequenceBuilder addNote(int note, int noteMillis) throws Exception
     	{
-    		logger.info("MIDI sequence: adding note "+note+" with duration "+noteMillis+" ms to "+sequence);
+    		contents.add("note="+note+" durationMillis="+noteMillis);
     	    int velocity = 127; // loudest
    		    track.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, note, velocity), lastTickMillis));
    		    lastTickMillis += noteMillis;
@@ -406,11 +405,14 @@ public class SolfegeDictationPlugin implements Plugin
     	MidiSequenceBuilder addRest(int noteMillis)
     	{
     		lastTickMillis += noteMillis;
+    		contents.add("restMillis="+noteMillis);
     		return this;
     	}
     	/** Asynchronously play this sequence. Any currently playing sequence is implicitly stopped first. */
     	void play()
     	{
+    		if (contents.size() > 2) logger.info("Playing MIDI sequence: "+contents);
+    		
     		try {
 	    	    sequencer.setSequence(sequence);
 				sequencer.setTickPosition(0);
@@ -455,5 +457,82 @@ public class SolfegeDictationPlugin implements Plugin
 				Arrays.asList(allInstruments).stream().filter(i -> i.getPatch().getBank()==0) .map(i -> i.getName().trim()).collect(Collectors.joining(", ")));
         logger.info("Loaded MIDI instruments in "+(System.currentTimeMillis()-startTime)+" ms");
 
+	}
+	
+	/**
+	 * Not part of the plugin itself, but in this case it's quite handy to be able to 
+	 * access the functionality of playing solfege notes in a standalone application too.  
+	 */
+	private void showStandaloneGUI()
+	{
+		logger.info("Loading as standalone application");
+		try 
+		{ 
+			initMIDI();
+
+			currentDo = doMin;
+			currentPatch = allInstruments[0].getPatch();
+	
+			String[] solfegeValues = normalizeSolfegeString("do re me fa so la ti").split(" ");
+	
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			
+			JFrame frame = new JFrame("Solfege Player");
+			frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+	
+			final int SPACING = 15;
+			JPanel contentPanePanel = new JPanel(new GridBagLayout());
+			contentPanePanel.setBorder(BorderFactory.createEmptyBorder(SPACING, SPACING, SPACING, SPACING));
+			
+			frame.setContentPane(contentPanePanel);
+			
+			JPanel questionFieldPanel = new JPanel(new GridBagLayout());
+			questionFieldPanel.setBackground(Color.WHITE);
+			questionFieldPanel.setBorder(BorderFactory.createLoweredBevelBorder());
+			
+			int y = 0;
+			contentPanePanel.add(questionFieldPanel, new GridBagConstraints(
+					0, y++, 5, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0,0,SPACING,0), 0, 0
+			));
+
+			contentPanePanel.add(new JLabel("Instrument:"), new GridBagConstraints(
+					0, y, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,SPACING,SPACING), 0, 0
+			));
+			JComboBox<Instrument> instrumentCombo = new JComboBox<>(allInstruments);
+			instrumentCombo.setMaximumRowCount(20);
+			instrumentCombo.addItemListener(new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent e)
+				{
+					currentPatch = ((Instrument)e.getItem()).getPatch();
+					try {
+				        new MidiSequenceBuilder(currentPatch)
+				        	.addNote(currentDo, timeBetweenNotesMillisMax).play();
+					} catch (Exception ex)
+					{
+						logger.error("Failed to play MIDI: ", ex);
+						throw new RuntimeException(ex);
+					}
+				}
+			});
+			contentPanePanel.add(instrumentCombo, new GridBagConstraints(
+					1, y++, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,SPACING,0), 0, 0
+			));
+
+			
+		    questionFieldPanel.setFont(new Font("Tahoma", 0, 25));
+			initQuestionUI(new File("question_files", "solfege_hand_signs"), questionFieldPanel, solfegeValues, true);
+			frame.pack();
+			frame.setVisible(true);
+			
+		} catch (Exception ex) {
+			logger.error("Failed to initialize: ", ex);
+			throw new RuntimeException(ex);
+		}
+
+	}
+	public static void main(String[] args)
+	{
+		new SolfegeDictationPlugin().showStandaloneGUI();
 	}
 }
