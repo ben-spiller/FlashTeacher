@@ -22,7 +22,7 @@
 			<property name="libDirName" value="lib"/>
 			<property name="libDir" location="${basedir}/${libDirName}"/>
 
-			<property name="jarName" value="flashteacher${jar-version}.jar"/>
+			<property name="jarName" value="flashteacher.jar"/>
 			<property name="jarPath" location="${basedir}/${jarName}"/>
 
 			<property name="binZipPath" location="${basedir}/flashteacher${jar-version}-win.zip"/>
@@ -83,14 +83,24 @@
 			</manifest>
 		</jar>
 
+	<property name="launch4j.dir" location="c:/tools/launch4j" /> <!-- Location where launch4j is installed -->
+	<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+
+	<launch4j configFile="launch4j_config.xml" />
+	<launch4j configFile="launch4j_editor_config.xml" />
 
 		<zip destfile="${binZipPath}">
 			<fileset dir="${basedir}" includes="${libDirName}/*"/>
 			<fileset dir="${basedir}" includes="${xmlDirName}/*.dtd"/>
+			
 			<fileset dir="${basedir}" includes="${xmlDirName}/hebrew.xsl"/>
 			<fileset dir="${basedir}" includes="${xmlDirName}/hebrew.questions.xml"/>
+			<fileset dir="${basedir}" includes="${xmlDirName}/musical_intervals.questions.xml"/>
+			<fileset dir="${basedir}" includes="${xmlDirName}/solfege_pentatone.questions.xml"/>
+			
 			<fileset dir="${basedir}" includes="${jarName}"/>
-			<fileset dir="${basedir}" includes="*.exe"/>
+			<fileset dir="${basedir}" includes="FlashTeacher.exe"/>
+			<fileset dir="${basedir}" includes="FlashTeacherEditor.exe"/>
 			<fileset dir="${basedir}" includes="*.txt"/>
 			<fileset dir="${basedir}" includes="*.md"/>
 		</zip>

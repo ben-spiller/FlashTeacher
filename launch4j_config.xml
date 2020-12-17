@@ -1,7 +1,7 @@
 <launch4jConfig>
   <dontWrapJar>true</dontWrapJar>
   <headerType>0</headerType>
-  <jar>flashteacher1.0.jar</jar>
+  <jar>flashteacher.jar</jar>
   <outfile>FlashTeacher.exe</outfile>
   <errTitle></errTitle>
   <jarArgs></jarArgs>
@@ -10,20 +10,23 @@
   <stayAlive>false</stayAlive>
   <icon>src\com\ben\flashteacher\resources\flashteacher.ico</icon>
   <jre>
-    <path></path>
-    <minVersion>1.6.0</minVersion>
+    <minVersion>1.8.0</minVersion>
     <maxVersion></maxVersion>
     <initialHeapSize>0</initialHeapSize>
     <maxHeapSize>0</maxHeapSize>
-    <args></args>
   </jre>
+  <splash>
+    <file>launch4j_loading_splash_screen.bmp</file>
+    <waitForWindow>true</waitForWindow>
+  </splash>
   <versionInfo>
-    <fileVersion>1.0.2.0</fileVersion>
-    <txtFileVersion>1.0</txtFileVersion>
+    <fileVersion>1.1.0.0</fileVersion>
+    <productVersion>1.1.0.0</productVersion>
+    <txtFileVersion>1.1</txtFileVersion>
+    <txtProductVersion>1.1</txtProductVersion>
+    <copyright>(C) Ben Spiller 2007-2020</copyright>
+    
     <fileDescription>FlashTeacher executable wrapper</fileDescription>
-    <copyright>(c) Ben Spiller 2007, 2009</copyright>
-    <productVersion>1.0.2.0</productVersion>
-    <txtProductVersion>1.0</txtProductVersion>
     <productName>FlashTeacher</productName>
     <companyName></companyName>
     <internalName>FlashTeacher</internalName>
