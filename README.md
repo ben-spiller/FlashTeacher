@@ -17,11 +17,13 @@ You need a Java(R) Runtime Environment installed on your machine (recommended Ja
 
 There are sample question files for musical key signatures, biblical Hebrew, and dictation of musical melodies (ear training using do/re/me solfege names; this also demonstrates the plugin API). 
 
-To get started, open the application using one of these (hint the musical key signatures might be the easiest to guess/look up if you're not an expert on the other topics!) to get a feel for how it works. 
+To get started, open the application and specify one of these (hint the musical key signatures might be the easiest to guess/look up if you're not an expert on the other topics!) to get a feel for how it works. 
 
 When you're ready to create your own question set, copy one of the XML question files as a starting point, and edit it with a text editor of your choice. 
 
 Once you have a question file setup as you like, you can enter the questions in that file manually with a text editor, or using the FlashTeacher Editor application. 
+
+You will probably want to create separate start menu shortcuts for launching the tool with each of the question files you create.
 
 Hope you enjoy using this tool!
 
