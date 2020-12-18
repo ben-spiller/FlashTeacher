@@ -96,19 +96,21 @@ public class QuestionManager
 
 
 	/**
-	 * A list of questions that were not passed (i.e. that have a time 
-	 * associated with them). Gets re-sorted by timeToAnswer.
+	 * A list of questions that have been asked at least once and were in recently-passed 
+	 * mode (i.e. that have a time associated with them). Gets re-sorted by timeToAnswer.
 	 */
 	final List<QuestionHistory> nonPassedQuestions = new ArrayList<QuestionHistory>();
 
 	/**
-	 * A set of questions that were passed and are also marked as prioritized 
+	 * A set of questions that were passed/not-yet-asked and are also marked as prioritized 
 	 * questions (based on the principal that we should concentrate on learning 
 	 * a small number of questions at a time). 
 	 */
 	final Set<QuestionHistory> prioritizedQuestions = new HashSet<QuestionHistory>();
 	
 	// (note nonPassedQuestions + prioritizedQuestions + <passed but non-prioritized Qs> = allQuestions) 
+	
+	float getUnknownQuestionsFraction() { return 1 - (nonPassedQuestions.size() / allQuestions.size()); }
 
 	QuestionHistory currentQuestion = null;
 	
@@ -365,9 +367,11 @@ public class QuestionManager
 		
 		float questionTypeSelectValue = random.nextFloat();
 		
-		if (questionTypeSelectValue < QUESTION_SELECTION_PROBABILITY_PRIORITIZED)
+		// as a special case, when there are lots (>15%) of unknown questions, just focus on them before worrying about 
+		// improving/refreshing performance on the questions you do know
+		if (questionTypeSelectValue < QUESTION_SELECTION_PROBABILITY_PRIORITIZED || getUnknownQuestionsFraction() > 0.15)
 		{
-			logger.debug("QuestionManager.moveToNextQuestion: selecting from Qs in prioritized list");
+			logger.debug("QuestionManager.moveToNextQuestion: selecting from Qs in prioritized list; unknownQuestionsFraction="+getUnknownQuestionsFraction());
 			
 			// select randomly from the prioritized list
 			if (prioritizedQuestions.size() > 0)
