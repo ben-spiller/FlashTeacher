@@ -54,14 +54,25 @@ public class SolfegeDictationPlugin implements Plugin
 	/** True if this is the first question since this set of questions was loaded/started. */
 	boolean isFirstQuestion;
 	
+	/** Convert either or a single value or a min-max range into an array with two elements. */
+	private static String[] parseRange(String x) {
+		String[] result = x.replace(" ", "").split("-");
+		if (result.length == 1) return new String[] {result[0], result[0]};
+		return result;		
+	}
 	public Collection<Question> loadQuestions(File questionFile, Map<String, String> properties, JPanel questionFieldPanel) throws Exception
 	{
 		initMIDI();
-		timeBetweenNotesMillisMin = timeBetweenNotesMillisMax = Integer.parseInt(properties.remove("timeBetweenNotesMillis"));
-
-		doMin = doMax = Integer.parseInt(properties.remove("do")); // TODO: randomly pick a starting note within the range
-		currentDo = doMin;
-		isFirstQuestion = true;
+		String[] range = parseRange(properties.remove("noteDurationMillis"));
+		timeBetweenNotesMillisMin = Integer.parseInt(range[0]);
+		timeBetweenNotesMillisMax = Integer.parseInt(range[1]);
+		
+		range = parseRange(properties.remove("doNote"));
+		doMin = Note.find(range[0]).midiNote;
+		doMax = Note.find(range[1]).midiNote;
+		currentDo = randomInt(doMin, doMax);
+		
+		isFirstQuestion = true; // so we can play the tonic anchor at the beginning
 
 		String[] instruments = properties.remove("instruments").toLowerCase().split(",");
 		if (instruments.length==0) instruments = new String[] {"Piano"};
@@ -196,7 +207,7 @@ public class SolfegeDictationPlugin implements Plugin
 	/** Returns a random integer within the specified range inclusive */
 	private int randomInt(int from, int to)
 	{
-		return random.nextInt(1+from-to)+from;
+		return random.nextInt(1+to-from)+from;
 	}
 	
 	protected MidiSequenceBuilder currentQuestionMidiSequence;
@@ -221,7 +232,7 @@ public class SolfegeDictationPlugin implements Plugin
 			}
 			
 			for (String solfege: question.getQuestion().split(" "))
-				currentQuestionMidiSequence.addNote(currentDo+solfegeToSemitonesAboveDo(solfege), randomInt(timeBetweenNotesMillisMin, timeBetweenNotesMillisMin));
+				currentQuestionMidiSequence.addNote(currentDo+solfegeToSemitonesAboveDo(solfege), randomInt(timeBetweenNotesMillisMin, timeBetweenNotesMillisMax));
 			currentQuestionMidiSequence.play();
 		} catch (Exception ex)
 		{
@@ -232,8 +243,7 @@ public class SolfegeDictationPlugin implements Plugin
 	protected String normalizeSolfegeString(String s)
 	{
 		s = s.toLowerCase();
-		// TODO: cope with optional lack of spaces
-		String[] solfegeValues = s.split(" ");
+		String[] solfegeValues = (s.contains(" ")) ? s.split(" ") : s.split("");
 		for (int i = 0; i < solfegeValues.length; i++)
 			switch(solfegeValues[i])
 			{
@@ -351,12 +361,8 @@ public class SolfegeDictationPlugin implements Plugin
 		@Override
 		protected boolean isAnswerCorrect(String answer, boolean caseSensitive)
 		{
-			// TODO: can support answers without spaces and the chromatic solfege symbols later, by normalizing the answer before validating it
-			// TODO: test error handling here
-			answer = stripSolfegeOctaves(answer);
-			if (!answer.contains(" "))
-				throw new IllegalArgumentException("Enter answers with spaces e.g. do re me");
-			return super.isAnswerCorrect(answer, true);
+			// Don't bother to make user get the octave right, it'd an unnecessary distraction
+			return stripSolfegeOctaves(getAnswer()).equalsIgnoreCase(normalizeSolfegeString(stripSolfegeOctaves(answer)));
 		}
 	}
 	
@@ -467,7 +473,7 @@ public class SolfegeDictationPlugin implements Plugin
 		{ 
 			initMIDI();
 
-			currentDo = doMin;
+			currentDo = Note.find("C3").midiNote;
 			currentPatch = allInstruments[0].getPatch();
 	
 			String[] solfegeValues = normalizeSolfegeString("do re me fa so la ti").split(" ");
@@ -592,7 +598,7 @@ public class SolfegeDictationPlugin implements Plugin
 			displayName = displayName.replace(" ", "");
 			if (displayName.contains("#")) throw new IllegalArgumentException("Notes must be specified with 'b' not '#'");
 			for (int i = 0; i < 127; i++) 
-				if (NOTES[i].displayName.equalsIgnoreCase(displayName)) return NOTES[i];
+				if (NOTES[i].displayName.equalsIgnoreCase(displayName) || displayName.equals(String.valueOf(i))) return NOTES[i];
 			throw new IllegalArgumentException("Unknown note: '"+displayName+"'; correct format for notes is C4, Bb6, etc");
 		}
 	}
