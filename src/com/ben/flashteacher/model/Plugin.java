@@ -51,9 +51,11 @@ public interface Plugin
 	 * 
 	 * @param question
 	 */
-	default public void onQuestionChanged(Question question) {}
+	default void onQuestionChanged(Question question) {}
 	
 	/** Called during application shutdown to free any static OS resources (e.g. MIDI) 
 	 * and/or background threads allocated by this plugin. */
-	default public void close() {}
+	default void close() {}
+	
+	default boolean checkAnswer(Question question, String answer) { return question.isAnswerCorrect(answer); }
 }

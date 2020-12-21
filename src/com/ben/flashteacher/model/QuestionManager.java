@@ -190,11 +190,11 @@ public class QuestionManager
 					if (existingQuestion == null)
 					{
 						// but don't delete them from the on-disk file, might want to come back to them later
-						removedQuestions.add(new QuestionHistory( new Question(questionText, answerText), historyElement));
+						removedQuestions.add(new QuestionHistory( new Question(questionText, answerText, options.isCaseSensitive), historyElement));
 						logger.info("Ignoring question which is no longer in the question file: \""+questionText+"\"");
 						continue;
 					}
-					if (!existingQuestion.isAnswerCorrect(answerText, options.isCaseSensitive))
+					if (!existingQuestion.isAnswerCorrect(answerText))
 					{
 						logger.info("Answer has changed, so ignoring history for question: \""+existingQuestion+"\"");
 						continue;
@@ -470,7 +470,7 @@ public class QuestionManager
 	 */
 	public AnswerOutcome answerQuestion(String answer, long timeToAnswer, List<Long> characterTimes) throws IllegalArgumentException
 	{
-		boolean result = currentQuestion.question.isAnswerCorrect(answer, options.isCaseSensitive);
+		boolean result = currentQuestion.question.isAnswerCorrect(answer);
 		
 		logger.debug("answerQuestion - "+((result) ? "correct" : "wrong!"));
 		

@@ -197,7 +197,7 @@ public class ModelHolder
 				if (questionText == null || answerText.length() == 0) // probably never happens due to DTD validation
 					throw new IOException("Invalid question file - question or answer value #"+question+" is null");
 				
-				allQuestions.add(new Question(questionText, answerText.toString()));
+				allQuestions.add(new Question(questionText, answerText.toString(), options.isCaseSensitive));
 			}
 		}
 

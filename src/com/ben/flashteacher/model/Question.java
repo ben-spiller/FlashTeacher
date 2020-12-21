@@ -17,10 +17,12 @@ public class Question
 {
 	static final Logger logger = Logger.getLogger(Question.class);
 	
-	private String question;
-	private String answer;
+	private final String question;
+	private final String answer;
+	private final boolean caseSensitive;
 	
-	public Question(String question, String answer) {
+	public Question(String question, String answer, boolean caseSensitive) {
+		this.caseSensitive = caseSensitive;
 		question = question.replaceAll("  *", " ").trim();
 		answer = answer.replaceAll("  *", " ").trim();
 		
@@ -39,7 +41,7 @@ public class Question
 	 * @throws IllegalArgumentException If the specified answer is not merely incorrect but actually not a permitted answer 
 	 * (this doesn't count as a wrong answer)
 	 */
-	protected boolean isAnswerCorrect(String answer, boolean caseSensitive) throws IllegalArgumentException
+	protected boolean isAnswerCorrect(String answer) throws IllegalArgumentException
 	{
 		/*logger.trace("isAnswerCorrect: user answer = \""+answer+"\", correct answer = \""+this.answer+"\"");
 		for (char x: answer.toCharArray())

@@ -359,12 +359,12 @@ public class SolfegeDictationPlugin implements Plugin
 	class SolfegeQuestion extends Question
 	{
 		public SolfegeQuestion(String[] solfege) {
-			super(String.join(" ", solfege), String.join(" ", solfege));
+			super(String.join(" ", solfege), String.join(" ", solfege), false);
 			logger.debug("Added question: "+this);
 		}
 		
 		@Override
-		protected boolean isAnswerCorrect(String answer, boolean caseSensitive)
+		protected boolean isAnswerCorrect(String answer)
 		{
 			// Don't bother to make user get the octave right, it'd an unnecessary distraction
 			return stripSolfegeOctaves(getAnswer()).equalsIgnoreCase(normalizeSolfegeString(stripSolfegeOctaves(answer)));
