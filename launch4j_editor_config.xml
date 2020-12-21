@@ -8,7 +8,7 @@
   <chdir>.</chdir>
   <customProcName>true</customProcName>
   <stayAlive>false</stayAlive>
-  <icon>src\com\ben\flashteacher\resources\flashteacher.ico</icon>
+  <icon>src\benspiller\flashteacher\resources\flashteacher.ico</icon>
   <jre>
     <minVersion>1.8.0</minVersion>
     <maxVersion></maxVersion>
