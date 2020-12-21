@@ -459,7 +459,7 @@ public class QuestionManager
 	 * Called when the user has provided an answer for the current question. Returns <code>true</code> 
 	 * if the answer is correct. Records information about whether the question was answered correctly, 
 	 * and advances to the next question. 
-	 * @param answer
+	 * @param isCorrect
 	 * @param timeToAnswer In milliseconds
 	 * @param characterTimes A list of times (in millis) taken to type each 
 	 * character of the answer. Used as part of an ongoing estimate of what 
@@ -468,13 +468,11 @@ public class QuestionManager
 	 * @throws IllegalArgumentException If the specified answer is not merely incorrect but actually not a permitted answer 
 	 * (this doesn't count as a wrong answer)
 	 */
-	public AnswerOutcome answerQuestion(String answer, long timeToAnswer, List<Long> characterTimes) throws IllegalArgumentException
+	public AnswerOutcome answerQuestion(boolean isCorrect, long timeToAnswer, List<Long> characterTimes) throws IllegalArgumentException
 	{
-		boolean result = currentQuestion.question.isAnswerCorrect(answer);
+		logger.debug("answerQuestion - "+((isCorrect) ? "correct" : "wrong!"));
 		
-		logger.debug("answerQuestion - "+((result) ? "correct" : "wrong!"));
-		
-		if (result)
+		if (isCorrect)
 		{
 			// Do time adjustments
 			if (getAverageTimePerCharacter() > 0) {
@@ -489,7 +487,7 @@ public class QuestionManager
 			
 			// Only use the character times if the answer was given correctly - 
 			// otherwise there will be lots of thinking time in there too
-			if (result && timeToAnswer < getMaximumAnswerTime())
+			if (isCorrect && timeToAnswer < getMaximumAnswerTime())
 				adjustAverageTimePerCharacter(characterTimes);
 			
 			if (timeToAnswer > getMaximumAnswerTime())
@@ -508,7 +506,7 @@ public class QuestionManager
 			logger.debug("answerQuestion: history was:    "+history);
 			history.averageTimeToAnswer = Utils.exponentialWeightedAverage(history.averageTimeToAnswer, timeToAnswer, 0.6f);
 			
-			if (history.passModeCounter > 0 && result) // decrement pass counter for priority Qs - but only if they got the right answer!
+			if (history.passModeCounter > 0 && isCorrect) // decrement pass counter for priority Qs - but only if they got the right answer!
 			{
 				history.passModeCounter--;
 				if (history.passModeCounter == 0) 
@@ -530,10 +528,10 @@ public class QuestionManager
 		questionSetScores = null;
 
 		// select next question if applicable
-		if (result)
+		if (isCorrect)
 			moveToNextQuestion();
 		
-		return new AnswerOutcome(result, false, null);
+		return new AnswerOutcome(isCorrect, false, null);
 	}
 	
 	/**

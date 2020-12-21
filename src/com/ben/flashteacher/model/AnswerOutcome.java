@@ -10,8 +10,8 @@ public class AnswerOutcome
 	protected AnswerOutcome(boolean correct, boolean isOneCharacterShort, String answerIsForThisQuestion)
 	{
 		this.correct = correct;
-		this.isOneCharacterShort = isOneCharacterShort;
-		this.answerIsForThisQuestion = answerIsForThisQuestion;
+		//this.isOneCharacterShort = isOneCharacterShort;
+		//this.answerIsForThisQuestion = answerIsForThisQuestion;
 	}
 	protected boolean correct;
 	public boolean isCorrect()
@@ -19,11 +19,12 @@ public class AnswerOutcome
 		return correct;
 	}
 	
-	protected String answerIsForThisQuestion;
+	//protected String answerIsForThisQuestion;
 	/**
 	 * @return <code>null</code>, unless this is the correct answer, but the 
 	 * question is wrong
 	 */
+	/*
 	public String getQuestionForThisAnswer()
 	{
 		return answerIsForThisQuestion;
@@ -33,5 +34,5 @@ public class AnswerOutcome
 	public boolean isOneCharacterShort()
 	{
 		return isOneCharacterShort;
-	}
+	}*/
 }

@@ -62,6 +62,11 @@ public class SolfegeDictationPlugin implements Plugin
 		if (result.length == 1) return new String[] {result[0], result[0]};
 		return result;		
 	}
+	
+	/*
+	 * The entrypoint for plugins. 
+	 */
+	@Override
 	public Collection<Question> loadQuestions(File questionFile, Map<String, String> properties, JPanel questionFieldPanel) throws Exception
 	{
 		initMIDI();
@@ -109,6 +114,32 @@ public class SolfegeDictationPlugin implements Plugin
 
 		return qs;
 	}
+	
+	@Override
+	public boolean checkAnswer(Question question, String answer)
+	{
+		// Don't bother to make user get the octave right, it'd an unnecessary distraction
+		boolean result = stripSolfegeOctaves(question.getAnswer()).equalsIgnoreCase(normalizeSolfegeString(stripSolfegeOctaves(answer)));
+		
+		// on correct answer, play it again to solidify the learning
+		if (result)
+			currentQuestionMidiSequence.play();
+		
+		return result;
+	}
+	
+	@Override
+	public void close()
+	{
+		if (sequencer == null) return;
+		
+		logger.info("Shutting down MIDI");
+		sequencer.close();
+		sequencer = null;
+		logger.debug("Done shutting down MIDI");
+	}
+
+	
 	
 	protected Map<String, Icon> solfegeIcons = null;
 	
@@ -324,16 +355,60 @@ public class SolfegeDictationPlugin implements Plugin
 		return semitones;
 	}
 
-	@Override
-	public void close()
+	
+	static class Note
 	{
-		if (sequencer == null) return;
+		final int midiNote;
+		/** In "scientific" notation i.e. C4=middle C (NB: some MIDI software uses C3 or C5 for middle C) */
+		final String displayName;
+		Note(int midiNote)
+		{
+			this.midiNote = midiNote;
+			String note;
+			// For simplicity, don't support both # and b designations; b's is better to standardize 
+			// on because it matches the names of the associated keys (e.g. Bb not A#)
+			switch(midiNote % 12)
+			{
+			case 0: note = "C"; break;
+			case 1: note = "Db"; break;
+			case 2: note = "D"; break;
+			case 3: note = "Eb"; break;
+			case 4: note = "E"; break;
+			case 5: note = "F"; break;
+			case 6: note = "Gb"; break;
+			case 7: note = "G"; break;
+			case 8: note = "Ab"; break;
+			case 9: note = "A"; break;
+			case 10: note = "Bb"; break;
+			case 11: note = "B"; break;
+			default: throw new RuntimeException("Logic error in application");
+			}
+			int octave = -1 + (midiNote-(midiNote%12))/12;
+			displayName = note+octave;
+		}
+		@Override
+		public String toString()
+		{
+			return displayName+" (MIDI "+midiNote+")";
+		}
 		
-		logger.info("Shutting down MIDI");
-		sequencer.close();
-		sequencer = null;
-		logger.debug("Done shutting down MIDI");
+		/** All possible MIDI notes */
+		public static final Note[] NOTES;
+		static {
+			NOTES = new Note[127];
+			for (int i = 0; i < 127; i++) NOTES[i] = new Note(i);
+		}
+		
+		public static Note find(String displayName)
+		{
+			displayName = displayName.replace(" ", "");
+			if (displayName.contains("#")) throw new IllegalArgumentException("Notes must be specified with 'b' not '#'");
+			for (int i = 0; i < 127; i++) 
+				if (NOTES[i].displayName.equalsIgnoreCase(displayName) || displayName.equals(String.valueOf(i))) return NOTES[i];
+			throw new IllegalArgumentException("Unknown note: '"+displayName+"'; correct format for notes is C4, Bb6, etc");
+		}
 	}
+
 	
 	private void generateQuestionsFor(String[] accumulator, String[] possibleSolfege, int remainingNotes, List<Question> questions)
 	{
@@ -355,19 +430,12 @@ public class SolfegeDictationPlugin implements Plugin
 				generateQuestionsFor(x, possibleSolfege, remainingNotes-1, questions);
 		}
 	}
-	
+
 	class SolfegeQuestion extends Question
 	{
 		public SolfegeQuestion(String[] solfege) {
 			super(String.join(" ", solfege), String.join(" ", solfege), false);
 			logger.debug("Added question: "+this);
-		}
-		
-		@Override
-		protected boolean isAnswerCorrect(String answer)
-		{
-			// Don't bother to make user get the octave right, it'd an unnecessary distraction
-			return stripSolfegeOctaves(getAnswer()).equalsIgnoreCase(normalizeSolfegeString(stripSolfegeOctaves(answer)));
 		}
 	}
 	
@@ -558,56 +626,4 @@ public class SolfegeDictationPlugin implements Plugin
 		new SolfegeDictationPlugin().showStandaloneGUI();
 	}
 	
-	static class Note
-	{
-		final int midiNote;
-		/** In "scientific" notation i.e. C4=middle C (NB: some MIDI software uses C3 or C5 for middle C) */
-		final String displayName;
-		Note(int midiNote)
-		{
-			this.midiNote = midiNote;
-			String note;
-			// For simplicity, don't support both # and b designations; b's is better to standardize 
-			// on because it matches the names of the associated keys (e.g. Bb not A#)
-			switch(midiNote % 12)
-			{
-			case 0: note = "C"; break;
-			case 1: note = "Db"; break;
-			case 2: note = "D"; break;
-			case 3: note = "Eb"; break;
-			case 4: note = "E"; break;
-			case 5: note = "F"; break;
-			case 6: note = "Gb"; break;
-			case 7: note = "G"; break;
-			case 8: note = "Ab"; break;
-			case 9: note = "A"; break;
-			case 10: note = "Bb"; break;
-			case 11: note = "B"; break;
-			default: throw new RuntimeException("Logic error in application");
-			}
-			int octave = -1 + (midiNote-(midiNote%12))/12;
-			displayName = note+octave;
-		}
-		@Override
-		public String toString()
-		{
-			return displayName+" (MIDI "+midiNote+")";
-		}
-		
-		/** All possible MIDI notes */
-		public static final Note[] NOTES;
-		static {
-			NOTES = new Note[127];
-			for (int i = 0; i < 127; i++) NOTES[i] = new Note(i);
-		}
-		
-		public static Note find(String displayName)
-		{
-			displayName = displayName.replace(" ", "");
-			if (displayName.contains("#")) throw new IllegalArgumentException("Notes must be specified with 'b' not '#'");
-			for (int i = 0; i < 127; i++) 
-				if (NOTES[i].displayName.equalsIgnoreCase(displayName) || displayName.equals(String.valueOf(i))) return NOTES[i];
-			throw new IllegalArgumentException("Unknown note: '"+displayName+"'; correct format for notes is C4, Bb6, etc");
-		}
-	}
 }

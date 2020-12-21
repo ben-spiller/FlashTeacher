@@ -548,7 +548,8 @@ public class QuestionWindow extends JFrame {
 					String correctAnswer = model.getQuestionManager().getCurrentAnswer();
 					
 					try {
-						AnswerOutcome outcome = model.getQuestionManager().answerQuestion(answerField.getText(), timeToAnswer, characterTimes);
+						AnswerOutcome outcome = model.getQuestionManager().answerQuestion(
+								model.checkAnswer(model.getQuestionManager().getCurrentQuestion(), answerField.getText()), timeToAnswer, characterTimes);
 						if (outcome.isCorrect())
 						{
 							// display the canonical version, which may or may not be the same (e.g. capitalization may be incorrect yet allowed in user answer)

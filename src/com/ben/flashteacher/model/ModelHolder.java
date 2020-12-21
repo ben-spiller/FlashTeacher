@@ -244,6 +244,15 @@ public class ModelHolder
 			p.onQuestionChanged(getQuestionManager().getCurrentQuestion());
 	}
 
+	/** Checks if a answer just entered by the user is correct, using a plugin if there is one. 
+	 * This also gives the plugin a chance to play extra sound etc in response to their answer. */
+	public boolean checkAnswer(Question question, String answer)
+	{
+		for (Plugin p: plugins.values())
+			return p.checkAnswer(question, answer);
+		return question.isAnswerCorrect(answer);
+	}
+
 	
 	public void saveHistory() throws IOException
 	{
