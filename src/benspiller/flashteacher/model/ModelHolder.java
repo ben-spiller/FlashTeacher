@@ -62,27 +62,6 @@ public class ModelHolder
 	}
 	
 	/**
-	 * Force the options only to be loaded. Throws an exception on error. If no 
-	 * exception is thrown here, then getOptions() method may be called safely 
-	 * without fear of exceptions. 
-	 * @throws IOException
-	 */
-	private void loadOptionsOnly() throws IOException
-	{
-		logger.info(getClass().getSimpleName()+ ".loadOptions()");
-
-		lastLoaded = null;
-		
-		Document document = XMLUtils.loadXML(questionFile);
-		Element questionListElement = document.getRootElement();
-
-		options = new Options(questionListElement);
-		
-		logger.debug(getClass().getSimpleName()+".loadOptions() done");
-	}
-	
-	
-	/**
 	 * Force everything to be loaded. Throws an exception on error. If no 
 	 * exception is thrown here, the other get* methods may be called safely 
 	 * without fear of exceptions. 
