@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.ben.flashteacher.model;
+package benspiller.flashteacher.model;
 
 import org.jdom.Element;
 

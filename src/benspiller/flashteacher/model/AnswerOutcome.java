@@ -1,4 +1,4 @@
-package com.ben.flashteacher.model;
+package benspiller.flashteacher.model;
 
 /**
  * A structure to hold details about whether a question was answered correctly. 

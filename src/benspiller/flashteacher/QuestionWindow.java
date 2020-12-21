@@ -1,4 +1,4 @@
-package com.ben.flashteacher;
+package benspiller.flashteacher;
 
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -44,10 +44,10 @@ import javax.swing.text.StyleConstants;
 
 import org.apache.log4j.Logger;
 
-import com.ben.flashteacher.model.AnswerOutcome;
-import com.ben.flashteacher.model.ModelHolder;
-import com.ben.flashteacher.model.Options;
-import com.ben.flashteacher.utils.AbstractResourceAction;
+import benspiller.flashteacher.model.AnswerOutcome;
+import benspiller.flashteacher.model.ModelHolder;
+import benspiller.flashteacher.model.Options;
+import benspiller.flashteacher.utils.AbstractResourceAction;
 
 public class QuestionWindow extends JFrame {
 	private static final long serialVersionUID = 1L;

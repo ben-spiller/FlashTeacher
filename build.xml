@@ -79,7 +79,7 @@
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Build-Date" value="${ISO_DateTime}"/>
 				<attribute name="Class-Path" value="${libDirName}/${jgoodiesLooksJarName} ${libDirName}/${jdomJarName} ${libDirName}/${log4jJarName} ${libDirName}/${jgoodiesFormsJarName} ${libDirName}/${freechartJarName} ${libDirName}/${jcommonJarName}"/>
-				<attribute name="Main-Class" value="com.ben.flashteacher.Main"/>
+				<attribute name="Main-Class" value="benspiller.flashteacher.Main"/>
 			</manifest>
 		</jar>
 

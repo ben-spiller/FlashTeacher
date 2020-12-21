@@ -1,4 +1,4 @@
-package com.ben.flashteacher.model;
+package benspiller.flashteacher.model;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Text;
 
-import com.ben.flashteacher.utils.XMLUtils;
+import benspiller.flashteacher.utils.XMLUtils;
 
 /**
  * Handles all file loading and saving for the model - options, questions and 
@@ -67,7 +67,7 @@ public class ModelHolder
 	 * without fear of exceptions. 
 	 * @throws IOException
 	 */
-	public void loadOptionsOnly() throws IOException
+	private void loadOptionsOnly() throws IOException
 	{
 		logger.info(getClass().getSimpleName()+ ".loadOptions()");
 
@@ -107,6 +107,8 @@ public class ModelHolder
 		
 		Document document = XMLUtils.loadXML(questionFile);
 		Element questionListElement = document.getRootElement();
+
+		options = new Options(questionListElement); // this will probably be v quick so no point reporting the time
 
 		Element historyListElement = null;
 
@@ -209,8 +211,6 @@ public class ModelHolder
 
 		try
 		{
-			options = new Options(questionListElement); // this will probably be v quick so no point reporting the time
-
 			time2 = System.currentTimeMillis();
 			qm = new QuestionManager(allQuestions, historyListElement, options, questionFieldPanel);
 			

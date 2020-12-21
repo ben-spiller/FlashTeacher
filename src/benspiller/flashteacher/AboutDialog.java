@@ -1,4 +1,4 @@
-package com.ben.flashteacher;
+package benspiller.flashteacher;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

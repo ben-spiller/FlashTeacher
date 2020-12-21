@@ -1,4 +1,4 @@
-package com.ben.flashteacher.plugins;
+package benspiller.flashteacher.plugins;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,8 +23,9 @@ import java.awt.*;
 import javax.swing.*;
 
 import org.apache.log4j.Logger;
-import com.ben.flashteacher.model.Plugin;
-import com.ben.flashteacher.model.Question;
+
+import benspiller.flashteacher.model.Plugin;
+import benspiller.flashteacher.model.Question;
 
 /**
  * A FlashTeacher plugin that asks questions by playing some notes (using MIDI) 

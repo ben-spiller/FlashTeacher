@@ -1,10 +1,10 @@
-package com.ben.flashteacher.utils;
+package benspiller.flashteacher.utils;
 
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import com.ben.flashteacher.Messages;
+import benspiller.flashteacher.Messages;
 
 public abstract class AbstractResourceAction extends AbstractAction
 {		

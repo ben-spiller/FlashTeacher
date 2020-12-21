@@ -1,4 +1,4 @@
-package com.ben.flashteacher.utils;
+package benspiller.flashteacher.utils;
 
 import java.io.File;
 import java.util.Locale;

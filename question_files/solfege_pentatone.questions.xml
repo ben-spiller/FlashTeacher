@@ -3,7 +3,7 @@
 
 <questionList title="Solfege dictation" author="Ben Spiller" isCaseSensitive="false" answerFontFamily="Tahoma" questionFontFamily="Tahoma" isAnswerRightToLeft="false">
 
-	<plugin class="com.ben.flashteacher.plugins.SolfegeDictationPlugin">
+	<plugin class="benspiller.flashteacher.plugins.SolfegeDictationPlugin">
 		<!-- Use comma e.g. "ti," to indicate solfege in a lower octave and apostrophe e.g. "re'" to indicate higher octave. 
 		
 		Note that one additional solfege will be displayed above/below the question range, to help when you later add additional notes. 

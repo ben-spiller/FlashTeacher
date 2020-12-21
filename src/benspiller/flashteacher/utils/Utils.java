@@ -1,4 +1,4 @@
-package com.ben.flashteacher.utils;
+package benspiller.flashteacher.utils;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

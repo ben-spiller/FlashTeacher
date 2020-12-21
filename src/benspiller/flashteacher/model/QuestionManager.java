@@ -1,4 +1,4 @@
-package com.ben.flashteacher.model;
+package benspiller.flashteacher.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,7 +16,8 @@ import javax.swing.JPanel;
 import org.apache.log4j.Logger;
 import org.jdom.Comment;
 import org.jdom.Element;
-import com.ben.flashteacher.utils.Utils;
+
+import benspiller.flashteacher.utils.Utils;
 
 /**
  * QuestionManager is the main model class, holding the list of available questions and 

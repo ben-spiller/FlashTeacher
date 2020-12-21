@@ -1,4 +1,4 @@
-package com.ben.flashteacher;
+package benspiller.flashteacher;
 
 public enum States {
 	ReadyToStart,

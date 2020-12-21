@@ -1,4 +1,4 @@
-package com.ben.flashteacher.model;
+package benspiller.flashteacher.model;
 
 import java.io.File;
 import java.util.Collection;

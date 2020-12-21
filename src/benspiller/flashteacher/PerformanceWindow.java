@@ -1,4 +1,4 @@
-package com.ben.flashteacher;
+package benspiller.flashteacher;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -41,11 +41,12 @@ import org.jfree.chart.axis.TickUnits;
 import org.jfree.chart.renderer.xy.DefaultXYItemRenderer;
 import org.jfree.data.xy.DefaultXYDataset;
 
-import com.ben.flashteacher.model.KnowledgeIndexHistory;
-import com.ben.flashteacher.model.QuestionSetScores;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
+
+import benspiller.flashteacher.model.KnowledgeIndexHistory;
+import benspiller.flashteacher.model.QuestionSetScores;
 
 public class PerformanceWindow extends JDialog
 {

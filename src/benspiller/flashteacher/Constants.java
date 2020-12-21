@@ -1,4 +1,4 @@
-package com.ben.flashteacher;
+package benspiller.flashteacher;
 
 import java.awt.Image;
 import java.util.Arrays;
@@ -14,7 +14,7 @@ public final class Constants
 	/**
 	 * Automatically incremented by the build
 	 */
-	private static final String BUILD_NUMBER = "73";
+	private static final String BUILD_NUMBER = "74";
 	
 	/**
 	 * The full 4-part version number

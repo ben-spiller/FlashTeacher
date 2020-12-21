@@ -1,4 +1,4 @@
-package com.ben.flashteacher.utils;
+package benspiller.flashteacher.utils;
 
 import java.awt.AWTKeyStroke;
 import java.awt.KeyboardFocusManager;

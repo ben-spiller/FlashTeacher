@@ -1,4 +1,4 @@
-package com.ben.flashteacher.model;
+package benspiller.flashteacher.model;
 
 import java.text.Collator;
 import java.text.Normalizer;

@@ -1,4 +1,4 @@
-package com.ben.flashteacher;
+package benspiller.flashteacher;
 
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
@@ -10,7 +10,7 @@ public class Messages
 {
 	static final Logger logger = Logger.getLogger(Messages.class.getName());
 
-	private static final String BUNDLE_NAME = "com.ben.flashteacher.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "benspiller.flashteacher.messages"; //$NON-NLS-1$
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
 			.getBundle(BUNDLE_NAME);

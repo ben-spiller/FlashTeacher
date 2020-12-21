@@ -1,4 +1,4 @@
-package com.ben.flashteacher.editor;
+package benspiller.flashteacher.editor;
 
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
@@ -55,11 +55,11 @@ import javax.swing.text.StyledEditorKit.StyledTextAction;
 import org.jdom.Document;
 import org.jdom.Element;
 
-import com.ben.flashteacher.Messages;
-import com.ben.flashteacher.model.Options;
-import com.ben.flashteacher.utils.AbstractResourceAction;
-import com.ben.flashteacher.utils.SwingUtils;
-import com.ben.flashteacher.utils.XMLUtils;
+import benspiller.flashteacher.Messages;
+import benspiller.flashteacher.model.Options;
+import benspiller.flashteacher.utils.AbstractResourceAction;
+import benspiller.flashteacher.utils.SwingUtils;
+import benspiller.flashteacher.utils.XMLUtils;
 
 public class EditWindow extends JFrame {
 	private static final long serialVersionUID = 1L;

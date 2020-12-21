@@ -1,4 +1,4 @@
-package com.ben.flashteacher;
+package benspiller.flashteacher;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,9 +11,10 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 
-import com.ben.flashteacher.model.ModelHolder;
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
+
+import benspiller.flashteacher.model.ModelHolder;
 
 public class Main {
 
@@ -37,7 +38,7 @@ public class Main {
 	{
 		JFileChooser fileChooser = new JFileChooser(ModelHolder.DEFAULT_QUESTION_FILE_DIRECTORY);
 		fileChooser.setDialogTitle("Select Question File");
-		fileChooser.setFileFilter(new com.ben.flashteacher.utils.FileNameExtensionFilter("Question Files (*."+ModelHolder.EXTENSION_QUESTION_FILES+")", ModelHolder.EXTENSION_QUESTION_FILES));
+		fileChooser.setFileFilter(new benspiller.flashteacher.utils.FileNameExtensionFilter("Question Files (*."+ModelHolder.EXTENSION_QUESTION_FILES+")", ModelHolder.EXTENSION_QUESTION_FILES));
 		if (fileChooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION)
 			return null;
 
@@ -66,7 +67,7 @@ public class Main {
 		if (args.length > 0 && args[0].equalsIgnoreCase("--editor"))
 		{
 			String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
-			com.ben.flashteacher.editor.Main.main(newArgs);
+			benspiller.flashteacher.editor.Main.main(newArgs);
 			return;
 		}
 		
