@@ -26,7 +26,6 @@
 			<property name="jarPath" location="${basedir}/${jarName}"/>
 
 			<property name="binZipPath" location="${basedir}/flashteacher${jar-version}-win.zip"/>
-			<property name="srcZipPath" location="${basedir}/flashteacher${jar-version}-src.zip"/>
 
 			<property name="log4jJarName" value="log4j-1.2.14.jar"/>
 			<property name="jgoodiesLooksJarName" value="looks-2.1.1.jar"/>
@@ -105,18 +104,6 @@
 			<fileset dir="${basedir}" includes="*.md"/>
 		</zip>
 
-		<zip destfile="${srcZipPath}">
-			<zipgroupfileset file="${binZipPath}"/>
-			<fileset dir="${basedir}" includes="build.xml"/>
-			<fileset dir="${basedir}" includes="launch4j*.xml"/>
-
-			<fileset dir="${basedir}" includes="${srcDirName}/**/*"/>
-
-			<fileset dir="${basedir}" includes=".classpath"/>
-			<fileset dir="${basedir}" includes=".project"/>
-			<fileset dir="${basedir}" includes="*.txt"/>
-			<fileset dir="${basedir}" includes="*.md"/>
-		</zip>
 
 
 	</target>
