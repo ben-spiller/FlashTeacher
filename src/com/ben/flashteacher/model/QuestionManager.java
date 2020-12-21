@@ -112,6 +112,15 @@ public class QuestionManager
 	
 	float getUnknownQuestionsFraction() { return 1 - (nonPassedQuestions.size() / allQuestions.size()); }
 
+	/**
+	 * Contains a list of QuestionHistory objects loaded from the history file that are 
+	 * no longer present in the current question file. These are stashed so they can 
+	 * be included when we re-save the file to avoid losing any data - though they 
+	 * will remain dormant unless/until re-added. 
+	 */
+	final List<QuestionHistory> removedQuestions = new ArrayList<QuestionHistory>();
+
+	
 	QuestionHistory currentQuestion = null;
 	
 	/**
@@ -180,6 +189,8 @@ public class QuestionManager
 					
 					if (existingQuestion == null)
 					{
+						// but don't delete them from the on-disk file, might want to come back to them later
+						removedQuestions.add(new QuestionHistory( new Question(questionText, answerText), historyElement));
 						logger.info("Ignoring question which is no longer in the question file: \""+questionText+"\"");
 						continue;
 					}
@@ -242,7 +253,13 @@ public class QuestionManager
 		Collections.reverse(allQuestions);
 		for (QuestionHistory q: allQuestions)
 			questionHistoryListElement.addContent(q.saveToXMLElement());
+		
+		if (!removedQuestions.isEmpty())
+			questionHistoryListElement.addContent(new Comment("The following item are no longer in the current question file, but the history is retained in case they are re-added later: "));
+		for (QuestionHistory q: removedQuestions)
+			questionHistoryListElement.addContent(q.saveToXMLElement());
 
+		
 		// add to root element
 		Element historyRootElement = new Element("questionHistory");
 		historyRootElement.addContent(questionHistoryListElement);
