@@ -4,24 +4,30 @@
 <questionList title="Solfege dictation" author="Ben Spiller" isCaseSensitive="false" answerFontFamily="Tahoma" questionFontFamily="Tahoma" isAnswerRightToLeft="false">
 
 	<plugin class="com.ben.flashteacher.plugins.SolfegeDictationPlugin">
-		<!-- Use comma e.g. "ti," to indicate solfege in a lower octave and apostrophe e.g. "re'" to indicate higher octave -->
+		<!-- Use comma e.g. "ti," to indicate solfege in a lower octave and apostrophe e.g. "re'" to indicate higher octave. 
+		
+		Note that one additional solfege will be displayed above/below the question range, to help when you later add additional notes. 
+		-->
 		<property name="solfegeValues" value="do re me so la"/>
 
-		<!-- Don't set this too large or the number of questions will be enormous -->
+		<!-- Don't set this too large or the number of questions will be enormous.  -->
 		<property name="notesPerQuestion" value="4"/>
 
 		<!-- How long to play each note for. Either a single value or a range "min-max" -->
 		<property name="noteDurationMillis" value="400-800"/>
 		
-		<!-- The absolute pitch or pitches to use for the base note "do" - you may wish to customize this based on your singing range. 
+		<!-- The absolute pitch or pitches to use for the base note "do" - you may wish to customize this based on your singing range.
+		 
 		Use scientific pitch notation (e.g. C4 = middle C; for accidentals use flats e.g. Eb3). 
 		Either a single value or a range "min-max" (inclusive), in which case the do note is randomly selected 
-		at the start of each question session. -->
+		at the start of each question session. 
+		-->
 		<property name="doNote" value="C3-Gb3"/>
 		
 		<!-- A comma-separated list of MIDI instruments to use (substring, case insensitive). 
-		An instrument is selected at random for each question. -->
-		<property name="instruments" value="piano 1, piano 3, E.Piano 2, organ, Steel-str.Gt, violin, strings, trumpet, Choir Aahs"/>
+		An instrument is selected at random for each question.
+		-->
+		<property name="instruments" value="Piano 1, Piano 3, E.Piano 2, organ, Steel-str.Gt, violin, strings, trumpet, Choir Aahs"/>
 		
 	</plugin>
 

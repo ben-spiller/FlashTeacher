@@ -294,7 +294,7 @@ public class QuestionWindow extends JFrame {
 			initializeFromOptions();
 		} catch (IOException e)
 		{
-			logger.info("Failed to load model in initialize() - will try again when user presses Start");
+			logger.warn("Failed to load question model during initialize - will try again when user presses Start: "+e);
 		}
 		
 		currentState = States.ReadyToStart;
@@ -314,6 +314,7 @@ public class QuestionWindow extends JFrame {
 	    StyleConstants.setFontSize(questionAttributes, options.getQuestionFontSize());
 	    questionField.setParagraphAttributes( questionAttributes, false);
 	    
+	    logger.info("Set font size="+options.getQuestionFontSize());
 	    // This is really just so that plugins can look up the default font info if they want to
 	    questionFieldPanel.setFont(new Font(options.getQuestionFontFamily(), 0, options.getQuestionFontSize()));
 	    

@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.sound.midi.*;
@@ -127,7 +129,6 @@ public class SolfegeDictationPlugin implements Plugin
 		JLabel l;
 		Insets insets = new Insets(0,20,0,5);
 		
-		// TODO: will need some extra logic here to cope with additional do/re/me octaves. TODO: also we should make sure that solfegeValues doesn't include duplicates
 		List<String> allSolfege = Arrays.asList("do", "re", "me", "fa", "so", "la", "ti");
 		if (solfegeIcons == null) // load on first use; save in a static to avoid having to dispose them
 		{
@@ -139,22 +140,37 @@ public class SolfegeDictationPlugin implements Plugin
 			}
 		}
 		
-		// we want to display all solfege values from low->high, not merely the ones that are included as possible answers 
+		// We want to display all solfege values from low->high, not merely the ones that are included as possible answers 
 		// (to avoid confusing user's mental model by having gaps)
+		// Similarly, to avoid cognitive friction when user later adds additional notes, display one extra note above and below the range for the current question 
+		final int SOLFEGE_BUFFER = (solfegePlayerOnly) ? 0 : 1; 
+		
+		int solfegeIndex = allSolfege.indexOf(stripSolfegeOctaves(solfegeValues[0]));
+		solfegeIndex = (solfegeIndex-SOLFEGE_BUFFER + allSolfege.size()) % allSolfege.size();
+		int solfegeOctave = getSolfegeOctaves(solfegeValues[0]);
+		if (SOLFEGE_BUFFER == 1 && "ti".equals(allSolfege.get(solfegeIndex)))
+			solfegeOctave -= 1;
+		
 		List<String> labels = new ArrayList<>();
-		int solfegeIndex = allSolfege.indexOf(solfegeValues[0]);
-		String finalDisplayedSolfege = solfegeValues[solfegeValues.length-1];
-		if (allSolfege.indexOf(finalDisplayedSolfege) < 0) throw new RuntimeException("Assertion failure - cannot find '"+finalDisplayedSolfege+"'"); // to avoid infinite looping
-		while (true)
+		while (solfegeOctave <= getSolfegeOctaves(solfegeValues[solfegeValues.length-1])+1) // this condition is not normally used - it's just to make infinite loops impossible
 		{
-			labels.add(allSolfege.get(solfegeIndex));
+			String octaveSuffix = "";
+			for (int i = 0; i < solfegeOctave; i++) octaveSuffix += OCTAVE_UP;
+			for (int i = 0; i > solfegeOctave; i--) octaveSuffix += OCTAVE_DOWN;
 			
-			if (allSolfege.get(solfegeIndex).equals(finalDisplayedSolfege))
+			labels.add(allSolfege.get(solfegeIndex)+octaveSuffix);
+			solfegeIndex += 1;
+			
+			if (labels.size() > SOLFEGE_BUFFER+1 && labels.get(labels.size()-1-SOLFEGE_BUFFER).equals(solfegeValues[solfegeValues.length-1]))
 				break;
 			
-			solfegeIndex++;
-			if (solfegeIndex == allSolfege.size()) solfegeIndex = 0;
+			if (solfegeIndex == allSolfege.size()) 
+			{
+				solfegeIndex = 0;
+				solfegeOctave += 1;
+			}
 		}
+		
 		Collections.reverse(labels);
 		
 		for (final String s : labels)
@@ -165,7 +181,7 @@ public class SolfegeDictationPlugin implements Plugin
 			l.setFont(questionFieldPanel.getFont());
 			if (s.startsWith("do"))
 				l.setFont(l.getFont().deriveFont(Font.BOLD).deriveFont(Collections.singletonMap(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON)));
-			l.setIcon(solfegeIcons.get(s));
+			l.setIcon(solfegeIcons.get(stripSolfegeOctaves(s)));
 			//l.setBorder(BorderFactory.createLineBorder(Color.black));
 			
 			l.addMouseListener(new MouseAdapter() {
@@ -240,45 +256,60 @@ public class SolfegeDictationPlugin implements Plugin
 		}
 	}
 	
+	/** Normalizes capitalization and single-letter short names in a string of multiple solfege values. Leaves octave designation in place. */
 	protected String normalizeSolfegeString(String s)
 	{
 		s = s.toLowerCase();
 		String[] solfegeValues = (s.contains(" ")) ? s.split(" ") : s.split("");
 		for (int i = 0; i < solfegeValues.length; i++)
-			switch(solfegeValues[i])
+		{
+			String v = solfegeValues[i];
+			
+			Matcher m = OCTAVE_REGEX.matcher(v);
+			String octaves = (m.find()) ? m.group() : "";
+			v = v.replace(octaves, ""); // strip off octaves before re-adding after normalization
+			switch(v)
 			{
-			case "t": solfegeValues[i] = "ti"; break;
-			case "l": solfegeValues[i] = "la"; break;
-			case "s": solfegeValues[i] = "so"; break;
-			case "f": solfegeValues[i] = "fa"; break;
-			case "m": solfegeValues[i] = "me"; break;
-			case "r": solfegeValues[i] = "re"; break;
-			case "d": solfegeValues[i] = "do"; break;
+			case "t": v = "ti"; break;
+			case "l": v = "la"; break;
+			case "s": v = "so"; break;
+			case "f": v = "fa"; break;
+			case "m": v = "me"; break;
+			case "r": v = "re"; break;
+			case "d": v = "do"; break;
 			case "ti": case "la": case "so": case "fa": case "me": case "re": case "do": break;
 			default:
 				throw new IllegalArgumentException("Expecting a solfege symbol such as 'do' but got: '"+solfegeValues[i]+"'");
 			}
+			solfegeValues[i] = v + octaves;
+		}
 		return String.join(" ", solfegeValues);
 
 	}
 	
 	static final String OCTAVE_DOWN = ",";
 	static final String OCTAVE_UP = "'";
-	String stripSolfegeOctaves(String s)
+	static final Pattern OCTAVE_REGEX = Pattern.compile("["+OCTAVE_DOWN+OCTAVE_UP+"]+");
+	static String stripSolfegeOctaves(String s)
 	{
-		return s.replace(OCTAVE_DOWN, "").replace(OCTAVE_UP, "");
+		return s.replaceAll(OCTAVE_REGEX.pattern(), "");
+	}
+	
+	static int getSolfegeOctaves(String s)
+	{
+		return (s.length() - s.replace(OCTAVE_UP, "").length()) - (s.length() - s.replace(OCTAVE_DOWN, "").length());
 	}
 	
 	/**
-	 * Assumes s is already normalized to lowercase
+	 * Assumes s is already normalized to lowercase etc
 	 * @param s
 	 * @return
 	 */
 	int solfegeToSemitonesAboveDo(String s)
 	{
-		int semitones = 0;
-		// TODO: support multiple octaves here
-		switch(s)
+		int semitones = 12*getSolfegeOctaves(s);
+
+		switch(stripSolfegeOctaves(s))
 		{
 		case "ti": semitones += 2;
 		case "la": semitones += 2;
@@ -304,32 +335,6 @@ public class SolfegeDictationPlugin implements Plugin
 		logger.debug("Done shutting down MIDI");
 	}
 	
-	/*
-	private String normalizeSolfege(String x)
-	{
-		x = x.toLowerCase();
-		String[] elements = (x.contains(" ")) ? x.split(" ") : x.split("");
-		String result = "";
-		for (e: elements)
-		{
-			int semitones = 0;
-			switch(s)
-			{
-			case "t": case "ti": semitones += 2;
-			case "l": case "la": semitones += 2;
-			case "s": case "so": semitones += 2;
-			case "f": case "fa": semitones += 1;
-			case "m": case "me": semitones += 2;
-			case "r": case "re": semitones += 2;
-			case "d": case "do": break;
-			default:
-				throw new IllegalArgumentException("Expecting a solfege symbol such as 'do' but got: '"+s+"'");
-			}
-
-		}
-		return result;
-	}*/
-	
 	private void generateQuestionsFor(String[] accumulator, String[] possibleSolfege, int remainingNotes, List<Question> questions)
 	{
 		// since this is a combinatorial explosion, avoid generating too many
@@ -354,7 +359,7 @@ public class SolfegeDictationPlugin implements Plugin
 	class SolfegeQuestion extends Question
 	{
 		public SolfegeQuestion(String[] solfege) {
-			super(String.join(" ", solfege), stripSolfegeOctaves(String.join(" ", solfege)));
+			super(String.join(" ", solfege), String.join(" ", solfege));
 			logger.debug("Added question: "+this);
 		}
 		
@@ -476,7 +481,9 @@ public class SolfegeDictationPlugin implements Plugin
 			currentDo = Note.find("C3").midiNote;
 			currentPatch = allInstruments[0].getPatch();
 	
-			String[] solfegeValues = normalizeSolfegeString("do re me fa so la ti").split(" ");
+			// No room on screen for all of them! Focus on octave below and a few notes from octave above
+			String[] solfegeValues = normalizeSolfegeString("do, re, me, fa, so, la, ti, do re me fa so la ti do' re' me'").split(" ");
+			//String[] solfegeValues = normalizeSolfegeString("so, la, ti, do re me fa so la ti do' re' me' fa' so' la' ti' do''").split(" ");
 	
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			
@@ -528,7 +535,7 @@ public class SolfegeDictationPlugin implements Plugin
 					playOneNote(currentDo);
 				}
 			});
-			doNoteCombo.setSelectedItem(Note.find("C4"));
+			doNoteCombo.setSelectedItem(Note.find("C3"));
 			contentPanePanel.add(doNoteCombo, new GridBagConstraints(
 					1, y++, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,SPACING,0), 0, 0
 			));
@@ -541,6 +548,7 @@ public class SolfegeDictationPlugin implements Plugin
 			
 		} catch (Exception ex) {
 			logger.error("Failed to initialize: ", ex);
+			close();
 			throw new RuntimeException(ex);
 		}
 
