@@ -305,13 +305,9 @@ public class PerformanceWindow extends JDialog
 		timeWindowComboBox.setSelectedIndex(-1);
 		timeWindowComboBox.setSelectedIndex(selected);
 		
-		// if less than 3 data points in this period, reset to showing everything
-		int dataPoints = 0;
-		long timeLowerBound = ((TimeWindow)timeWindowComboBox.getSelectedItem()).getLowerBound();
-		for (KnowledgeIndexHistory.DataPoint dataPoint: knowledgeIndexHistory)
-			if (dataPoint.getDate() >= timeLowerBound)
-				dataPoints++;
-		if (dataPoints < 3)
+		// if less than 3 data points in this period, or it's less than the current selection (e.g. 2 weeks but we have only one day's data), reset to showing everything
+		if (knowledgeIndexHistory.getData()[0].length < 3 || 
+				knowledgeIndexHistory.getData()[0][knowledgeIndexHistory.getData().length-1]-knowledgeIndexHistory.getData()[0][0] < timeWindowComboBox.getItemAt(selected).periodMillis)
 			timeWindowComboBox.setSelectedIndex(TIME_WINDOW_INDEX_ALL);
 		
 		closeButton.requestFocusInWindow();
@@ -470,11 +466,14 @@ public class PerformanceWindow extends JDialog
     		return name;
     	}
     	
+    	public static long getNowMillis() { return new Date().getTime(); }
+    	
+    	/** NB: the upper bound is getNowMillis */
     	public long getLowerBound()
     	{
     		if (periodMillis == 0)
     			return 0;
-    		return new Date().getTime() - periodMillis;
+    		return getNowMillis() - periodMillis;
     	}
     	
     }
