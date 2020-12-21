@@ -509,7 +509,7 @@ public class QuestionWindow extends JFrame {
 		{
 			logger.debug("QuestionWindow.stopAction");
 
-			boolean displayPerformanceWindow = true; //someQuestionsAnswered;
+			boolean displayPerformanceWindow = someQuestionsAnswered;
 			
 			moveToState(States.ReadyToStart);
 			
