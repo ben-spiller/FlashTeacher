@@ -136,7 +136,7 @@ public class QuestionManager
 	final QuestionSetScores previousQuestionSetScores;
 	final KnowledgeIndexHistory knowledgeIndexHistory;
 	
-	final boolean caseSensitive;
+	final Options options;
 	
 	int questionsAnswered = 0;
 	long startTimeMillis;
@@ -153,7 +153,7 @@ public class QuestionManager
 	{
 		startTimeMillis = System.currentTimeMillis();
 	
-		caseSensitive = options.isCaseSensitive();
+		this.options = options;
 
 		Map<String, Question> loadedQuestions = new HashMap<>(); // keyed by question string 
 		for (Question q: questions)
@@ -183,7 +183,7 @@ public class QuestionManager
 						logger.info("Ignoring question which is no longer in the question file: \""+questionText+"\"");
 						continue;
 					}
-					if (!existingQuestion.isAnswerCorrect(answerText, caseSensitive))
+					if (!existingQuestion.isAnswerCorrect(answerText, options.isCaseSensitive))
 					{
 						logger.info("Answer has changed, so ignoring history for question: \""+existingQuestion+"\"");
 						continue;
@@ -453,7 +453,7 @@ public class QuestionManager
 	 */
 	public AnswerOutcome answerQuestion(String answer, long timeToAnswer, List<Long> characterTimes) throws IllegalArgumentException
 	{
-		boolean result = currentQuestion.question.isAnswerCorrect(answer, caseSensitive);
+		boolean result = currentQuestion.question.isAnswerCorrect(answer, options.isCaseSensitive);
 		
 		logger.debug("answerQuestion - "+((result) ? "correct" : "wrong!"));
 		
