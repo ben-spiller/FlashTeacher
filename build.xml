@@ -71,6 +71,7 @@
 			destdir="${classesDirName}"
 			classpath="${libDir}/${jgoodiesLooksJarName};${libDir}/${jdomJarName};${libDir}/${log4jJarName};${libDir}/${jgoodiesFormsJarName};${libDir}/${freechartJarName};${libDir}/${jcommonJarName}"
 			debug="on"
+			includeantruntime="false" 
 		/>
 		
 		<jar destfile="${jarPath}">
