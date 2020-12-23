@@ -15,7 +15,8 @@
 	<property name="jar-version" value="1.1"/>
 	
 	<target name="init">
-			<property name="classesDirName" value="ant_classes"/>
+			<property name="buildDir" value="${basedir}/__build"/>
+			<property name="classesDirName" value="${buildDir}/ant_classes"/>
 			<property name="srcDirName" value="src"/>
 			<property name="xmlDirName" value="question_files"/>
 
@@ -25,7 +26,8 @@
 			<property name="jarName" value="flashteacher.jar"/>
 			<property name="jarPath" location="${basedir}/${jarName}"/>
 
-			<property name="binZipPath" location="${basedir}/flashteacher${jar-version}-win.zip"/>
+			<property name="binZipStageDir" location="${buildDir}/flashteacher-zip-stage"/>
+			<property name="binZipPath" location="${buildDir}/flashteacher${jar-version}-win.zip"/>
 
 			<property name="log4jJarName" value="log4j-1.2.14.jar"/>
 			<property name="jgoodiesLooksJarName" value="looks-2.1.1.jar"/>
@@ -34,7 +36,8 @@
 			<property name="freechartJarName" value="jfreechart-1.0.5.jar"/>
 			<property name="jcommonJarName" value="jcommon-1.0.9.jar"/>
 
-			<mkdir dir="${basedir}/${classesDirName}"/>
+			<delete dir="${classesDirName}"/>
+			<mkdir dir="${classesDirName}"/>
 		
 			<tstamp>
 				<format property="ISO_DateTime" pattern="yyyy-dd-MM hh:mm:ss" timezone="UTC"/>
@@ -65,13 +68,13 @@
 
 		<javac 
 			srcdir="${basedir}/${srcDirName}"
-			destdir="${basedir}/${classesDirName}"
+			destdir="${classesDirName}"
 			classpath="${libDir}/${jgoodiesLooksJarName};${libDir}/${jdomJarName};${libDir}/${log4jJarName};${libDir}/${jgoodiesFormsJarName};${libDir}/${freechartJarName};${libDir}/${jcommonJarName}"
 			debug="on"
 		/>
 		
 		<jar destfile="${jarPath}">
-			<fileset dir="${basedir}/${classesDirName}"/>
+			<fileset dir="${classesDirName}"/>
 			<fileset dir="${basedir}/${xmlDirName}" includes="*.dtd"/>
 			<fileset dir="${basedir}/${srcDirName}"/>
 			<manifest>
@@ -82,13 +85,15 @@
 			</manifest>
 		</jar>
 
-	<property name="launch4j.dir" location="c:/tools/launch4j" /> <!-- Location where launch4j is installed -->
-	<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+		<property name="launch4j.dir" location="c:/tools/launch4j" /> <!-- Location where launch4j is installed -->
+		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
 
-	<launch4j configFile="launch4j_config.xml" />
-	<launch4j configFile="launch4j_editor_config.xml" />
+		<launch4j configFile="launch4j_config.xml" />
+		<launch4j configFile="launch4j_editor_config.xml" />
 
-		<zip destfile="${binZipPath}">
+		<delete dir="${binZipStageDir}"/>
+		<mkdir dir="${binZipStageDir}"/>
+		<copy todir="${binZipStageDir}">
 			<fileset dir="${basedir}" includes="${libDirName}/*"/>
 			<fileset dir="${basedir}" includes="${xmlDirName}/*.dtd"/>
 			
@@ -100,8 +105,13 @@
 			<fileset dir="${basedir}" includes="${jarName}"/>
 			<fileset dir="${basedir}" includes="FlashTeacher.exe"/>
 			<fileset dir="${basedir}" includes="FlashTeacherEditor.exe"/>
+			<fileset dir="${basedir}" includes="LICENSE"/>
 			<fileset dir="${basedir}" includes="*.txt"/>
 			<fileset dir="${basedir}" includes="*.md"/>
+		</copy>
+
+		<zip destfile="${binZipPath}">
+			<fileset dir="${binZipStageDir}" includes="**"/>
 		</zip>
 
 

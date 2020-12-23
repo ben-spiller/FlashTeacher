@@ -4,6 +4,7 @@ bin
 bin
 build.bat
 logs
+__build
 
 # Compiled class file
 *.class
