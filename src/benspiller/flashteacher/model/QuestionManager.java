@@ -310,7 +310,9 @@ public class QuestionManager
 			return;
 		}
 		questionSetScores = Scorer.getQuestionSetScores(this);
-		knowledgeIndexHistory.add(new Date(), questionSetScores.knowledgeIndexScore);
+		knowledgeIndexHistory.add(new Date(), questionSetScores.knowledgeIndexScore, 
+				((System.currentTimeMillis()-startTimeMillis)/1000)
+				);
 	}
 	
 	protected QuestionSetScores questionSetScores = null;

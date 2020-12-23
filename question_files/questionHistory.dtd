@@ -34,3 +34,4 @@
 <!ELEMENT knowledgeIndexData EMPTY>
 <!ATTLIST knowledgeIndexData date CDATA #REQUIRED>
 <!ATTLIST knowledgeIndexData value CDATA #REQUIRED>
+<!ATTLIST knowledgeIndexData seconds CDATA #IMPLIED>

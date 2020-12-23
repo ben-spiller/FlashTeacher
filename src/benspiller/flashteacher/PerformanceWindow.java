@@ -498,12 +498,12 @@ public class PerformanceWindow extends JDialog
 		previousScores.unknownAnswersPercent = 78;
 
 		KnowledgeIndexHistory knowledgeIndexHistory = new KnowledgeIndexHistory();
-		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*24*7*23), 66d);
-		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*24*9), 70d);
-		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*24*1), 140d);
-		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*5), 90d);
-		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*4), 100d);
-		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*1), 96d);
+		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*24*7*23), 66d, 10);
+		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*24*9), 70d, 10);
+		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*24*1), 140d, 10);
+		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*5), 90d, 10);
+		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*4), 100d, 10);
+		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*1), 96d, 10);
 		window.initialize(previousScores, scores, knowledgeIndexHistory);
 		window.setLocationRelativeTo(null);
 		window.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
