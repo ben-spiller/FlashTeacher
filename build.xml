@@ -33,8 +33,7 @@
 			<property name="jgoodiesLooksJarName" value="looks-2.1.1.jar"/>
 			<property name="jgoodiesFormsJarName" value="forms-1.0.7.jar"/>
 			<property name="jdomJarName" value="jdom.jar"/>
-			<property name="freechartJarName" value="jfreechart-1.0.5.jar"/>
-			<property name="jcommonJarName" value="jcommon-1.0.9.jar"/>
+			<property name="freechartJarName" value="jfreechart-1.5.1.jar"/>
 
 			<delete dir="${classesDirName}"/>
 			<mkdir dir="${classesDirName}"/>
@@ -63,7 +62,7 @@
 		<depend 
 			srcdir="${basedir}/${srcDirName}"
 			destdir="${basedir}/${classesDirName}"
-			classpath="${libDir}/${jgoodiesLooksJarName};${libDir}/${jdomJarName};${libDir}/${log4jJarName};${libDir}/${jgoodiesFormsJarName};${libDir}/${freechartJarName};${libDir}/${jcommonJarName}"
+			classpath="${libDir}/${jgoodiesLooksJarName};${libDir}/${jdomJarName};${libDir}/${log4jJarName};${libDir}/${jgoodiesFormsJarName};${libDir}/${freechartJarName}"
 		/>
 
 		<javac 

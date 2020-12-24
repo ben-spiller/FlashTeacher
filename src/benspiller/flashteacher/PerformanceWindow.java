@@ -2,6 +2,7 @@ package benspiller.flashteacher;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -36,6 +37,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateTickUnit;
+import org.jfree.chart.axis.DateTickUnitType;
 import org.jfree.chart.axis.TickUnitSource;
 import org.jfree.chart.axis.TickUnits;
 import org.jfree.chart.renderer.xy.DefaultXYItemRenderer;
@@ -150,17 +152,27 @@ public class PerformanceWindow extends JDialog
 		chartPanel.setMouseZoomable(false);
 		chartPanel.setPopupMenu(null);
 		
-		
 		// RangeAxis is y, DomainAxis is x
+
+		chart.setBackgroundPaint(chartPanel.getBackground());
+		chart.getXYPlot().setBackgroundPaint(Color.WHITE);
+		chart.getXYPlot().setDomainGridlinePaint(Color.GRAY);
+		chart.getXYPlot().setRangeGridlinePaint(Color.GRAY);
+
+		chart.getXYPlot().getRangeAxis().setLabelPaint(chartPanel.getForeground());
+		chart.getXYPlot().getRangeAxis().setTickLabelPaint(chartPanel.getForeground());
+		chart.getXYPlot().getDomainAxis().setTickLabelPaint(chartPanel.getForeground());
+		chart.getXYPlot().getRangeAxis().setLabelFont(chartPanel.getFont().deriveFont(16.0f));
+		
 		//chart.getXYPlot().getRangeAxis().setTickLabelsVisible(false); 
 		chart.getXYPlot().getDomainAxis().setStandardTickUnits(createDateTickUnits());
 
 		DefaultXYItemRenderer renderer = new DefaultXYItemRenderer();
-		renderer.setShapesFilled(true);
-		renderer.setShapesVisible(true);
+		renderer.setDefaultShapesFilled(true);
+		renderer.setDefaultShapesVisible(true);
 		final float SHAPE_RADIUS = 3.0f; 
-		renderer.setShape(new Ellipse2D.Float(-SHAPE_RADIUS, -SHAPE_RADIUS, SHAPE_RADIUS*2, SHAPE_RADIUS*2));
-		renderer.setStroke(new BasicStroke(1.3f));
+		renderer.setSeriesShape(0, new Ellipse2D.Float(-SHAPE_RADIUS, -SHAPE_RADIUS, SHAPE_RADIUS*2, SHAPE_RADIUS*2));
+		renderer.setSeriesStroke(0, new BasicStroke(1.3f));
 		chart.getXYPlot().setRenderer(renderer);
 
 		Dimension initialSize = new Dimension(550, 180);
@@ -324,114 +336,67 @@ public class PerformanceWindow extends JDialog
         TickUnits units = new TickUnits();
 
         // date formatters - we improve on the defaults here, to include day of week etc
-        DateFormat f1 = new SimpleDateFormat("HH:mm:ss.SSS");
-        DateFormat f2 = new SimpleDateFormat("HH:mm:ss");
-        DateFormat f3 = new SimpleDateFormat("HH:mm");
+        DateFormat f3 = new SimpleDateFormat("E HH:mm");
         DateFormat f4 = new SimpleDateFormat("E d MMM, HH:mm");
         DateFormat f5 = new SimpleDateFormat("E d MMM");
         DateFormat f6 = new SimpleDateFormat("MMM yyyy");
         DateFormat f7 = new SimpleDateFormat("yyyy");
         
-        f1.setTimeZone(zone);
-        f2.setTimeZone(zone);
         f3.setTimeZone(zone);
         f4.setTimeZone(zone);
         f5.setTimeZone(zone);
         f6.setTimeZone(zone);
         f7.setTimeZone(zone);
         
-        // milliseconds
-        units.add(new DateTickUnit(DateTickUnit.MILLISECOND, 1, f1));
-        units.add(new DateTickUnit(DateTickUnit.MILLISECOND, 5, 
-                DateTickUnit.MILLISECOND, 1, f1));
-        units.add(new DateTickUnit(DateTickUnit.MILLISECOND, 10, 
-                DateTickUnit.MILLISECOND, 1, f1));
-        units.add(new DateTickUnit(DateTickUnit.MILLISECOND, 25, 
-                DateTickUnit.MILLISECOND, 5, f1));
-        units.add(new DateTickUnit(DateTickUnit.MILLISECOND, 50, 
-                DateTickUnit.MILLISECOND, 10, f1));
-        units.add(new DateTickUnit(DateTickUnit.MILLISECOND, 100, 
-                DateTickUnit.MILLISECOND, 10, f1));
-        units.add(new DateTickUnit(DateTickUnit.MILLISECOND, 250, 
-                DateTickUnit.MILLISECOND, 10, f1));
-        units.add(new DateTickUnit(DateTickUnit.MILLISECOND, 500, 
-                DateTickUnit.MILLISECOND, 50, f1));
-
-        // seconds
-        units.add(new DateTickUnit(DateTickUnit.SECOND, 1, 
-                DateTickUnit.MILLISECOND, 50, f2));
-        units.add(new DateTickUnit(DateTickUnit.SECOND, 5, 
-                DateTickUnit.SECOND, 1, f2));
-        units.add(new DateTickUnit(DateTickUnit.SECOND, 10, 
-                DateTickUnit.SECOND, 1, f2));
-        units.add(new DateTickUnit(DateTickUnit.SECOND, 30, 
-                DateTickUnit.SECOND, 5, f2));
-
-        // minutes
-        units.add(new DateTickUnit(DateTickUnit.MINUTE, 1, 
-                DateTickUnit.SECOND, 5, f3));
-        units.add(new DateTickUnit(DateTickUnit.MINUTE, 2, 
-                DateTickUnit.SECOND, 10, f3));
-        units.add(new DateTickUnit(DateTickUnit.MINUTE, 5, 
-                DateTickUnit.MINUTE, 1, f3));
-        units.add(new DateTickUnit(DateTickUnit.MINUTE, 10, 
-                DateTickUnit.MINUTE, 1, f3));
-        units.add(new DateTickUnit(DateTickUnit.MINUTE, 15, 
-                DateTickUnit.MINUTE, 5, f3));
-        units.add(new DateTickUnit(DateTickUnit.MINUTE, 20, 
-                DateTickUnit.MINUTE, 5, f3));
-        units.add(new DateTickUnit(DateTickUnit.MINUTE, 30, 
-                DateTickUnit.MINUTE, 5, f3));
-
         // hours
-        units.add(new DateTickUnit(DateTickUnit.HOUR, 1, 
-                DateTickUnit.MINUTE, 5, f3));
-        units.add(new DateTickUnit(DateTickUnit.HOUR, 2, 
-                DateTickUnit.MINUTE, 10, f3));
-        units.add(new DateTickUnit(DateTickUnit.HOUR, 4, 
-                DateTickUnit.MINUTE, 30, f3));
-        units.add(new DateTickUnit(DateTickUnit.HOUR, 6, 
-                DateTickUnit.HOUR, 1, f3));
-        units.add(new DateTickUnit(DateTickUnit.HOUR, 12, 
-                DateTickUnit.HOUR, 1, f4));
+        units.add(new DateTickUnit(DateTickUnitType.HOUR, 1, 
+                DateTickUnitType.MINUTE, 5, f3));
+        units.add(new DateTickUnit(DateTickUnitType.HOUR, 2, 
+                DateTickUnitType.MINUTE, 10, f3));
+        units.add(new DateTickUnit(DateTickUnitType.HOUR, 4, 
+                DateTickUnitType.MINUTE, 30, f3));
+        units.add(new DateTickUnit(DateTickUnitType.HOUR, 6, 
+                DateTickUnitType.HOUR, 1, f3));
+        units.add(new DateTickUnit(DateTickUnitType.HOUR, 12, 
+                DateTickUnitType.HOUR, 1, f4));
 
         // days
-        units.add(new DateTickUnit(DateTickUnit.DAY, 1, 
-                DateTickUnit.HOUR, 1, f5));
-        units.add(new DateTickUnit(DateTickUnit.DAY, 2, 
-                DateTickUnit.HOUR, 1, f5));
-        units.add(new DateTickUnit(DateTickUnit.DAY, 7, 
-                DateTickUnit.DAY, 1, f5));
-        units.add(new DateTickUnit(DateTickUnit.DAY, 15, 
-                DateTickUnit.DAY, 1, f5));
+        units.add(new DateTickUnit(DateTickUnitType.DAY, 1, 
+                DateTickUnitType.HOUR, 1, f5));
+        units.add(new DateTickUnit(DateTickUnitType.DAY, 2, 
+                DateTickUnitType.HOUR, 1, f5));
+        units.add(new DateTickUnit(DateTickUnitType.DAY, 7, 
+                DateTickUnitType.DAY, 1, f5));
+        units.add(new DateTickUnit(DateTickUnitType.DAY, 15, 
+                DateTickUnitType.DAY, 1, f5));
 
         // months
-        units.add(new DateTickUnit(DateTickUnit.MONTH, 1, 
-                DateTickUnit.DAY, 1, f6));
-        units.add(new DateTickUnit(DateTickUnit.MONTH, 2, 
-                DateTickUnit.DAY, 1, f6));
-        units.add(new DateTickUnit(DateTickUnit.MONTH, 3, 
-                DateTickUnit.MONTH, 1, f6));
-        units.add(new DateTickUnit(DateTickUnit.MONTH, 4,  
-                DateTickUnit.MONTH, 1, f6));
-        units.add(new DateTickUnit(DateTickUnit.MONTH, 6,  
-                DateTickUnit.MONTH, 1, f6));
+        units.add(new DateTickUnit(DateTickUnitType.MONTH, 1, 
+                DateTickUnitType.DAY, 1, f6));
+        units.add(new DateTickUnit(DateTickUnitType.MONTH, 2, 
+                DateTickUnitType.DAY, 1, f6));
+        units.add(new DateTickUnit(DateTickUnitType.MONTH, 3, 
+                DateTickUnitType.MONTH, 1, f6));
+        units.add(new DateTickUnit(DateTickUnitType.MONTH, 4,  
+                DateTickUnitType.MONTH, 1, f6));
+        units.add(new DateTickUnit(DateTickUnitType.MONTH, 6,  
+                DateTickUnitType.MONTH, 1, f6));
 
         // years
-        units.add(new DateTickUnit(DateTickUnit.YEAR, 1,  
-                DateTickUnit.MONTH, 1, f7));
-        units.add(new DateTickUnit(DateTickUnit.YEAR, 2,  
-                DateTickUnit.MONTH, 3, f7));
-        units.add(new DateTickUnit(DateTickUnit.YEAR, 5,  
-                DateTickUnit.YEAR, 1, f7));
-        units.add(new DateTickUnit(DateTickUnit.YEAR, 10,  
-                DateTickUnit.YEAR, 1, f7));
-        units.add(new DateTickUnit(DateTickUnit.YEAR, 25, 
-                DateTickUnit.YEAR, 5, f7));
-        units.add(new DateTickUnit(DateTickUnit.YEAR, 50, 
-                DateTickUnit.YEAR, 10, f7));
-        units.add(new DateTickUnit(DateTickUnit.YEAR, 100, 
-                DateTickUnit.YEAR, 20, f7));
+        units.add(new DateTickUnit(DateTickUnitType.YEAR, 1,  
+                DateTickUnitType.MONTH, 1, f7));
+        units.add(new DateTickUnit(DateTickUnitType.YEAR, 2,  
+                DateTickUnitType.MONTH, 3, f7));
+        units.add(new DateTickUnit(DateTickUnitType.YEAR, 5,  
+                DateTickUnitType.YEAR, 1, f7));
+        units.add(new DateTickUnit(DateTickUnitType.YEAR, 10,  
+                DateTickUnitType.YEAR, 1, f7));
+        units.add(new DateTickUnit(DateTickUnitType.YEAR, 25, 
+                DateTickUnitType.YEAR, 5, f7));
+        units.add(new DateTickUnit(DateTickUnitType.YEAR, 50, 
+                DateTickUnitType.YEAR, 10, f7));
+        units.add(new DateTickUnit(DateTickUnitType.YEAR, 100, 
+                DateTickUnitType.YEAR, 20, f7));
 
         return units;
 
