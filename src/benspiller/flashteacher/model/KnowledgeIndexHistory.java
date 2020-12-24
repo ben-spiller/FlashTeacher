@@ -18,7 +18,7 @@ public class KnowledgeIndexHistory implements Iterable<KnowledgeIndexHistory.Dat
 	
 	private final List<Long> dates = new ArrayList<Long>(); 
 	private final List<Double> values = new ArrayList<Double>();
-	private final List<Long> timePerSessionSecs = new ArrayList<Long>();
+	private final List<Long> sessionDurationMillis = new ArrayList<Long>();
 	
 	public KnowledgeIndexHistory()
 	{
@@ -39,7 +39,7 @@ public class KnowledgeIndexHistory implements Iterable<KnowledgeIndexHistory.Dat
 			if (date <= 0) continue;
 			add(new Date(date), 
 					Double.valueOf(dataElement.getAttributeValue("value", "0")), 
-					Long.valueOf(dataElement.getAttributeValue("seconds", "0")));
+					Long.valueOf(dataElement.getAttributeValue("sessionDurationMillis", "0")));
 		}
 	}
 	
@@ -51,7 +51,7 @@ public class KnowledgeIndexHistory implements Iterable<KnowledgeIndexHistory.Dat
 			Element knowledgeHistoryElement = new Element("knowledgeIndexData");
 			knowledgeHistoryElement.setAttribute("date", String.valueOf(dates.get(i)));
 			knowledgeHistoryElement.setAttribute("value", String.valueOf(values.get(i)));
-			knowledgeHistoryElement.setAttribute("seconds", String.valueOf(timePerSessionSecs.get(i)));
+			knowledgeHistoryElement.setAttribute("sessionDurationMillis", String.valueOf(sessionDurationMillis.get(i)));
 			result.addContent(knowledgeHistoryElement);
 		}
 		return result;
@@ -62,12 +62,12 @@ public class KnowledgeIndexHistory implements Iterable<KnowledgeIndexHistory.Dat
 	 * @param date
 	 * @param knowledgeIndex
 	 */
-	public void add(Date date, double knowledgeIndex, long timePerSessionSecs)
+	public void add(Date date, double knowledgeIndex, long sessionDurationMillis)
 	{
 		if (date == null) throw new IllegalArgumentException("Cannot add knowledge index with null date");
 		dates.add(date.getTime());
 		values.add(knowledgeIndex);
-		this.timePerSessionSecs.add(timePerSessionSecs);
+		this.sessionDurationMillis.add(sessionDurationMillis);
 	}
 	
 	/**

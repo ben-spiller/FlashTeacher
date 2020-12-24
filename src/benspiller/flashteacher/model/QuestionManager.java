@@ -311,7 +311,7 @@ public class QuestionManager
 		}
 		questionSetScores = Scorer.getQuestionSetScores(this);
 		knowledgeIndexHistory.add(new Date(), questionSetScores.knowledgeIndexScore, 
-				((System.currentTimeMillis()-startTimeMillis)/1000)
+				((System.currentTimeMillis()-startTimeMillis))
 				);
 	}
 	
