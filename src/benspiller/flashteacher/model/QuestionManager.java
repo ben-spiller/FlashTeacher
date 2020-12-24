@@ -250,7 +250,10 @@ public class QuestionManager
 	Element save() throws IOException
 	{
 		calculateScores();
-		
+		knowledgeIndexHistory.add(new Date(), questionSetScores.knowledgeIndexScore, 
+				((System.currentTimeMillis()-startTimeMillis))
+				);
+
 		// add Q history; first sort by time to answer so we can look inside the file manually and see which are worse 
 		Element questionHistoryListElement = new Element("questionHistoryList");
 		questionHistoryListElement.addContent(new Comment("Question history is sorted with longest time-to-answer (including penalties from wrong answers) at the top: "));
@@ -314,9 +317,6 @@ public class QuestionManager
 			return;
 		}
 		questionSetScores = Scorer.getQuestionSetScores(this);
-		knowledgeIndexHistory.add(new Date(), questionSetScores.knowledgeIndexScore, 
-				((System.currentTimeMillis()-startTimeMillis))
-				);
 	}
 	
 	protected QuestionSetScores questionSetScores = null;
