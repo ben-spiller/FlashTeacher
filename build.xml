@@ -45,11 +45,11 @@
 
 	</target>
 
-	
-	<!-- ================================= 
-		  target: default              
-		 ================================= -->
-	<target name="default" depends="init" description="default">
+	<target name="jar" depends="init" description="Compile and jar">
+		<!-- Retrieve, increment and update build number -->
+		<buildnumber file="${basedir}/${srcDirName}/build.number.properties"/>
+		<echo>Building version ${build.number} on ${ISO_DateTime}</echo>
+
 		<!-- Retrieve, increment and update build number -->
 		<buildnumber file="${basedir}/${srcDirName}/build.number.properties"/>
 		<echo>Building version ${build.number} on ${ISO_DateTime}</echo>
@@ -86,12 +86,9 @@
 			</manifest>
 		</jar>
 
-		<property name="launch4j.dir" location="c:/tools/launch4j" /> <!-- Location where launch4j is installed -->
-		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+	</target>
 
-		<launch4j configFile="launch4j_config.xml" />
-		<launch4j configFile="launch4j_editor_config.xml" />
-
+	<target name="package" depends="init,jar" description="Generate zip and staging dir">
 		<delete dir="${binZipStageDir}"/>
 		<mkdir dir="${binZipStageDir}"/>
 		<copy todir="${binZipStageDir}">
@@ -114,9 +111,21 @@
 		<zip destfile="${binZipPath}">
 			<fileset dir="${binZipStageDir}" includes="**"/>
 		</zip>
-
-
-
 	</target>
+
+	<target name="launch4j" depends="init" description="Regenerate the launch4j exe wrappers">
+		<!-- Since the exe wrapper rarely change, the exe files are simply committed. 
+			This also allows us to use a fast linux-based GitHub Actions pipeline.
+		-->
+
+		<property name="launch4j.dir" location="c:/tools/launch4j" /> <!-- Location where launch4j is installed -->
+		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+
+		<launch4j configFile="launch4j_config.xml" />
+		<launch4j configFile="launch4j_editor_config.xml" />
+	</target>
+
+
+	<target name="default" depends="jar,package" description="default"/>
 
 </project>
