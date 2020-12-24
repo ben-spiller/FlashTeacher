@@ -1,9 +1,13 @@
 package benspiller.flashteacher.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.jdom.Element;
 
@@ -72,10 +76,10 @@ public class KnowledgeIndexHistory implements Iterable<KnowledgeIndexHistory.Dat
 	
 	/**
 	 * @return An array containing a copy of this data as a two-dimensional 
-	 * array where the first dimension is an array of millisecond-date values 
-	 * and the second is the knowledge index values. 
+	 * array where data[0] is an array of millisecond-date values 
+	 * and the data[1] is the knowledge index values. Suitable for charting.  
 	 */
-	public double[][] getData()
+	public double[][] getKnowledgeIndexArray()
 	{
 		double[][] data = new double[2][dates.size()];
 		for (int i = 0; i < dates.size(); i++)
@@ -87,6 +91,60 @@ public class KnowledgeIndexHistory implements Iterable<KnowledgeIndexHistory.Dat
 		return data;
 	}
 
+	/**
+	 * @return An array containing a copy of this data as a two-dimensional 
+	 * array where data[0] is an array of millisecond-date values 
+	 * and the data[1] is the duration values in minutes. Suitable for charting.  
+	 */
+	public double[][] getTimeSpentArray()
+	{
+		Map<Long,Long> byday = new HashMap<>();
+		for (int i = 0; i < dates.size(); i++)
+		{
+			long day = removeTimeFromDateTime(dates.get(i));
+			byday.put(day, sessionDurationMillis.get(i)/1000/60 + byday.getOrDefault(day, 0L));
+		}
+		double[][] data = new double[2][byday.size()];
+		List<Long> days = new ArrayList<>(byday.keySet());
+		Collections.sort(days);
+		for (int i = 0; i < days.size(); i++)
+		{
+			data[0][i] = days.get(i);
+			data[1][i] = byday.get(days.get(i));
+		}
+		
+		return data;
+	}
+
+	public static long removeTimeFromDateTime(long millis)
+	{
+		// suspect there's a better way to do this using java.time.* but it's not obvious
+		
+		Calendar cal = Calendar.getInstance(); // this is very non-thread-safe
+		cal.setTimeInMillis(millis);
+		cal.set(Calendar.AM_PM, Calendar.AM);
+		cal.set(Calendar.HOUR, 0); // middle of the day
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return cal.getTimeInMillis(); // without time
+	}
+	
+	public double getAverageMinutesPerDayThisWeek()
+	{
+		int days = 7;
+		long endOfToday = removeTimeFromDateTime(System.currentTimeMillis())+1000*60*60*24;
+		long aWeekAgo = endOfToday-1000*60*60*24*days;
+		
+		long totalMillisSpent = 0;
+		for (int i = 0; i < dates.size(); i++)
+		{
+			if (dates.get(i) > aWeekAgo)
+				totalMillisSpent += sessionDurationMillis.get(i);
+		}
+		return (totalMillisSpent/1000.0/60)/days;
+	}
+	
 	/** Returns an iterator over the data points in this object, returned in 
 	 * ascending date order. 
 	 * @see java.lang.Iterable#iterator()

@@ -36,12 +36,19 @@ import javax.swing.text.JTextComponent;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.StandardChartTheme;
+import org.jfree.chart.axis.AxisSpace;
 import org.jfree.chart.axis.DateTickUnit;
 import org.jfree.chart.axis.DateTickUnitType;
 import org.jfree.chart.axis.TickUnitSource;
 import org.jfree.chart.axis.TickUnits;
+import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.renderer.xy.DefaultXYItemRenderer;
+import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.data.xy.DefaultXYDataset;
+import org.jfree.data.xy.XYBarDataset;
+import org.jfree.data.xy.XYDataset;
 
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.jgoodies.looks.Options;
@@ -58,12 +65,15 @@ public class PerformanceWindow extends JDialog
 	
 	final JButton closeButton;
 	final JProgressBar summaryBar;
-	final DefaultXYDataset xyDataSet;
+	final DefaultXYDataset knowledgeDataSet;
+	final DefaultXYDataset timeSpentDataSet;
 	final JComboBox<TimeWindow> timeWindowComboBox;
 	
+	private final long nowMillis = new Date().getTime();
+
 	private static final int DEFAULT_TIME_WINDOW_INDEX = 3;
 	private static final int TIME_WINDOW_INDEX_ALL = 0;
-	private static final TimeWindow[] TIME_WINDOWS = {
+	private final TimeWindow[] TIME_WINDOWS = { // must not be a static field - since current time (i.e. the upper bound) keeps changing
 		new TimeWindow(Messages.getString("PerformanceWindow.graphPanel.graph.graphTimeWindow.all"), 		0),
 		new TimeWindow(Messages.getString("PerformanceWindow.graphPanel.graph.graphTimeWindow.day"), 		-1), // special value representing today
 		new TimeWindow(Messages.getString("PerformanceWindow.graphPanel.graph.graphTimeWindow.week"), 		1000L*60*60*24*7),
@@ -71,6 +81,8 @@ public class PerformanceWindow extends JDialog
 		new TimeWindow(Messages.getString("PerformanceWindow.graphPanel.graph.graphTimeWindow.month"), 		1000L*60*60*24*7*4),
 		new TimeWindow(Messages.getString("PerformanceWindow.graphPanel.graph.graphTimeWindow.6months"), 	1000L*60*60*24*365/2),
 	}; 
+	
+    private final DateFormat DATE_FORMAT_NO_TIME = new SimpleDateFormat("E d MMM yyyy");
 	
 	public PerformanceWindow(Window owner)
 	{
@@ -117,7 +129,9 @@ public class PerformanceWindow extends JDialog
 				"totalQuestions", 
 				null, 
 				"averageTimeToAnswer", 
-				"averageTimeToAllowPerCharacter"
+				"averageTimeToAllowPerCharacter",
+				null,
+				"averageMinutesPerDay"
 				};
 		for (String key: detailsKeys)
 		{
@@ -141,57 +155,103 @@ public class PerformanceWindow extends JDialog
 			innerDetailsPanel.add(textComponent);
 		}
 
-		// Graph panel
+		// Graph panel; RangeAxis is y, DomainAxis is x
 		Box graphPanel = Box.createVerticalBox();
 		graphPanel.setBorder(BorderFactory.createEmptyBorder(0, BORDER_WIDTH/2, 0, 0));
 
-		xyDataSet = new DefaultXYDataset();
-		xyDataSet.addSeries("series", new double[][]{ {}, {} });
-		final JFreeChart chart = ChartFactory.createTimeSeriesChart(null, null, Messages.getString("PerformanceWindow.graphPanel.graph.yAxisLabel"), xyDataSet, false, false, false);
-		ChartPanel chartPanel = new ChartPanel(chart);
+		ChartFactory.setChartTheme(StandardChartTheme.createLegacyTheme());
+
+		knowledgeDataSet = new DefaultXYDataset();
+		knowledgeDataSet.addSeries("series", new double[][]{ {}, {} });
+		JFreeChart knowledgeChart = ChartFactory.createTimeSeriesChart(null, null, Messages.getString("PerformanceWindow.graphPanel.graph.yAxisLabel"), 
+				knowledgeDataSet, false, true, false);
+		ChartPanel chartPanel = new ChartPanel(knowledgeChart);
 		chartPanel.setMouseZoomable(false);
 		chartPanel.setPopupMenu(null);
-		
-		// RangeAxis is y, DomainAxis is x
-
-		chart.setBackgroundPaint(chartPanel.getBackground());
-		chart.getXYPlot().setBackgroundPaint(Color.WHITE);
-		chart.getXYPlot().setDomainGridlinePaint(Color.GRAY);
-		chart.getXYPlot().setRangeGridlinePaint(Color.GRAY);
-
-		chart.getXYPlot().getRangeAxis().setLabelPaint(chartPanel.getForeground());
-		chart.getXYPlot().getRangeAxis().setTickLabelPaint(chartPanel.getForeground());
-		chart.getXYPlot().getDomainAxis().setTickLabelPaint(chartPanel.getForeground());
-		chart.getXYPlot().getRangeAxis().setLabelFont(chartPanel.getFont().deriveFont(16.0f));
-		
-		//chart.getXYPlot().getRangeAxis().setTickLabelsVisible(false); 
-		chart.getXYPlot().getDomainAxis().setStandardTickUnits(createDateTickUnits());
 
 		DefaultXYItemRenderer renderer = new DefaultXYItemRenderer();
 		renderer.setDefaultShapesFilled(true);
 		renderer.setDefaultShapesVisible(true);
 		final float SHAPE_RADIUS = 3.0f; 
 		renderer.setSeriesShape(0, new Ellipse2D.Float(-SHAPE_RADIUS, -SHAPE_RADIUS, SHAPE_RADIUS*2, SHAPE_RADIUS*2));
-		renderer.setSeriesStroke(0, new BasicStroke(1.3f));
-		chart.getXYPlot().setRenderer(renderer);
+		renderer.setSeriesStroke(0, new BasicStroke(2f));
+		renderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String generateToolTip(XYDataset dataset, int series, int item)
+			{
+				return Messages.getString("PerformanceWindow.graphPanel.knowledgeChart.tooltip", 
+						((long)dataset.getYValue(series, item)),
+						new Date((long)dataset.getXValue(series, item))
+					);
+			}
+		});		
+		knowledgeChart.getXYPlot().setRenderer(renderer);
 
-		Dimension initialSize = new Dimension(550, 180);
+		
+		graphPanel.add(chartPanel);
+
+		timeSpentDataSet = new DefaultXYDataset();
+		timeSpentDataSet.addSeries("series", new double[][]{ {}, {} });
+		JFreeChart timeSpentChart = ChartFactory.createTimeSeriesChart(null, null, Messages.getString("PerformanceWindow.graphPanel.timeSpentChart.yAxisLabel"), 
+				new XYBarDataset(timeSpentDataSet, 1000*60*60*(24-2)), 
+				false, true, false);
+		chartPanel = new ChartPanel(timeSpentChart);
+		chartPanel.setMouseZoomable(false);
+		chartPanel.setPopupMenu(null);
+		XYBarRenderer barRenderer = new XYBarRenderer();
+		barRenderer.setSeriesPaint(0, new Color(168,255,174)); // green
+		barRenderer.setDefaultItemLabelsVisible(true, true);
+		barRenderer.setShadowVisible(false);
+		timeSpentChart.getXYPlot().setRenderer(barRenderer);
+		barRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String generateToolTip(XYDataset dataset, int series, int item)
+			{
+				return Messages.getString("PerformanceWindow.graphPanel.timeSpentChart.tooltip", 
+						((long)dataset.getYValue(series, item)),
+						DATE_FORMAT_NO_TIME.format(new Date((long)dataset.getXValue(series, item)))
+						);
+			}
+		});		
+		
+		// This ensures that both graphs' plot area start in the same place even though the knowledge axis may need more horizontal space
+		AxisSpace as = new AxisSpace();
+		as.add(60, RectangleEdge.LEFT);
+		timeSpentChart.getXYPlot().setFixedRangeAxisSpace(as);
+		knowledgeChart.getXYPlot().setFixedRangeAxisSpace(as);
+		
+		// Settings common to both charts go here
+		for (JFreeChart chart: new JFreeChart[] {knowledgeChart, timeSpentChart})
+		{
+			chart.setBackgroundPaint(chartPanel.getBackground());
+			chart.getXYPlot().setBackgroundPaint(Color.WHITE);
+			chart.getXYPlot().setDomainGridlinePaint(Color.GRAY);
+			chart.getXYPlot().setRangeGridlinePaint(Color.GRAY);
+
+			chart.getXYPlot().getRangeAxis().setLabelPaint(chartPanel.getForeground());
+			chart.getXYPlot().getRangeAxis().setTickLabelPaint(chartPanel.getForeground());
+			chart.getXYPlot().getDomainAxis().setTickLabelPaint(chartPanel.getForeground());
+			chart.getXYPlot().getRangeAxis().setLabelFont(chartPanel.getFont().deriveFont(16.0f));
+			
+			chart.getXYPlot().getDomainAxis().setStandardTickUnits(createDateTickUnits());
+		}
+		
+		graphPanel.add(chartPanel);
+		
+		
+		Dimension initialSize = new Dimension(550, 180*2);
 		graphPanel.setMinimumSize(initialSize);
 		graphPanel.setPreferredSize(initialSize);
+
 		
+		// Button panel
 		JPanel timeWindowComboBoxPanel = new JPanel(new BorderLayout());
 		timeWindowComboBox = new JComboBox<>(TIME_WINDOWS);
 		timeWindowComboBox.setSelectedIndex(DEFAULT_TIME_WINDOW_INDEX);
 		timeWindowComboBoxPanel.add(timeWindowComboBox, BorderLayout.WEST);
 
-		graphPanel.add(chartPanel);
-		/*graphPanel.add(Box.createVerticalStrut(BORDER_WIDTH/2));
-		graphPanel.add(Box.createVerticalStrut(BORDER_WIDTH));
-		graphPanel.add(new JSeparator());
-		graphPanel.add(Box.createVerticalStrut(BORDER_WIDTH/2));*/
-		
-
-		// Button panel
 		JPanel buttonPanel = new JPanel(new BorderLayout());
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder());
 		
@@ -239,26 +299,42 @@ public class PerformanceWindow extends JDialog
 				if (e.getStateChange() != ItemEvent.SELECTED) return;
 				
 				TimeWindow timeWindow = (TimeWindow)timeWindowComboBox.getSelectedItem();
-				if (timeWindow.getLowerBound() == 0)
+				
+				for (JFreeChart chart: new JFreeChart[] {knowledgeChart, timeSpentChart})
 				{
-					chart.getXYPlot().getDomainAxis().setAutoRange(true); // times (x)
-					chart.getXYPlot().getRangeAxis().setAutoRange(true); // index values (y)
-				}
-				else {
-					long timeLowerBound = timeWindow.getLowerBound();
-					chart.getXYPlot().getDomainAxis().setRangeWithMargins(timeLowerBound, new Date().getTime());
-					
-					chart.getXYPlot().getRangeAxis().setAutoRange(true); // index values (y)
-					
-					double minValue = -1d; // sentinel value
-					for (KnowledgeIndexHistory.DataPoint dataPoint: knowledgeIndexHistory)
+					if (timeWindow.getLowerBound() == 0)
 					{
-						if (dataPoint.getDate() >= timeLowerBound && (minValue < 0 || dataPoint.getValue()-2 < minValue))
-							minValue = dataPoint.getValue()-2;
+						chart.getXYPlot().getDomainAxis().setAutoRange(true); // times (x)
+						chart.getXYPlot().getRangeAxis().setAutoRange(true); // index values (y)
 					}
-					if (minValue < 0) minValue = 0;
-					chart.getXYPlot().getRangeAxis().setLowerBound(minValue);
+					else {
+						long timeLowerBound = timeWindow.getLowerBound();
+						chart.getXYPlot().getDomainAxis().setRangeWithMargins(timeLowerBound, nowMillis);
+						
+						chart.getXYPlot().getRangeAxis().setAutoRange(true); // index values (y)
+						
+						if (chart == knowledgeChart) {
+							double minValue = -1d; // sentinel value
+							for (KnowledgeIndexHistory.DataPoint dataPoint: knowledgeIndexHistory)
+							{
+								if (dataPoint.getDate() < timeLowerBound) continue;
+								if (minValue < 0 || dataPoint.getValue() < minValue)
+									minValue = dataPoint.getValue();
+							}
+							if (minValue < 0) minValue = 0;
+							minValue = minValue*0.95; // create a margin so we can still see the bottom vlues
+							//chart.getXYPlot().getRangeAxis().setLowerBound(minValue);
+							//chart.getXYPlot().getRangeAxis().setLowerMargin(minValue);
+						}
+					}
 				}
+				timeSpentChart.getXYPlot().getRangeAxis().setLowerBound(0);
+				
+				// Since the timeSpentChart is quantitized into whole days, automatic range might leave it different to the 
+				// other chart, so make that one the master so that everything lines up
+				timeSpentChart.getXYPlot().getDomainAxis().setLowerBound(knowledgeChart.getXYPlot().getDomainAxis().getLowerBound());
+				timeSpentChart.getXYPlot().getDomainAxis().setUpperBound(knowledgeChart.getXYPlot().getDomainAxis().getUpperBound());
+
 			}
 		
 		});
@@ -283,7 +359,8 @@ public class PerformanceWindow extends JDialog
 		if (previousScores == null)
 			previousScores = scores;
 		
-		xyDataSet.addSeries("series", knowledgeIndexHistory.getData());
+		knowledgeDataSet.addSeries("series", knowledgeIndexHistory.getKnowledgeIndexArray());
+		timeSpentDataSet.addSeries("series", knowledgeIndexHistory.getTimeSpentArray());
 		this.knowledgeIndexHistory = knowledgeIndexHistory;
 
 		summaryBar.setValue((int)scores.questionSetPercentScore);
@@ -307,6 +384,8 @@ public class PerformanceWindow extends JDialog
 				args = new Object[]{ scores.averageTimeToAnswer/1000d, (previousScores.averageTimeToAnswer == 0) ? 0 : 100d*(scores.averageTimeToAnswer-previousScores.averageTimeToAnswer)/previousScores.averageTimeToAnswer };
 			else if ("detailsPanel.averageTimeToAllowPerCharacter".equals(s))
 				args = new Object[]{ scores.averageTimePerCharacter/1000d, (previousScores.averageTimePerCharacter == 0) ? 0 : 100d*(scores.averageTimePerCharacter-previousScores.averageTimePerCharacter)/previousScores.averageTimePerCharacter };
+			else if ("detailsPanel.averageMinutesPerDay".equals(s))
+				args = new Object[]{ knowledgeIndexHistory.getAverageMinutesPerDayThisWeek() };
 			else
 				throw new RuntimeException("Unhandled text component: "+s);
 			
@@ -319,8 +398,8 @@ public class PerformanceWindow extends JDialog
 		timeWindowComboBox.setSelectedIndex(selected);
 		
 		// if less than 3 data points in this period, or it's less than the current selection (e.g. 2 weeks but we have only one day's data), reset to showing everything
-		if (knowledgeIndexHistory.getData()[0].length < 3 || 
-				knowledgeIndexHistory.getData()[0][knowledgeIndexHistory.getData().length-1]-knowledgeIndexHistory.getData()[0][0] < timeWindowComboBox.getItemAt(selected).periodMillis)
+		if (knowledgeIndexHistory.getKnowledgeIndexArray()[0].length < 3 || 
+				knowledgeIndexHistory.getKnowledgeIndexArray()[0][knowledgeIndexHistory.getKnowledgeIndexArray().length-1]-knowledgeIndexHistory.getKnowledgeIndexArray()[0][0] < timeWindowComboBox.getItemAt(selected).periodMillis)
 			timeWindowComboBox.setSelectedIndex(TIME_WINDOW_INDEX_ALL);
 		
 		closeButton.requestFocusInWindow();
@@ -362,9 +441,9 @@ public class PerformanceWindow extends JDialog
 
         // days
         units.add(new DateTickUnit(DateTickUnitType.DAY, 1, 
-                DateTickUnitType.HOUR, 1, f5));
+                DateTickUnitType.DAY, 1, f5));
         units.add(new DateTickUnit(DateTickUnitType.DAY, 2, 
-                DateTickUnitType.HOUR, 1, f5));
+                DateTickUnitType.DAY, 1, f5));
         units.add(new DateTickUnit(DateTickUnitType.DAY, 7, 
                 DateTickUnitType.DAY, 1, f5));
         units.add(new DateTickUnit(DateTickUnitType.DAY, 15, 
@@ -405,7 +484,7 @@ public class PerformanceWindow extends JDialog
     /**
      * An object held in the time range combo box.
      */
-    static class TimeWindow
+    class TimeWindow
     {
     	private String name;
     	private long periodMillis;
@@ -420,7 +499,7 @@ public class PerformanceWindow extends JDialog
     			c.set(Calendar.MINUTE, 0);
     			c.set(Calendar.SECOND, 0);
     			c.set(Calendar.MILLISECOND, 0);
-    			periodMillis = new Date().getTime() - c.getTimeInMillis();
+    			periodMillis = nowMillis - c.getTimeInMillis();
     		}
     		
     		this.periodMillis = periodMillis;
@@ -432,14 +511,12 @@ public class PerformanceWindow extends JDialog
     		return name;
     	}
     	
-    	public static long getNowMillis() { return new Date().getTime(); }
-    	
     	/** NB: the upper bound is getNowMillis */
     	public long getLowerBound()
     	{
     		if (periodMillis == 0)
     			return 0;
-    		return getNowMillis() - periodMillis;
+    		return nowMillis - periodMillis;
     	}
     	
     }
@@ -463,12 +540,12 @@ public class PerformanceWindow extends JDialog
 		previousScores.unknownAnswersPercent = 78;
 
 		KnowledgeIndexHistory knowledgeIndexHistory = new KnowledgeIndexHistory();
-		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*24*7*23), 66d, 10);
-		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*24*9), 70d, 10);
-		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*24*1), 140d, 10);
-		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*5), 90d, 10);
-		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*4), 100d, 10);
-		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*1), 96d, 10);
+		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*24*7), 6600d, 1*60000);
+		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*24*9), 7000d, 5*60000);
+		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*24*1), 1400000d, 7*60000);
+		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*5), 9000d, 1*60000);
+		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*4), 10000d, 2*60000);
+		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*1), 9600d, 3*60000);
 		window.initialize(previousScores, scores, knowledgeIndexHistory);
 		window.setLocationRelativeTo(null);
 		window.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

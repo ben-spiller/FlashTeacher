@@ -7,4 +7,4 @@
     * Fix a bug in which the algorithm was unintentionally selecting mostly "old" questions rather than "bad time" questions in the case where the list of "passed" questions was empty.
 * Sort question history by time taken to answer when saving, which allows the file to be manually inspected to see which Qs are weaker.
 * Question history is now retained on disk when a question is deleted from the question file (though not in the performance status windows), which allows for removing some questions and then re-adding them later without losing their history. This is especially useful when using a plugin to dynamically generate a question set, and experimenting with different parameters. 
-* Record how much time is spent in each session, to encourage the user to regularly spend time on their learning. 
+* Record how much time is spent in each session, to encourage the user to regularly spend time on their learning. This is now displayed on a graph in the Performance Status window. 
