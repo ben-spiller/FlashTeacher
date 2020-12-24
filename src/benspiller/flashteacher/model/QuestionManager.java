@@ -61,8 +61,12 @@ public class QuestionManager
 	 */
 	static final int PASS_COUNTER_VALUE = 3;
 
+	/** Probability of selecting a question from the prioritized list (unless there are none) */
 	static final float QUESTION_SELECTION_PROBABILITY_PRIORITIZED = 0.5f;
-	static final float QUESTION_SELECTION_PROBABILITY_BAD_TIME = 0.3f;
+	
+	/** If we've decided not to select a question from the prioritized list, gives the probability we will 
+	 * select from the "bad" list (rather than the "old" list). */
+	static final float QUESTION_SELECTION_PROBABILITY_BAD_TIME = 0.6f;
 	
 	/**
 	 * Equal to x, when a question is selected randomly from the least-recently-
@@ -385,11 +389,9 @@ public class QuestionManager
 	
 		// list of prioritized, list of non-prioritized ordered by timeToAnswer, and by timeLastAsked
 		
-		float questionTypeSelectValue = random.nextFloat();
-		
 		// as a special case, when there are lots (>15%) of unknown questions, just focus on them before worrying about 
 		// improving/refreshing performance on the questions you do know
-		if (questionTypeSelectValue < QUESTION_SELECTION_PROBABILITY_PRIORITIZED || getUnknownQuestionsFraction() > 0.15)
+		if (random.nextFloat() < QUESTION_SELECTION_PROBABILITY_PRIORITIZED || getUnknownQuestionsFraction() > 0.15)
 		{
 			logger.debug("QuestionManager.moveToNextQuestion: selecting from Qs in prioritized list; unknownQuestionsFraction="+getUnknownQuestionsFraction());
 			
@@ -402,7 +404,10 @@ public class QuestionManager
 			else
 				logger.debug("QuestionManager.moveToNextQuestion: prioritized list is empty, trying another strategy");
 			
-		} else if (questionTypeSelectValue < QUESTION_SELECTION_PROBABILITY_PRIORITIZED+QUESTION_SELECTION_PROBABILITY_BAD_TIME)
+		}
+		if (nextQuestion == currentQuestion) nextQuestion = null; // is quite likely when selecting from prioritized list
+
+		if (nextQuestion == null && random.nextFloat() < QUESTION_SELECTION_PROBABILITY_BAD_TIME)
 		{
 			// select randomly from the worst 20 times - excluding prioritized Qs (as long as there are at least that many - otherwise it doesn't make sense to do this)
 			logger.debug("QuestionManager.moveToNextQuestion: selecting from list of Qs with bad times");
@@ -415,12 +420,8 @@ public class QuestionManager
 				logger.debug("QuestionManager.moveToNextQuestion: nonPassedQuestions list is not big enough, trying another strategy");
 				
 		}
-		else
-		{
-			// selecting a random Q which has not been asked for ages
-		}
 		
-		if (nextQuestion == null || nextQuestion == currentQuestion)
+		if (nextQuestion == null)
 		{
 			logger.debug("QuestionManager.moveToNextQuestion: selecting a random Q which has not been asked for ages");
 			questionTypeSelectionMethod = QuestionTypeSelectionMethod.LEAST_RECENTLY_ASKED_LIST;
@@ -440,8 +441,8 @@ public class QuestionManager
 
 		while (nextQuestion == null || nextQuestion == currentQuestion)
 		{
-			logger.debug("QuestionManager.moveToNextQuestion: fallback - selecting a random question from the entire list");
-			// select 
+			logger.debug("QuestionManager.moveToNextQuestion: fallback after "+questionTypeSelectionMethod+" failed - selecting a random question from the entire list");
+			// select randomly
 			questionTypeSelectionMethod = QuestionTypeSelectionMethod.RANDOM;
 
 			nextQuestion = allQuestions.get(random.nextInt(allQuestions.size()));
