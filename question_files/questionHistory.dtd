@@ -11,6 +11,8 @@
 <!ATTLIST question isPrioritized (false|true) #IMPLIED>
 <!ATTLIST question timeLastAsked CDATA #IMPLIED>
 <!ATTLIST question totalTimesAsked CDATA "0">
+<!ATTLIST question totalWrongAnswers CDATA #IMPLIED>
+<!ATTLIST question lastWrongAnswer CDATA #IMPLIED>
 
 <!ATTLIST question questionText CDATA #REQUIRED>
 <!ATTLIST question answerText CDATA #REQUIRED>

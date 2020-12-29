@@ -549,15 +549,18 @@ public class QuestionWindow extends JFrame {
 					
 					try {
 						AnswerOutcome outcome = model.getQuestionManager().answerQuestion(
-								model.checkAnswer(model.getQuestionManager().getCurrentQuestion(), answerField.getText()), timeToAnswer, characterTimes);
+								model.checkAnswer(model.getQuestionManager().getCurrentQuestion(), answerField.getText()), 
+								answerField.getText(), timeToAnswer, characterTimes);
 						if (outcome.isCorrect())
 						{
 							// display the canonical version, which may or may not be the same (e.g. capitalization may be incorrect yet allowed in user answer)
 							answerField.setText(correctAnswer); 
 							moveToState(States.AnsweredCorrect);
 						}
-						else
+						else 
+						{
 							moveToState(States.AnsweredWrong);
+						}
 					} catch (IllegalArgumentException ex) {
 						JOptionPane.showMessageDialog(
 								QuestionWindow.this, 

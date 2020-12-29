@@ -36,7 +36,11 @@ class QuestionHistory
 	public boolean isPrioritized;
 	
 	public Date timeLastAsked;
+	
+	// These aren't actually used, just recorded for manual inspection and possible future use
 	public long totalTimesAsked;
+	public long totalWrongAnswers;
+	public String lastWrongAnswer;
 	
 	public final Question question;
 	
@@ -69,6 +73,10 @@ class QuestionHistory
 			this.timeLastAsked = new Date(timeLastAsked);
 		else
 			this.timeLastAsked = null;
+
+		totalWrongAnswers = Long.valueOf(questionHistoryElement.getAttributeValue("totalWrongAnswers", "0"));
+		lastWrongAnswer = questionHistoryElement.getAttributeValue("lastWrongAnswer", "");
+
 		this.question = question;
 		
 	}
@@ -78,10 +86,17 @@ class QuestionHistory
 		Element result = new Element(ELEMENT_NAME);
 		result.setAttribute("passModeCounter", String.valueOf(passModeCounter));
 		result.setAttribute("averageTimeToAnswer", String.valueOf(averageTimeToAnswer));
-		result.setAttribute("totalTimesAsked", String.valueOf(totalTimesAsked));
-		result.setAttribute("isPrioritized", String.valueOf(isPrioritized));
+		if (isPrioritized)
+			result.setAttribute("isPrioritized", String.valueOf(isPrioritized));
+		
 		result.setAttribute("questionText", question.getQuestion());
 		result.setAttribute("answerText", question.getAnswer());
+		if (totalWrongAnswers > 0)
+		{
+			result.setAttribute("lastWrongAnswer", lastWrongAnswer);
+			result.setAttribute("totalWrongAnswers", String.valueOf(totalWrongAnswers));
+		}
+		result.setAttribute("totalTimesAsked", String.valueOf(totalTimesAsked));
 		if (timeLastAsked == null)
 			result.setAttribute("timeLastAsked", String.valueOf(0));
 		else

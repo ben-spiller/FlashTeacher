@@ -472,7 +472,7 @@ public class QuestionManager
 	 * @throws IllegalArgumentException If the specified answer is not merely incorrect but actually not a permitted answer 
 	 * (this doesn't count as a wrong answer)
 	 */
-	public AnswerOutcome answerQuestion(boolean isCorrect, long timeToAnswer, List<Long> characterTimes) throws IllegalArgumentException
+	public AnswerOutcome answerQuestion(boolean isCorrect, String answerGiven, long timeToAnswer, List<Long> characterTimes) throws IllegalArgumentException
 	{
 		logger.debug("answerQuestion - "+((isCorrect) ? "correct" : "wrong!"));
 		
@@ -500,7 +500,9 @@ public class QuestionManager
 			questionsAnswered++;
 		}
 		else
+		{
 			timeToAnswer = getTimePenaltyForWrongAnswers();
+		}
 		
 		// Record the results of answering the question in the history (unless 
 		// this is a second attempt, etc.)
@@ -509,6 +511,12 @@ public class QuestionManager
 			QuestionHistory history = currentQuestion;
 			logger.debug("answerQuestion: history was:    "+history);
 			history.averageTimeToAnswer = Utils.exponentialWeightedAverage(history.averageTimeToAnswer, timeToAnswer, 0.6f);
+			
+			if (!isCorrect)
+			{
+				history.lastWrongAnswer = answerGiven;
+				history.totalWrongAnswers++;
+			}
 			
 			if (history.passModeCounter > 0 && isCorrect) // decrement pass counter for priority Qs - but only if they got the right answer!
 			{
