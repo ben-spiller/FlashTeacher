@@ -164,9 +164,9 @@ public class PerformanceWindow extends JDialog
 		knowledgeDataSet.addSeries("series", new double[][]{ {}, {} });
 		JFreeChart knowledgeChart = ChartFactory.createTimeSeriesChart(null, null, Messages.getString("PerformanceWindow.graphPanel.graph.yAxisLabel"), 
 				knowledgeDataSet, false, true, false);
-		ChartPanel chartPanel = new ChartPanel(knowledgeChart);
-		chartPanel.setMouseZoomable(false);
-		chartPanel.setPopupMenu(null);
+		ChartPanel knowledgePanel = new ChartPanel(knowledgeChart);
+		knowledgePanel.setMouseZoomable(false);
+		knowledgePanel.setPopupMenu(null);
 
 		DefaultXYItemRenderer renderer = new DefaultXYItemRenderer();
 		renderer.setDefaultShapesFilled(true);
@@ -188,16 +188,16 @@ public class PerformanceWindow extends JDialog
 		knowledgeChart.getXYPlot().setRenderer(renderer);
 
 		
-		graphPanel.add(chartPanel);
+		graphPanel.add(knowledgePanel);
 
 		timeSpentDataSet = new DefaultXYDataset();
 		timeSpentDataSet.addSeries("series", new double[][]{ {}, {} });
 		JFreeChart timeSpentChart = ChartFactory.createTimeSeriesChart(null, null, Messages.getString("PerformanceWindow.graphPanel.timeSpentChart.yAxisLabel"), 
 				new XYBarDataset(timeSpentDataSet, 1000*60*60*(24-2)), 
 				false, true, false);
-		chartPanel = new ChartPanel(timeSpentChart);
-		chartPanel.setMouseZoomable(false);
-		chartPanel.setPopupMenu(null);
+		ChartPanel timeSpentPanel = new ChartPanel(timeSpentChart);
+		timeSpentPanel.setMouseZoomable(false);
+		timeSpentPanel.setPopupMenu(null);
 		XYBarRenderer barRenderer = new XYBarRenderer();
 		barRenderer.setSeriesPaint(0, new Color(168,255,174)); // green
 		barRenderer.setDefaultItemLabelsVisible(true, true);
@@ -215,37 +215,44 @@ public class PerformanceWindow extends JDialog
 			}
 		});		
 		
+		knowledgePanel.setPreferredSize(new Dimension(550, 260));
+		timeSpentPanel.setPreferredSize(new Dimension(550, 160));
+
 		AxisSpace as = new AxisSpace();
 		// This ensures that both graphs' plot area start in the same place even though the knowledge axis may need more horizontal space
-		as.add(60, RectangleEdge.LEFT);
+		as.add(80, RectangleEdge.LEFT);
 		// This gives enough space for the rightmost x tick
-		as.add(10, RectangleEdge.RIGHT);
+		as.add(30, RectangleEdge.RIGHT);
 		timeSpentChart.getXYPlot().setFixedRangeAxisSpace(as);
 		knowledgeChart.getXYPlot().setFixedRangeAxisSpace(as);
+
 		
 		// Settings common to both charts go here
 		for (JFreeChart chart: new JFreeChart[] {knowledgeChart, timeSpentChart})
 		{
-			chart.setBackgroundPaint(chartPanel.getBackground());
+			chart.setBackgroundPaint(timeSpentPanel.getBackground());
 			chart.getXYPlot().setBackgroundPaint(Color.WHITE);
 			chart.getXYPlot().setDomainGridlinePaint(Color.GRAY);
 			chart.getXYPlot().setRangeGridlinePaint(Color.GRAY);
 
-			chart.getXYPlot().getRangeAxis().setLabelPaint(chartPanel.getForeground());
-			chart.getXYPlot().getRangeAxis().setTickLabelPaint(chartPanel.getForeground());
-			chart.getXYPlot().getDomainAxis().setTickLabelPaint(chartPanel.getForeground());
-			chart.getXYPlot().getRangeAxis().setLabelFont(chartPanel.getFont().deriveFont(16.0f));
+			chart.getXYPlot().getRangeAxis().setLabelPaint(timeSpentPanel.getForeground());
+			chart.getXYPlot().getRangeAxis().setTickLabelPaint(timeSpentPanel.getForeground());
+			chart.getXYPlot().getDomainAxis().setTickLabelPaint(timeSpentPanel.getForeground());
+			chart.getXYPlot().getRangeAxis().setLabelFont(timeSpentPanel.getFont().deriveFont(16.0f));
 			
 			chart.getXYPlot().getDomainAxis().setStandardTickUnits(createDateTickUnits());
 		}
-		
-		graphPanel.add(chartPanel);
-		
-		
-		Dimension initialSize = new Dimension(550, 180*2);
-		graphPanel.setMinimumSize(initialSize);
-		graphPanel.setPreferredSize(initialSize);
 
+		// This prevents the tick labels from resizing (which makes the two charts look different)
+		for (ChartPanel chartPanel: new ChartPanel[] {knowledgePanel, timeSpentPanel})
+		{
+			chartPanel.setMinimumDrawWidth(0);
+			chartPanel.setMaximumDrawWidth(Integer.MAX_VALUE);
+			chartPanel.setMinimumDrawHeight(0);
+			chartPanel.setMaximumDrawHeight(Integer.MAX_VALUE);
+		}
+		
+		graphPanel.add(timeSpentPanel);
 		
 		// Button panel
 		JPanel timeWindowComboBoxPanel = new JPanel(new BorderLayout());
