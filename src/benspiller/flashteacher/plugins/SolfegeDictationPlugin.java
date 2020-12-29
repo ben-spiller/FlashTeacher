@@ -507,9 +507,19 @@ public class SolfegeDictationPlugin implements Plugin
 	protected Sequencer sequencer;
 	protected Instrument[] allInstruments;
     
+	private long midiLastUsedTime;
 	void initMIDI() throws MidiUnavailableException, Exception
 	{
+		// On Windows 10 MIDI sometimes gets into a bad state if devices change e.g. turning off/on speakers overnight. 
+		// Since that's hard to detect, reset midi after 6 hours of non-use
+		if (midiLastUsedTime != 0 && System.currentTimeMillis()-midiLastUsedTime > 1000*60*60*6) {
+			logger.info("Resetting MIDI as it's been several hours since it was last used");
+			close();
+		}
+		midiLastUsedTime = System.currentTimeMillis();
+		
 		if (sequencer != null) return; // it's time-consuming, so use cached version from a previous load
+		
 		
 		long startTime = System.currentTimeMillis();
 		logger.debug("Loading MIDI sequencer");
