@@ -14,7 +14,6 @@ import java.awt.event.ItemListener;
 import java.awt.geom.Ellipse2D;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,13 +68,13 @@ public class PerformanceWindow extends JDialog
 	final DefaultXYDataset timeSpentDataSet;
 	final JComboBox<TimeWindow> timeWindowComboBox;
 	
-	private final long nowMillis = new Date().getTime();
+	private final long endOfTodayMillis = KnowledgeIndexHistory.removeTimeFromDateTime(System.currentTimeMillis())+1000*60*60*24;
 
 	private static final int DEFAULT_TIME_WINDOW_INDEX = 3;
 	private static final int TIME_WINDOW_INDEX_ALL = 0;
-	private final TimeWindow[] TIME_WINDOWS = { // must not be a static field - since current time (i.e. the upper bound) keeps changing
+	private final TimeWindow[] TIME_WINDOWS = { // must not be a static field - since current time (i.e. the upper bound) could change
 		new TimeWindow(Messages.getString("PerformanceWindow.graphPanel.graph.graphTimeWindow.all"), 		0),
-		new TimeWindow(Messages.getString("PerformanceWindow.graphPanel.graph.graphTimeWindow.day"), 		-1), // special value representing today
+		new TimeWindow(Messages.getString("PerformanceWindow.graphPanel.graph.graphTimeWindow.day"), 		1000L*60*60*24),
 		new TimeWindow(Messages.getString("PerformanceWindow.graphPanel.graph.graphTimeWindow.week"), 		1000L*60*60*24*7),
 		new TimeWindow(Messages.getString("PerformanceWindow.graphPanel.graph.graphTimeWindow.2weeks"), 	1000L*60*60*24*7*2),
 		new TimeWindow(Messages.getString("PerformanceWindow.graphPanel.graph.graphTimeWindow.month"), 		1000L*60*60*24*7*4),
@@ -216,9 +215,11 @@ public class PerformanceWindow extends JDialog
 			}
 		});		
 		
-		// This ensures that both graphs' plot area start in the same place even though the knowledge axis may need more horizontal space
 		AxisSpace as = new AxisSpace();
+		// This ensures that both graphs' plot area start in the same place even though the knowledge axis may need more horizontal space
 		as.add(60, RectangleEdge.LEFT);
+		// This gives enough space for the rightmost x tick
+		as.add(10, RectangleEdge.RIGHT);
 		timeSpentChart.getXYPlot().setFixedRangeAxisSpace(as);
 		knowledgeChart.getXYPlot().setFixedRangeAxisSpace(as);
 		
@@ -309,7 +310,7 @@ public class PerformanceWindow extends JDialog
 					}
 					else {
 						long timeLowerBound = timeWindow.getLowerBound();
-						chart.getXYPlot().getDomainAxis().setRangeWithMargins(timeLowerBound, nowMillis);
+						chart.getXYPlot().getDomainAxis().setRangeWithMargins(timeLowerBound, endOfTodayMillis);
 						
 						chart.getXYPlot().getRangeAxis().setAutoRange(true); // index values (y)
 						
@@ -491,17 +492,6 @@ public class PerformanceWindow extends JDialog
     	public TimeWindow(String name, long periodMillis)
     	{
     		this.name = name;
-    		if (periodMillis == -1) // special value representing today 
-    		{
-    			Calendar c = Calendar.getInstance();
-    			c.set(Calendar.AM_PM, Calendar.AM);
-    			c.set(Calendar.HOUR, 0);
-    			c.set(Calendar.MINUTE, 0);
-    			c.set(Calendar.SECOND, 0);
-    			c.set(Calendar.MILLISECOND, 0);
-    			periodMillis = nowMillis - c.getTimeInMillis();
-    		}
-    		
     		this.periodMillis = periodMillis;
     	}
     	
@@ -516,7 +506,7 @@ public class PerformanceWindow extends JDialog
     	{
     		if (periodMillis == 0)
     			return 0;
-    		return nowMillis - periodMillis;
+    		return endOfTodayMillis - periodMillis;
     	}
     	
     }
@@ -546,6 +536,7 @@ public class PerformanceWindow extends JDialog
 		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*5), 9000d, 1*60000);
 		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*4), 10000d, 2*60000);
 		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60*60*1), 9600d, 3*60000);
+		knowledgeIndexHistory.add(new Date(new Date().getTime()-1000L*60), 9600d, 3*60000);
 		window.initialize(previousScores, scores, knowledgeIndexHistory);
 		window.setLocationRelativeTo(null);
 		window.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

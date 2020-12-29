@@ -109,7 +109,7 @@ public class KnowledgeIndexHistory implements Iterable<KnowledgeIndexHistory.Dat
 		Collections.sort(days);
 		for (int i = 0; i < days.size(); i++)
 		{
-			data[0][i] = days.get(i);
+			data[0][i] = days.get(i) + 1000*60*60*12;
 			data[1][i] = byday.get(days.get(i));
 		}
 		
