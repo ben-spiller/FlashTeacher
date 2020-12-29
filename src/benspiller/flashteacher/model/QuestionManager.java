@@ -66,7 +66,7 @@ public class QuestionManager
 	
 	/** If we've decided not to select a question from the prioritized list, gives the probability we will 
 	 * select from the "bad" list (rather than the "old" list). */
-	static final float QUESTION_SELECTION_PROBABILITY_BAD_TIME = 0.6f;
+	static final float QUESTION_SELECTION_PROBABILITY_BAD_TIME = 0.75f;
 	
 	/**
 	 * Equal to x, when a question is selected randomly from the least-recently-

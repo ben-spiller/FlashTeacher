@@ -39,8 +39,9 @@ Well, for each question we keep track of:
 
 The algorithm then randomly chooses a question as follows:
 * With probability 50% we select a question from a small "prioritized" list containing at most 10 questions that have been **passed** - or else are **newly added** (never yet asked). Passed questions do not leave this prioritized list until they've been answered correctly 3 times in a row, and when they do another question is added in their place. This focus on learning a very small number of questions at a time helps the user to fully fix gaps in their knowledge before moving on to other questions. Newly added questions must be answered correctly just once (not 3 times) to leave the prioritized list. As a special case, when there are a lot (>15%) of newly added (or passed) questions, the algorithm almost exclusively focuses on getting through them before moving on to the later stages. 
-* With probability 30% we select a question at random from the **slowest/wrongest** 20% of questions (where wrong answers are treated as having an especially high time-to-answer). 
-* Finally, with probability 20% (or if any of the above are not possible) we select a question at random from the 10% of questions that were **least recently asked**, to ensure nothing gets forgotten. 
+* If not picking from the prioritized list then:
+    * With probability 75% we select a question at random from the **slowest/wrongest** 20% of questions (where wrong answers are treated as having an especially high time-to-answer). 
+    * With probability 25% (or if any of the above are not possible) we select a question at random from the 10% of questions that were **least recently asked**, to ensure nothing gets forgotten. 
 
 
 # License
