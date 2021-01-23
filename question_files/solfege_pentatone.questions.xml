@@ -16,6 +16,10 @@
 		<!-- Don't set this too large or the number of questions will be enormous.  -->
 		<property name="notesPerQuestion" value="3"/>
 
+		<!-- Optional drone that continually plays "do". Must be an instrument like organ or singing that 
+		doesn't die away -->
+		<property name="droneInstrument" value="Choir Aahs"/>
+
 		<!-- How long to play each note for. Either a single value or a range "min-max" -->
 		<property name="noteDurationMillis" value="400-800"/>
 		

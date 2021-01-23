@@ -9,8 +9,15 @@ Features:
 * Includes a score to show performance compared to last time, and a motivational graph showing increase of knowledge over time (factoring in both how well you know the questions and how big the question corpus is).
 * Supports right-left-languages and any UTF-8/international character.  
 * Has a plugin API allowing for non-textual questions, for example where the question is presented as an audio sequence or a picture. 
-* Include a simple editor for adding new items to a question list. However note that a simple XML file format is used with the intention that the question files are easy to create and edit. 
+* Includes a simple editor for adding new items to a question list. However note that a simple XML file format is used with the intention that the question files are easy to create and edit. 
 * Uses Java 8. Includes an executable launcher for Windows. 
+* Includes a plugin for ear training using solfege (so/re/me) names, with hand signs, and the ability to play a "do" drone note. 
+
+NB: if you're interested in this program you should also take a look at https://apps.ankiweb.net/ which is a more established and fully-featured 
+open source flash cards program (which I discovered several years after creating this), and which uses a more scientific approach to 
+question selection based on the Ebbinghaus forgetting curve. However at the time of writing (without significant work on plugin development) 
+FlashTeacher is better if you want an out-of-the-box approach to solfege, and I think the graphical tracking of progress with time is 
+another nice feature of FlashTeacher. 
 
 # Getting started
 You need a Java(R) Runtime Environment installed on your machine (recommended Java 8) to run this application. On Windows, just run FlashTeacher.exe. On other operating run `java -jar flashteacher.jar`. 

@@ -217,6 +217,12 @@ public class ModelHolder
 			p.close();
 	}
 
+	public static void stopPlugins()
+	{
+		for (Plugin p: plugins.values())
+			p.stop();
+	}
+
 	public void onQuestionChanged()
 	{
 		for (Plugin p: plugins.values())

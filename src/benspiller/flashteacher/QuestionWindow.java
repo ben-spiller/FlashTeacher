@@ -512,6 +512,7 @@ public class QuestionWindow extends JFrame {
 
 			boolean displayPerformanceWindow = someQuestionsAnswered;
 			
+			ModelHolder.stopPlugins();
 			moveToState(States.ReadyToStart);
 			
 			if (displayPerformanceWindow)

@@ -53,6 +53,10 @@ public interface Plugin
 	 */
 	default void onQuestionChanged(Question question) {}
 	
+	/** Called when the user stops the current session (but does not close the 
+	 * application). */
+	default void stop() {}
+	
 	/** Called during application shutdown to free any static OS resources (e.g. MIDI) 
 	 * and/or background threads allocated by this plugin. */
 	default void close() {}

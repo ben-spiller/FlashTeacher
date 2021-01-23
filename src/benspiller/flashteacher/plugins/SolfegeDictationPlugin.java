@@ -64,6 +64,9 @@ public class SolfegeDictationPlugin implements Plugin
 		return result;		
 	}
 	
+	/** Null for none, else an instrument to continuously sound "do" */
+	Patch dronePatch = null;
+	
 	/*
 	 * The entrypoint for plugins. 
 	 */
@@ -85,8 +88,22 @@ public class SolfegeDictationPlugin implements Plugin
 		String[] instruments = properties.remove("instruments").toLowerCase().split(",");
 		if (instruments.length==0) instruments = new String[] {"Piano"};
 		
-		midiPatches = new Patch[instruments.length];
 		long startTime = System.currentTimeMillis();
+
+		String droneInstrument = properties.remove("droneInstrument");
+		if (droneInstrument != null)
+			for (Instrument i: allInstruments)
+				if (i.getName().toLowerCase().contains(droneInstrument.toLowerCase().trim()))
+				{
+					dronePatch = i.getPatch();
+					logger.info("Found requested MIDI instrument '"+i.getName().trim()+"' at program "+i.getPatch().getProgram());
+					droneInstrument = null;
+					break;
+				}
+		if (droneInstrument != null && droneInstrument.length()>0 && dronePatch == null)
+			throw new IllegalArgumentException("Cannot find instrument for drone: "+droneInstrument);
+			
+		midiPatches = new Patch[instruments.length];
 		for (int p = 0; p < midiPatches.length; p++)
 		{
 			String patchName = instruments[p].toLowerCase().trim();
@@ -132,6 +149,14 @@ public class SolfegeDictationPlugin implements Plugin
 			currentQuestionMidiSequence.play();
 		
 		return result;
+	}
+	
+	
+	@Override
+	public void stop()
+	{
+		if (sequencer != null)
+			sequencer.stop();
 	}
 	
 	@Override
@@ -455,15 +480,24 @@ public class SolfegeDictationPlugin implements Plugin
     	MidiSequenceBuilder(Patch instrumentPatch) throws Exception
     	{
             sequence = new Sequence(Sequence.PPQ, 1000); // each tick is 1/1000 of a second
-    	    track = sequence.createTrack();
 
     	    contents.add("patch="+instrumentPatch.getProgram());
+    	    
+    	    if (dronePatch != null) {
+    	    	Track droneTrack = sequence.createTrack();
+        	    int velocity = 127/2;
+        	    // use an instrument that goes on forever
+        	    droneTrack.add(new MidiEvent(new ShortMessage(ShortMessage.PROGRAM_CHANGE, 1, dronePatch.getProgram(), 0), 0));
+        	    droneTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 1, currentDo, velocity), lastTickMillis));
+        	    droneTrack.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 1, currentDo, velocity), lastTickMillis+1000*60*60));
+    	    }
+    	    track = sequence.createTrack();
     	    track.add(new MidiEvent(new ShortMessage(ShortMessage.PROGRAM_CHANGE, 0, instrumentPatch.getProgram(), 0), 0));
     	}
     	
     	MidiSequenceBuilder addNote(int note, int noteMillis) throws Exception
     	{
-    		contents.add("note="+note+" durationMillis="+noteMillis);
+    	    contents.add("note="+note+" durationMillis="+noteMillis);
     	    int velocity = 127; // loudest
    		    track.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, note, velocity), lastTickMillis));
    		    lastTickMillis += noteMillis;
@@ -482,7 +516,6 @@ public class SolfegeDictationPlugin implements Plugin
     	void play()
     	{
     		if (contents.size() > 2) logger.info("Playing MIDI sequence: "+contents);
-    		
     		try {
 	    	    sequencer.setSequence(sequence);
 				sequencer.setTickPosition(0);
