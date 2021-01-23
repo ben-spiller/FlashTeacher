@@ -415,7 +415,7 @@ public class PerformanceWindow extends JDialog
 		
 		// if less than 3 data points in this period, or it's less than the current selection (e.g. 2 weeks but we have only one day's data), reset to showing everything
 		if (knowledgeIndexHistory.getKnowledgeIndexArray()[0].length < 3 || 
-				knowledgeIndexHistory.getKnowledgeIndexArray()[0][knowledgeIndexHistory.getKnowledgeIndexArray().length-1]-knowledgeIndexHistory.getKnowledgeIndexArray()[0][0] < timeWindowComboBox.getItemAt(selected).periodMillis)
+				knowledgeIndexHistory.getKnowledgeIndexArray()[0][knowledgeIndexHistory.getKnowledgeIndexArray()[0].length-1]-knowledgeIndexHistory.getKnowledgeIndexArray()[0][0] < timeWindowComboBox.getItemAt(selected).periodMillis)
 			timeWindowComboBox.setSelectedIndex(TIME_WINDOW_INDEX_ALL);
 		
 		closeButton.requestFocusInWindow();
