@@ -126,7 +126,6 @@ public class PerformanceWindow extends JDialog
 				"quickAnswers", 
 				null, 
 				"totalQuestions", 
-				null, 
 				"oldestQuestionAsked",
 				null,
 				"averageTimeToAnswer", 
@@ -394,7 +393,7 @@ public class PerformanceWindow extends JDialog
 				args = new Object[]{ scores.totalQuestions, scores.totalQuestions-previousScores.totalQuestions };
 			else if ("detailsPanel.oldestQuestionAsked".equals(s))
 				args = new Object[]{ formatDuration(System.currentTimeMillis()-scores.oldestQuestionAskedMillis), 
-						Math.abs(previousScores.oldestQuestionAskedMillis-scores.oldestQuestionAskedMillis) < 1000 ? "" :
+						Math.abs(previousScores.oldestQuestionAskedMillis-scores.oldestQuestionAskedMillis) < 1000 || scores.oldestQuestionAskedMillis==0 ? "" :
 						" ("+formatDurationDelta(previousScores.oldestQuestionAskedMillis-scores.oldestQuestionAskedMillis)+")"};
 			else if ("detailsPanel.averageTimeToAnswer".equals(s))
 				args = new Object[]{ scores.averageTimeToAnswer/1000d, (previousScores.averageTimeToAnswer == 0) ? 0 : 100d*(scores.averageTimeToAnswer-previousScores.averageTimeToAnswer)/previousScores.averageTimeToAnswer };
