@@ -395,7 +395,7 @@ public class PerformanceWindow extends JDialog
 			else if ("detailsPanel.oldestQuestionAsked".equals(s))
 				args = new Object[]{ formatDuration(System.currentTimeMillis()-scores.oldestQuestionAskedMillis), 
 						Math.abs(previousScores.oldestQuestionAskedMillis-scores.oldestQuestionAskedMillis) < 1000 ? "" :
-						"( "+formatDuration(previousScores.oldestQuestionAskedMillis-scores.oldestQuestionAskedMillis)+")"};
+						" ("+formatDurationDelta(previousScores.oldestQuestionAskedMillis-scores.oldestQuestionAskedMillis)+")"};
 			else if ("detailsPanel.averageTimeToAnswer".equals(s))
 				args = new Object[]{ scores.averageTimeToAnswer/1000d, (previousScores.averageTimeToAnswer == 0) ? 0 : 100d*(scores.averageTimeToAnswer-previousScores.averageTimeToAnswer)/previousScores.averageTimeToAnswer };
 			else if ("detailsPanel.averageTimeToAllowPerCharacter".equals(s))
@@ -423,16 +423,21 @@ public class PerformanceWindow extends JDialog
 	
 	private static String formatDuration(long millis)
 	{
+		return formatDurationDelta(millis).replace("+", "");
+	}
+
+	private static String formatDurationDelta(long millis)
+	{
 		double x = millis/1000.0;
-		if (x <= 60) return Messages.getString("formatDuration.secs", x);
+		if (Math.abs(x) <= 60) return Messages.getString("formatDuration.secs", x);
 		x /= 60;
-		if (x <= 60) return Messages.getString("formatDuration.mins", x);
+		if (Math.abs(x) <= 60) return Messages.getString("formatDuration.mins", x);
 		x /= 60;
-		if (x <= 24) return Messages.getString("formatDuration.hours", x);
+		if (Math.abs(x) <= 24) return Messages.getString("formatDuration.hours", x);
 		x /= 24;
 		return Messages.getString("formatDuration.days", x);
 	}
-	
+
     /**
      * Returns a collection of standard date tick units.  
      * 
