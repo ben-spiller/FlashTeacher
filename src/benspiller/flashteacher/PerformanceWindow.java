@@ -477,6 +477,8 @@ public class PerformanceWindow extends JDialog
                 DateTickUnitType.DAY, 1, f5));
         units.add(new DateTickUnit(DateTickUnitType.DAY, 2, 
                 DateTickUnitType.DAY, 1, f5));
+        units.add(new DateTickUnit(DateTickUnitType.DAY, 3, 
+                DateTickUnitType.DAY, 1, f5));
         units.add(new DateTickUnit(DateTickUnitType.DAY, 7, 
                 DateTickUnitType.DAY, 1, f5));
         units.add(new DateTickUnit(DateTickUnitType.DAY, 15, 
