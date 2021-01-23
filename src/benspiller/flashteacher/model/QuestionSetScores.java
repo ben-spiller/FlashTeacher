@@ -29,6 +29,8 @@ public class QuestionSetScores
 	public double slowAnswersPercent;
 	public double quickAnswersPercent;
 	
+	public long oldestQuestionAskedMillis;
+	
 	/**
 	 * Average time to answer questions (excluding unknown/new answers).  
 	 */
@@ -76,6 +78,8 @@ public class QuestionSetScores
 			quickAnswersPercent = 100d*quickAnswers/totalQuestions;
 		}
 		
+		oldestQuestionAskedMillis = Long.valueOf(previousScoresElement.getAttributeValue("oldestQuestionAskedMillis", "0"));
+
 		averageTimeToAnswer = Long.valueOf(previousScoresElement.getAttributeValue("averageTimeToAnswer", "0"));
 		averageTimePerCharacter = Long.valueOf(previousScoresElement.getAttributeValue("averageTimePerCharacter", "0"));
 
@@ -91,6 +95,7 @@ public class QuestionSetScores
 		result.setAttribute("slowAnswers", String.valueOf(slowAnswers));
 		result.setAttribute("quickAnswers", String.valueOf(quickAnswers));
 		result.setAttribute("totalQuestions", String.valueOf(totalQuestions));
+		result.setAttribute("oldestQuestionAskedMillis", String.valueOf(oldestQuestionAskedMillis));
 		result.setAttribute("averageTimeToAnswer", String.valueOf(averageTimeToAnswer));
 		result.setAttribute("averageTimePerCharacter", String.valueOf(averageTimePerCharacter));
 		result.setAttribute("questionSetPercentScore", String.valueOf(questionSetPercentScore));

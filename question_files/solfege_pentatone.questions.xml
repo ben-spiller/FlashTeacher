@@ -7,11 +7,14 @@
 		<!-- Use comma e.g. "ti," to indicate solfege in a lower octave and apostrophe e.g. "re'" to indicate higher octave. 
 		
 		Note that one additional solfege will be displayed above/below the question range, to help when you later add additional notes. 
+		
+		Hint: the best way to learn these is to get really good with a small number of notesPerQuestion (e.g. 2 or 3) 
+		and a reduced set of solfegeValues then gradually increase it once you've mastered the basics. 
 		-->
 		<property name="solfegeValues" value="do re me so la"/>
 
 		<!-- Don't set this too large or the number of questions will be enormous.  -->
-		<property name="notesPerQuestion" value="4"/>
+		<property name="notesPerQuestion" value="3"/>
 
 		<!-- How long to play each note for. Either a single value or a range "min-max" -->
 		<property name="noteDurationMillis" value="400-800"/>

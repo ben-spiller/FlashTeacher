@@ -68,7 +68,7 @@ public class PerformanceWindow extends JDialog
 	final DefaultXYDataset timeSpentDataSet;
 	final JComboBox<TimeWindow> timeWindowComboBox;
 	
-	private final long endOfTodayMillis = KnowledgeIndexHistory.removeTimeFromDateTime(System.currentTimeMillis())+1000*60*60*24;
+	private long endOfTodayMillis;
 
 	private static final int DEFAULT_TIME_WINDOW_INDEX = 3;
 	private static final int TIME_WINDOW_INDEX_ALL = 0;
@@ -127,6 +127,8 @@ public class PerformanceWindow extends JDialog
 				null, 
 				"totalQuestions", 
 				null, 
+				"oldestQuestionAsked",
+				null,
 				"averageTimeToAnswer", 
 				"averageTimeToAllowPerCharacter",
 				null,
@@ -367,6 +369,8 @@ public class PerformanceWindow extends JDialog
 		if (previousScores == null)
 			previousScores = scores;
 		
+		endOfTodayMillis = KnowledgeIndexHistory.removeTimeFromDateTime(System.currentTimeMillis())+1000*60*60*24;
+		
 		knowledgeDataSet.addSeries("series", knowledgeIndexHistory.getKnowledgeIndexArray());
 		timeSpentDataSet.addSeries("series", knowledgeIndexHistory.getTimeSpentArray());
 		this.knowledgeIndexHistory = knowledgeIndexHistory;
@@ -388,6 +392,10 @@ public class PerformanceWindow extends JDialog
 				args = new Object[]{ scores.quickAnswers, scores.quickAnswersPercent, scores.quickAnswersPercent-previousScores.quickAnswersPercent };
 			else if ("detailsPanel.totalQuestions".equals(s))
 				args = new Object[]{ scores.totalQuestions, scores.totalQuestions-previousScores.totalQuestions };
+			else if ("detailsPanel.oldestQuestionAsked".equals(s))
+				args = new Object[]{ formatDuration(System.currentTimeMillis()-scores.oldestQuestionAskedMillis), 
+						Math.abs(previousScores.oldestQuestionAskedMillis-scores.oldestQuestionAskedMillis) < 1000 ? "" :
+						"( "+formatDuration(previousScores.oldestQuestionAskedMillis-scores.oldestQuestionAskedMillis)+")"};
 			else if ("detailsPanel.averageTimeToAnswer".equals(s))
 				args = new Object[]{ scores.averageTimeToAnswer/1000d, (previousScores.averageTimeToAnswer == 0) ? 0 : 100d*(scores.averageTimeToAnswer-previousScores.averageTimeToAnswer)/previousScores.averageTimeToAnswer };
 			else if ("detailsPanel.averageTimeToAllowPerCharacter".equals(s))
@@ -411,6 +419,18 @@ public class PerformanceWindow extends JDialog
 			timeWindowComboBox.setSelectedIndex(TIME_WINDOW_INDEX_ALL);
 		
 		closeButton.requestFocusInWindow();
+	}
+	
+	private static String formatDuration(long millis)
+	{
+		double x = millis/1000.0;
+		if (x <= 60) return Messages.getString("formatDuration.secs", x);
+		x /= 60;
+		if (x <= 60) return Messages.getString("formatDuration.mins", x);
+		x /= 60;
+		if (x <= 24) return Messages.getString("formatDuration.hours", x);
+		x /= 24;
+		return Messages.getString("formatDuration.days", x);
 	}
 	
     /**

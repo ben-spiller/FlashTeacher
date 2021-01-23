@@ -34,7 +34,7 @@ class Scorer
 	{
 		QuestionSetScores result = new QuestionSetScores();
 		
-		long oldestQuestionAskedMillis = System.currentTimeMillis();
+		result.oldestQuestionAskedMillis = System.currentTimeMillis();
 		
 		for (QuestionHistory qh: qm.allQuestions)
 		{
@@ -54,12 +54,12 @@ class Scorer
 			else
 				result.unknownAnswers++;
 			
-			if (qh.timeLastAsked != null && qh.timeLastAsked.getTime() < oldestQuestionAskedMillis)
-				oldestQuestionAskedMillis = qh.timeLastAsked.getTime();
+			if (qh.timeLastAsked != null && qh.timeLastAsked.getTime() < result.oldestQuestionAskedMillis)
+				result.oldestQuestionAskedMillis = qh.timeLastAsked.getTime();
 		}
 		if (result.totalQuestions == 0) return result;
 		
-		logger.info("Longest time since a question was asked is: "+(System.currentTimeMillis()-oldestQuestionAskedMillis)/1000.0/60/60/24+" days");
+		logger.info("Longest time since a question was asked is: "+(System.currentTimeMillis()-result.oldestQuestionAskedMillis)/1000.0/60/60/24+" days");
 		
 		int knownAnswers = result.totalQuestions - result.unknownAnswers;
 		

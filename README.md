@@ -6,7 +6,7 @@ Features:
 * Instead of picking questions randomly, questions are selected using an intelligent algorithm that uses your personal learning history to build your knowledge efficiently, with special handling for questions you often answer slowly or get wrong, questions that were not asked for a long time, and prioritization of new questions and questions that you "passed" (could not remember the answer for at all). 
 * If you get an answer wrong (or have to pass), you still have to type the correct answer before moving on, to begin to get it embedded in your memory. 
 * Has full support for incrementally increasing the corpus of questions as knowledge improves; newly questions are asked repeatedly until they are learned, before moving on to other new questions.
-* Includes a score to show performance compared to last time, and a motivating graph showing increase of knowledge over time (factoring in both how well you know the questions and how big the question corpus is).
+* Includes a score to show performance compared to last time, and a motivational graph showing increase of knowledge over time (factoring in both how well you know the questions and how big the question corpus is).
 * Supports right-left-languages and any UTF-8/international character.  
 * Has a plugin API allowing for non-textual questions, for example where the question is presented as an audio sequence or a picture. 
 * Include a simple editor for adding new items to a question list. However note that a simple XML file format is used with the intention that the question files are easy to create and edit. 

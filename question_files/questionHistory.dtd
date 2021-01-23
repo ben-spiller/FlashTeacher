@@ -24,6 +24,7 @@
 <!ATTLIST previousQuestionSetScores slowAnswers CDATA #IMPLIED>
 <!ATTLIST previousQuestionSetScores quickAnswers CDATA #IMPLIED>
 <!ATTLIST previousQuestionSetScores totalQuestions CDATA #IMPLIED>
+<!ATTLIST previousQuestionSetScores oldestQuestionAskedMillis CDATA #IMPLIED>
 <!ATTLIST previousQuestionSetScores averageTimeToAnswer CDATA #IMPLIED>
 <!ATTLIST previousQuestionSetScores averageTimePerCharacter CDATA #IMPLIED>
 <!ATTLIST previousQuestionSetScores questionSetPercentScore CDATA #REQUIRED>
