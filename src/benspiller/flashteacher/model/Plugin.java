@@ -57,5 +57,19 @@ public interface Plugin
 	 * and/or background threads allocated by this plugin. */
 	default void close() {}
 	
+	/**
+	 * Called to check whether the answer is correct. 
+	 * 
+	 * By default this is implemented with {@link Question#isAnswerCorrect(String)} 
+	 * but plugins can override that to provide custom normalization of answers 
+	 * or checking mechanisms, or to avoid typos counting as wrong answers. 
+	 * 
+	 * @param question
+	 * @param answer The given answer 
+	 * @return
+	 * @throws IllegalArgumentException Can be thrown to indicate that the answer 
+	 * is not valid (i.e. doesn't count as a wrong/correct answer); this can be 
+	 * used to avoid typos
+	 */
 	default boolean checkAnswer(Question question, String answer) { return question.isAnswerCorrect(answer); }
 }

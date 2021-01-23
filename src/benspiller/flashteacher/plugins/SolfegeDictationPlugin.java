@@ -120,7 +120,12 @@ public class SolfegeDictationPlugin implements Plugin
 	public boolean checkAnswer(Question question, String answer)
 	{
 		// Don't bother to make user get the octave right, it'd an unnecessary distraction
+		// The following will throw an exception if the answer isn't a valid solfege string
 		boolean result = stripSolfegeOctaves(question.getAnswer()).equalsIgnoreCase(normalizeSolfegeString(stripSolfegeOctaves(answer)));
+
+		// This is to avoid typos (pressing enter too early) counting as wrong answers
+		if (stripSolfegeOctaves(question.getAnswer()).length() != normalizeSolfegeString(stripSolfegeOctaves(answer)).length())
+			throw new IllegalArgumentException("Incorrect number of notes");
 		
 		// on correct answer, play it again to solidify the learning
 		if (result)
