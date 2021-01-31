@@ -4,7 +4,7 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 public class Messages
 {
@@ -30,8 +30,7 @@ public class Messages
 		}
 		catch (MissingResourceException e)
 		{
-			if (logger.isDebugEnabled())
-				logger.debug("Missing resource: \n"+key+"=");
+			logger.log(java.util.logging.Level.FINE, "Missing resource: \n"+key+"=");
 			return '!' + key + '!';
 		}
 	}

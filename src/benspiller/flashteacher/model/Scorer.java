@@ -1,10 +1,10 @@
 package benspiller.flashteacher.model;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 class Scorer
 {
-	static final Logger logger = Logger.getLogger(Scorer.class);
+	static final Logger logger = Logger.getLogger(Scorer.class.getName());
 	
 	public static int getQuestionScore(QuestionHistory q)
 	{
@@ -25,7 +25,7 @@ class Scorer
 		if (result < 0) result = 0;
 		if (result > 100) result = 100;
 		
-		logger.info("Calculated score of "+result+" for question: "+q);
+		logger.log(java.util.logging.Level.INFO, "Calculated score of "+result+" for question: "+q);
 
 		return result;
 	}
@@ -59,7 +59,7 @@ class Scorer
 		}
 		if (result.totalQuestions == 0) return result;
 		
-		logger.info("Longest time since a question was asked is: "+(System.currentTimeMillis()-result.oldestQuestionAskedMillis)/1000.0/60/60/24+" days");
+		logger.log(java.util.logging.Level.INFO, "Longest time since a question was asked is: "+(System.currentTimeMillis()-result.oldestQuestionAskedMillis)/1000.0/60/60/24+" days");
 		
 		int knownAnswers = result.totalQuestions - result.unknownAnswers;
 		
@@ -71,7 +71,7 @@ class Scorer
 		// now calculate derived values - the overall scores
 		double timeToAnswerMetric = ( (QuestionManager.MAXIMUM_MILLIS_TO_RECORD_PER_ANSWER-(double)result.averageTimeToAnswer) / (double)QuestionManager.MAXIMUM_MILLIS_TO_RECORD_PER_ANSWER);
 		
-		logger.info("timeToAnswerMetric = "+timeToAnswerMetric);
+		logger.log(java.util.logging.Level.INFO, "timeToAnswerMetric = "+timeToAnswerMetric);
 		
 		result.questionSetPercentScore = (
 				// scale by the % of known answers, so max % is % of answers which are known (i.e. not passed)
@@ -79,13 +79,13 @@ class Scorer
 				// of this percentage, scale linearly by the difference between avg time and max time (for a correct answer)
 				timeToAnswerMetric
 				);
-		logger.info("questionSetPercentScore = "+result.questionSetPercentScore);
+		logger.log(java.util.logging.Level.INFO, "questionSetPercentScore = "+result.questionSetPercentScore);
 		if (result.questionSetPercentScore < 0) result.questionSetPercentScore = 0;
 		if (result.questionSetPercentScore > 100) result.questionSetPercentScore = 100;
 		
 		result.knowledgeIndexScore = (
 				knownAnswers * (0.5f + 0.5f*timeToAnswerMetric) );
-		logger.info("knowledgeIndexScore = "+result.knowledgeIndexScore);
+		logger.log(java.util.logging.Level.INFO, "knowledgeIndexScore = "+result.knowledgeIndexScore);
 		if (result.knowledgeIndexScore < 0) result.knowledgeIndexScore = 0;
 
 		// ... and the percentages

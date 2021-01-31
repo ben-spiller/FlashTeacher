@@ -14,6 +14,7 @@
     <maxVersion></maxVersion>
     <initialHeapSize>0</initialHeapSize>
     <maxHeapSize>0</maxHeapSize>
+    <opt>-Djava.util.logging.config.file="%EXEDIR%/lib/logging.properties"</opt>
   </jre>
   <splash>
     <file>launch4j_loading_splash_screen.bmp</file>
@@ -24,7 +25,7 @@
     <productVersion>1.1.0.0</productVersion>
     <txtFileVersion>1.1</txtFileVersion>
     <txtProductVersion>1.1</txtProductVersion>
-    <copyright>(C) Ben Spiller 2007-2020</copyright>
+    <copyright>(C) Ben Spiller 2007-2021</copyright>
     
     <fileDescription>FlashTeacher executable wrapper</fileDescription>
     <productName>FlashTeacher</productName>

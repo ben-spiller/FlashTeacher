@@ -2,7 +2,8 @@ package benspiller.flashteacher.editor;
 
 import java.io.File;
 import java.io.IOException;
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -57,7 +58,7 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		logger.info(Main.class.getName()+".main()");
+		logger.log(java.util.logging.Level.INFO, Main.class.getName()+".main()");
 		initLookAndFeel();
 		
 		// get initial file, or exit if desired
@@ -74,7 +75,7 @@ public class Main {
 		if (initialFile == null)
 			initialFile = getQuestionFile();
 		
-		logger.info("Initial file = "+initialFile);
+		logger.log(java.util.logging.Level.INFO, "Initial file = "+initialFile);
 		
 		if (initialFile == null)
 			return;
@@ -88,13 +89,13 @@ public class Main {
 					editWindow.setVisible(true);
 				} catch (Exception e)
 				{
-					logger.fatal("Fatal error: ", e);
+					logger.log(Level.SEVERE, "Fatal error: ", e);
 					e.printStackTrace();
 					System.exit(1);
 				}
 			}
 		});
-		logger.info(Main.class.getName()+".main() done");
+		logger.log(java.util.logging.Level.INFO, Main.class.getName()+".main() done");
 	}
 
 }

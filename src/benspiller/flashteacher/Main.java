@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import com.jgoodies.looks.Options;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
@@ -59,10 +59,10 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		logger.info("");
-		logger.info("===========================================================");
-		logger.info("");
-		logger.info(Main.class.getName()+".main()");
+		logger.log(java.util.logging.Level.INFO, "");
+		logger.log(java.util.logging.Level.INFO, "===========================================================");
+		logger.log(java.util.logging.Level.INFO, "");
+		logger.log(java.util.logging.Level.INFO, Main.class.getName()+".main()");
 		
 		if (args.length > 0 && args[0].equalsIgnoreCase("--editor"))
 		{
@@ -78,7 +78,7 @@ public class Main {
 			 */
 			public void uncaughtException(Thread t, Throwable e)
 			{
-				logger.error("Uncaught exception from thread "+t+": ", e);
+				logger.log(java.util.logging.Level.SEVERE, "Uncaught exception from thread "+t+": ", e);
 				System.out.flush();
 				e.printStackTrace();
 				System.err.flush();
@@ -100,7 +100,7 @@ public class Main {
 		if (initialFile == null)
 			initialFile = getQuestionFile();
 		
-		logger.info("Initial file = "+initialFile);
+		logger.log(java.util.logging.Level.INFO, "Initial file = "+initialFile);
 		
 		if (initialFile == null)
 			return;
@@ -115,12 +115,12 @@ public class Main {
 					questionWindow.setVisible(true);
 				} catch (Exception e)
 				{
-					logger.fatal("Fatal error: ", e);
+					logger.log(java.util.logging.Level.SEVERE, "Fatal error: ", e);
 					System.exit(1);
 				}
 			}
 		});
-		logger.info(Main.class.getName()+".main() done");
+		logger.log(java.util.logging.Level.INFO, Main.class.getName()+".main() done");
 	}
 
 }

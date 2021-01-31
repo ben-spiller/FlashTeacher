@@ -42,7 +42,7 @@ import javax.swing.WindowConstants;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import benspiller.flashteacher.model.AnswerOutcome;
 import benspiller.flashteacher.model.ModelHolder;
@@ -122,7 +122,7 @@ public class QuestionWindow extends JFrame {
 					break;
 					
 				default:
-					logger.warn("Not expecting moveStateTimer to be called from state "+currentState);
+					logger.log(java.util.logging.Level.WARNING, "Not expecting moveStateTimer to be called from state "+currentState);
 				}
 			}
 		});
@@ -145,21 +145,21 @@ public class QuestionWindow extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e)
 			{
-				logger.info("windowClosing");
+				logger.log(java.util.logging.Level.INFO, "windowClosing");
 				exitAction.actionPerformed(null);
 			}
 		
 			@Override
 			public void windowClosed(WindowEvent e)
 			{
-				logger.info("windowClosed");
+				logger.log(java.util.logging.Level.INFO, "windowClosed");
 				
 				ModelHolder.shutdownPlugins();
 				 
 				// Move to the stopped state, so that timers are stopped, etc. 
 				// and so we try to save any state
 				moveToState(States.ReadyToStart);
-				logger.info("windowClosed: closed main window.");
+				logger.log(java.util.logging.Level.INFO, "windowClosed: closed main window.");
 			}
 		
 		});
@@ -282,7 +282,7 @@ public class QuestionWindow extends JFrame {
 	 */
 	public void initialize(ModelHolder model)
 	{
-		logger.debug(getClass().getSimpleName()+" initialize");
+		logger.log(java.util.logging.Level.FINE, getClass().getSimpleName()+" initialize");
 	
 		this.model = model;
 		// try to load the model now so we can initialize the display, but if 
@@ -294,7 +294,7 @@ public class QuestionWindow extends JFrame {
 			initializeFromOptions();
 		} catch (IOException e)
 		{
-			logger.warn("Failed to load question model during initialize - will try again when user presses Start: "+e);
+			logger.log(java.util.logging.Level.WARNING, "Failed to load question model during initialize - will try again when user presses Start: "+e);
 		}
 		
 		currentState = States.ReadyToStart;
@@ -314,7 +314,7 @@ public class QuestionWindow extends JFrame {
 	    StyleConstants.setFontSize(questionAttributes, options.getQuestionFontSize());
 	    questionField.setParagraphAttributes( questionAttributes, false);
 	    
-	    logger.info("Set font size="+options.getQuestionFontSize());
+	    logger.log(java.util.logging.Level.INFO, "Set font size="+options.getQuestionFontSize());
 	    // This is really just so that plugins can look up the default font info if they want to
 	    questionFieldPanel.setFont(new Font(options.getQuestionFontFamily(), 0, options.getQuestionFontSize()));
 	    
@@ -330,7 +330,7 @@ public class QuestionWindow extends JFrame {
 	protected void moveToState(States newState)
 	{
 		final States oldState = this.currentState;
-		logger.info("Moving from state "+oldState+" to "+newState);
+		logger.log(java.util.logging.Level.INFO, "Moving from state "+oldState+" to "+newState);
 		
 		this.currentState = newState;
 		
@@ -452,12 +452,12 @@ public class QuestionWindow extends JFrame {
 			try {
 				if (oldState != States.ReadyToStart && someQuestionsAnswered)
 				{
-					logger.info("Saving question history");
+					logger.log(java.util.logging.Level.INFO, "Saving question history");
 					model.saveHistory();
 					someQuestionsAnswered = false;
 				}
 				else
-					logger.debug("NOT saving question history (someQuestionsAnswered="+someQuestionsAnswered+")");
+					logger.log(java.util.logging.Level.FINE, "NOT saving question history (someQuestionsAnswered="+someQuestionsAnswered+")");
 			} catch (IOException ioe)
 			{
 				JOptionPane.showMessageDialog(this, ioe.getMessage(), "Failed to save question history", JOptionPane.ERROR_MESSAGE);
@@ -480,10 +480,10 @@ public class QuestionWindow extends JFrame {
 		
 		public void handleActionPerformed(ActionEvent e)
 		{
-			logger.debug("QuestionWindow.startAction");
+			logger.log(java.util.logging.Level.FINE, "QuestionWindow.startAction");
 			if (currentState != States.ReadyToStart)
 			{
-				logger.warn("QuestionWindow.startAction called, but currentState="+currentState);
+				logger.log(java.util.logging.Level.WARNING, "QuestionWindow.startAction called, but currentState="+currentState);
 				return;
 			}
 			try {
@@ -496,7 +496,7 @@ public class QuestionWindow extends JFrame {
 				QuestionWindow.this.pack();
 			} catch (IOException ioe)
 			{
-				logger.error("Failed to load questions: ", ioe);
+				logger.log(java.util.logging.Level.SEVERE, "Failed to load questions: ", ioe);
 				JOptionPane.showMessageDialog(QuestionWindow.this, ioe.getMessage(), "Invalid File Format", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -508,7 +508,7 @@ public class QuestionWindow extends JFrame {
 		private static final long serialVersionUID = 0L;
 		public void handleActionPerformed(ActionEvent e)
 		{
-			logger.debug("QuestionWindow.stopAction");
+			logger.log(java.util.logging.Level.FINE, "QuestionWindow.stopAction");
 
 			boolean displayPerformanceWindow = someQuestionsAnswered;
 			
@@ -525,7 +525,7 @@ public class QuestionWindow extends JFrame {
 		private static final long serialVersionUID = 0L;
 		public void actionPerformed(ActionEvent e)
 		{
-			logger.debug("QuestionWindow.enterKeyPressedAction");
+			logger.log(java.util.logging.Level.FINE, "QuestionWindow.enterKeyPressedAction");
 
 			switch (currentState)
 			{
@@ -580,7 +580,7 @@ public class QuestionWindow extends JFrame {
 		private static final long serialVersionUID = 0L;
 		public void actionPerformed(ActionEvent e)
 		{
-			logger.debug("QuestionWindow.spaceKeyPressedAction");
+			logger.log(java.util.logging.Level.FINE, "QuestionWindow.spaceKeyPressedAction");
 
 			switch (currentState)
 			{
@@ -602,14 +602,14 @@ public class QuestionWindow extends JFrame {
 		private static final long serialVersionUID = 0L;
 		public void handleActionPerformed(ActionEvent e)
 		{
-			logger.debug("QuestionWindow.exitAction");
+			logger.log(java.util.logging.Level.FINE, "QuestionWindow.exitAction");
 			if (!canCloseWindow()) return;
 			
 			// return to start state so that we save history, etc.
 			moveToState(States.ReadyToStart);
 			
 			// Dispose this window, which should close the application
-			logger.info("windowClosing: closing main window");
+			logger.log(java.util.logging.Level.INFO, "windowClosing: closing main window");
 			dispose();
 
 		}
@@ -619,7 +619,7 @@ public class QuestionWindow extends JFrame {
 		AboutDialog aboutDialog = null;
 		public void handleActionPerformed(ActionEvent e)
 		{
-			logger.debug("QuestionWindow.closeAction");
+			logger.log(java.util.logging.Level.FINE, "QuestionWindow.closeAction");
 			if (aboutDialog == null) aboutDialog = new AboutDialog(QuestionWindow.this);
 			aboutDialog.setLocationRelativeTo(QuestionWindow.this);
 			aboutDialog.setVisible(true);
@@ -630,7 +630,7 @@ public class QuestionWindow extends JFrame {
 		private static final long serialVersionUID = 0L;
 		public void handleActionPerformed(ActionEvent e)
 		{
-			logger.debug("QuestionWindow.showPerformanceWindow");
+			logger.log(java.util.logging.Level.FINE, "QuestionWindow.showPerformanceWindow");
 			if (performanceWindow == null) performanceWindow = new PerformanceWindow(QuestionWindow.this);
 			if (!model.isLoaded())
 			{
@@ -638,7 +638,7 @@ public class QuestionWindow extends JFrame {
 					model.load(questionFieldPanel);
 				} catch (IOException ioe)
 				{
-					logger.error("Failed to load questions: ", ioe);
+					logger.log(java.util.logging.Level.SEVERE, "Failed to load questions: ", ioe);
 					JOptionPane.showMessageDialog(QuestionWindow.this, ioe.getMessage(), "Invalid File Format", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
@@ -687,7 +687,7 @@ public class QuestionWindow extends JFrame {
 		
 		public void startTiming()
 		{
-			logger.debug("startTiming()");
+			logger.log(java.util.logging.Level.FINE, "startTiming()");
 			startTime = System.currentTimeMillis();
 			lastCharacterTime = startTime;
 			characterTimes.clear();
@@ -702,7 +702,7 @@ public class QuestionWindow extends JFrame {
 		 */
 		public long stopTiming(List<Long> characterTimes)
 		{
-			logger.debug("stopTiming()");
+			logger.log(java.util.logging.Level.FINE, "stopTiming()");
 			if (startTime <= 0) return 0;
 			
 			long stopTime = System.currentTimeMillis();
@@ -713,8 +713,8 @@ public class QuestionWindow extends JFrame {
 			long totalTime = stopTime - startTime;
 			startTime = 0;
 			
-			logger.info("stopTiming: total time      = "+totalTime);
-			logger.info("stopTiming: character times = "+characterTimes);
+			logger.log(java.util.logging.Level.INFO, "stopTiming: total time      = "+totalTime);
+			logger.log(java.util.logging.Level.INFO, "stopTiming: character times = "+characterTimes);
 			
 			return totalTime;
 		}
@@ -742,15 +742,15 @@ public class QuestionWindow extends JFrame {
 		{
 			if (startTime < 0) return; // do nothing if stopped
 			
-			logger.debug("Got character: '"+e.getKeyChar()+"' ("+(int)e.getKeyChar()+")");
+			logger.log(java.util.logging.Level.FINE, "Got character: '"+e.getKeyChar()+"' ("+(int)e.getKeyChar()+")");
 			long now = System.currentTimeMillis();
 
 			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE || e.getKeyChar()==8) { 
-				logger.debug("Ignoring delete/backspace keypress");
+				logger.log(java.util.logging.Level.FINE, "Ignoring delete/backspace keypress");
 				lastCharacterTime = 0; // ignore the time of the next character
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_ENTER) { 
-				logger.debug("Ignoring enter keypress");
+				logger.log(java.util.logging.Level.FINE, "Ignoring enter keypress");
 				lastCharacterTime = 0; // ignore the time of the next character
 			}
 			else 
@@ -765,7 +765,7 @@ public class QuestionWindow extends JFrame {
 					}
 					else 
 					{
-						logger.debug("Adding character: '"+e.getKeyChar()+"' ("+(int)e.getKeyChar()+") with time: "+lastCharacterTime);
+						logger.log(java.util.logging.Level.FINE, "Adding character: '"+e.getKeyChar()+"' ("+(int)e.getKeyChar()+") with time: "+lastCharacterTime);
 						characterTimes.add(lastCharacterTime);
 						lastCharacterTime = now; 
 					}

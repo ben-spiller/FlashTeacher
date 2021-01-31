@@ -13,7 +13,8 @@ import java.util.Set;
 
 import javax.swing.JPanel;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jdom.Comment;
 import org.jdom.Element;
 
@@ -196,12 +197,12 @@ public class QuestionManager
 					{
 						// but don't delete them from the on-disk file, might want to come back to them later
 						removedQuestions.add(new QuestionHistory( new Question(questionText, answerText, options.isCaseSensitive), historyElement));
-						logger.info("Ignoring question which is no longer in the question file: \""+questionText+"\"");
+						logger.log(java.util.logging.Level.INFO, "Ignoring question which is no longer in the question file: \""+questionText+"\"");
 						continue;
 					}
 					if (!existingQuestion.isAnswerCorrect(answerText))
 					{
-						logger.info("Answer has changed, so ignoring history for question: \""+existingQuestion+"\"");
+						logger.log(java.util.logging.Level.INFO, "Answer has changed, so ignoring history for question: \""+existingQuestion+"\"");
 						continue;
 					}
 	
@@ -223,7 +224,7 @@ public class QuestionManager
 		
 		// finally add new questions that aren't in the history yet
 		for (Question q: loadedQuestions.values()) {
-			logger.info("Adding new question: "+q);
+			logger.log(java.util.logging.Level.INFO, "Adding new question: "+q);
 			allQuestions.add(new QuestionHistory(q));
 		}
 		
@@ -313,7 +314,7 @@ public class QuestionManager
 	{
 		if (questionSetScores != null)
 		{
-			logger.info("calculateScores already called once - ignoring call");
+			logger.log(java.util.logging.Level.INFO, "calculateScores already called once - ignoring call");
 			return;
 		}
 		questionSetScores = Scorer.getQuestionSetScores(this);
@@ -373,16 +374,16 @@ public class QuestionManager
 		Collections.sort(nonPassedQuestions, QuestionHistory.AVERAGE_TIME_TO_ANSWER_COMPARATOR);
 		checkPrioritizations();
 		
-		if (logger.isTraceEnabled())
+		if (logger.isLoggable(Level.FINEST))
 		{
-			logger.trace("allQuestions = \n"+allQuestions+"\n");
-			logger.trace("nonPassedQuestions = \n"+nonPassedQuestions+"\n");
-			logger.trace("prioritizedQuestions = \n"+prioritizedQuestions+"\n");
+			logger.log(Level.FINEST, "allQuestions = \n"+allQuestions+"\n");
+			logger.log(Level.FINEST, "nonPassedQuestions = \n"+nonPassedQuestions+"\n");
+			logger.log(Level.FINEST, "prioritizedQuestions = \n"+prioritizedQuestions+"\n");
 			Set<QuestionHistory> otherQs = new HashSet<QuestionHistory>();
 			otherQs.addAll(allQuestions);
 			otherQs.removeAll(nonPassedQuestions);
 			otherQs.removeAll(prioritizedQuestions);
-			logger.trace("other questions = \n"+otherQs+"\n");
+			logger.log(Level.FINEST, "other questions = \n"+otherQs+"\n");
 		}
 		
 		QuestionHistory nextQuestion = null;
@@ -393,7 +394,7 @@ public class QuestionManager
 		// improving/refreshing performance on the questions you do know
 		if (random.nextFloat() < QUESTION_SELECTION_PROBABILITY_PRIORITIZED || getUnknownQuestionsFraction() > 0.15)
 		{
-			logger.debug("QuestionManager.moveToNextQuestion: selecting from Qs in prioritized list; unknownQuestionsFraction="+getUnknownQuestionsFraction());
+			logger.log(java.util.logging.Level.FINE, "QuestionManager.moveToNextQuestion: selecting from Qs in prioritized list; unknownQuestionsFraction="+getUnknownQuestionsFraction());
 			
 			// select randomly from the prioritized list
 			if (prioritizedQuestions.size() > 0)
@@ -402,7 +403,7 @@ public class QuestionManager
 				questionTypeSelectionMethod = (nextQuestion.timeLastAsked==null)? QuestionTypeSelectionMethod.PRIORITIZED_LIST_NEVER_ASKED : QuestionTypeSelectionMethod.PRIORITIZED_LIST_PASSED;
 			}
 			else
-				logger.debug("QuestionManager.moveToNextQuestion: prioritized list is empty, trying another strategy");
+				logger.log(java.util.logging.Level.FINE, "QuestionManager.moveToNextQuestion: prioritized list is empty, trying another strategy");
 			
 		}
 		if (nextQuestion == currentQuestion) nextQuestion = null; // is quite likely when selecting from prioritized list
@@ -410,20 +411,20 @@ public class QuestionManager
 		if (nextQuestion == null && random.nextFloat() < QUESTION_SELECTION_PROBABILITY_BAD_TIME)
 		{
 			// select randomly from the worst 20 times - excluding prioritized Qs (as long as there are at least that many - otherwise it doesn't make sense to do this)
-			logger.debug("QuestionManager.moveToNextQuestion: selecting from list of Qs with bad times");
+			logger.log(java.util.logging.Level.FINE, "QuestionManager.moveToNextQuestion: selecting from list of Qs with bad times");
 			
 			questionTypeSelectionMethod = QuestionTypeSelectionMethod.BAD_TIMES_LIST;
 			
 			if (nonPassedQuestions.size() >= QUESTION_SELECTION_BAD_TIMES_BUCKET_SIZE)
 				nextQuestion = nonPassedQuestions.get(nonPassedQuestions.size()-QUESTION_SELECTION_BAD_TIMES_BUCKET_SIZE+random.nextInt(QUESTION_SELECTION_BAD_TIMES_BUCKET_SIZE));
 			else
-				logger.debug("QuestionManager.moveToNextQuestion: nonPassedQuestions list is not big enough, trying another strategy");
+				logger.log(java.util.logging.Level.FINE, "QuestionManager.moveToNextQuestion: nonPassedQuestions list is not big enough, trying another strategy");
 				
 		}
 		
 		if (nextQuestion == null)
 		{
-			logger.debug("QuestionManager.moveToNextQuestion: selecting a random Q which has not been asked for ages");
+			logger.log(java.util.logging.Level.FINE, "QuestionManager.moveToNextQuestion: selecting a random Q which has not been asked for ages");
 			questionTypeSelectionMethod = QuestionTypeSelectionMethod.LEAST_RECENTLY_ASKED_LIST;
 
 			int maxIndex = (int)Math.floor(QUESTION_SELECTION_LEAST_RECENTLY_ASKED_BUCKET_PERCENTAGE * allQuestions.size() / 100d);
@@ -436,12 +437,12 @@ public class QuestionManager
 				nextQuestion = allQuestions.get(rnd);
 			}
 			else
-				logger.debug("QuestionManager.moveToNextQuestion: not enough questions (maxIndex="+maxIndex+"), trying another strategy");
+				logger.log(java.util.logging.Level.FINE, "QuestionManager.moveToNextQuestion: not enough questions (maxIndex="+maxIndex+"), trying another strategy");
 		}
 
 		while (nextQuestion == null || nextQuestion == currentQuestion)
 		{
-			logger.debug("QuestionManager.moveToNextQuestion: fallback after "+questionTypeSelectionMethod+" failed - selecting a random question from the entire list");
+			logger.log(java.util.logging.Level.FINE, "QuestionManager.moveToNextQuestion: fallback after "+questionTypeSelectionMethod+" failed - selecting a random question from the entire list");
 			// select randomly
 			questionTypeSelectionMethod = QuestionTypeSelectionMethod.RANDOM;
 
@@ -449,7 +450,7 @@ public class QuestionManager
 			
 		}
 		
-		logger.trace("moveToNextQuestion: nextQuestion = "+nextQuestion+", with answer \""+nextQuestion.question.getAnswer()+"\"");
+		logger.log(Level.FINEST, "moveToNextQuestion: nextQuestion = "+nextQuestion+", with answer \""+nextQuestion.question.getAnswer()+"\"");
 		
 		currentQuestion = nextQuestion;
 		lastQuestionPreviousButOneScore = lastQuestionPreviousScore;
@@ -474,15 +475,15 @@ public class QuestionManager
 	 */
 	public AnswerOutcome answerQuestion(boolean isCorrect, String answerGiven, long timeToAnswer, List<Long> characterTimes) throws IllegalArgumentException
 	{
-		logger.debug("answerQuestion - "+((isCorrect) ? "correct" : "wrong!"));
+		logger.log(java.util.logging.Level.FINE, "answerQuestion - "+((isCorrect) ? "correct" : "wrong!"));
 		
 		if (isCorrect)
 		{
 			// Do time adjustments
 			if (getAverageTimePerCharacter() > 0) {
-				logger.debug("Time to answer          = "+timeToAnswer+"ms");
+				logger.log(java.util.logging.Level.FINE, "Time to answer          = "+timeToAnswer+"ms");
 				timeToAnswer = timeToAnswer - currentQuestion.question.getAnswer().replaceAll(" ", "").length() * getAverageTimePerCharacter();
-				logger.debug("Adjusted time to answer = "+timeToAnswer+"ms");
+				logger.log(java.util.logging.Level.FINE, "Adjusted time to answer = "+timeToAnswer+"ms");
 			}
 			
 			if (timeToAnswer < 0) {
@@ -509,7 +510,7 @@ public class QuestionManager
 		if (firstAttemptAtQuestion)
 		{
 			QuestionHistory history = currentQuestion;
-			logger.debug("answerQuestion: history was:    "+history);
+			logger.log(java.util.logging.Level.FINE, "answerQuestion: history was:    "+history);
 			history.averageTimeToAnswer = Utils.exponentialWeightedAverage(history.averageTimeToAnswer, timeToAnswer, 0.6f);
 			
 			if (!isCorrect)
@@ -532,7 +533,7 @@ public class QuestionManager
 				}
 			}
 
-			logger.debug("answerQuestion: history is now: "+history);
+			logger.log(java.util.logging.Level.FINE, "answerQuestion: history is now: "+history);
 		}
 		firstAttemptAtQuestion = false;
 
@@ -584,7 +585,7 @@ public class QuestionManager
 	{
 		if (prioritizedQuestions.size() < MAXIMUM_PRIORITIZED_QUESTIONS_BUCKET_SIZE)
 		{
-			logger.debug("checkPrioritization: trying to find question(s) to prioritize");
+			logger.log(java.util.logging.Level.FINE, "checkPrioritization: trying to find question(s) to prioritize");
 			
 			try {
 				
@@ -598,7 +599,7 @@ public class QuestionManager
 				{
 					if (qh.passModeCounter > 0 && !qh.isPrioritized && qh.timeLastAsked != null)
 					{
-						logger.trace("checkPrioritization: prioritizing passed question "+qh.question);
+						logger.log(Level.FINEST, "checkPrioritization: prioritizing passed question "+qh.question);
 						qh.isPrioritized = true;
 						prioritizedQuestions.add(qh);
 						
@@ -610,7 +611,7 @@ public class QuestionManager
 				{
 					if (qh.passModeCounter > 0 && !qh.isPrioritized)
 					{
-						logger.trace("checkPrioritization: prioritizing new/never-asked "+qh.question);
+						logger.log(Level.FINEST, "checkPrioritization: prioritizing new/never-asked "+qh.question);
 						qh.isPrioritized = true;
 						prioritizedQuestions.add(qh);
 						
@@ -620,7 +621,7 @@ public class QuestionManager
 			} 
 			finally 
 			{
-				logger.debug("checkPrioritization: total prioritized questions = "+prioritizedQuestions.size());
+				logger.log(java.util.logging.Level.FINE, "checkPrioritization: total prioritized questions = "+prioritizedQuestions.size());
 			}
 			
 		}
@@ -667,7 +668,7 @@ public class QuestionManager
 		}
 		averageTimePerCharacter = averageTimePerCharacter / (characterTimes.size()-1);
 		
-		logger.debug("adjustAverageTimePerCharacter(): Old averageTimePerCharacter = "+this.averageTimePerCharacter+"ms");
+		logger.log(java.util.logging.Level.FINE, "adjustAverageTimePerCharacter(): Old averageTimePerCharacter = "+this.averageTimePerCharacter+"ms");
 		
 		// Use the average of all but the first if 
 		// initially zero, then after that use an exponentially-weighted 
@@ -675,7 +676,7 @@ public class QuestionManager
 		this.averageTimePerCharacter = Utils.exponentialWeightedAverage(
 				this.averageTimePerCharacter, averageTimePerCharacter, 0.15f);
 
-		logger.debug("adjustAverageTimePerCharacter(): New averageTimePerCharacter = "+this.averageTimePerCharacter+"ms");
+		logger.log(java.util.logging.Level.FINE, "adjustAverageTimePerCharacter(): New averageTimePerCharacter = "+this.averageTimePerCharacter+"ms");
 
 	}
 

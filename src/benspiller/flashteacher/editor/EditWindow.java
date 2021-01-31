@@ -19,7 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -94,7 +94,7 @@ public class EditWindow extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e)
 			{
-				logger.info("QuestionWindow.windowClosing");
+				logger.log(java.util.logging.Level.INFO, "QuestionWindow.windowClosing");
 				if (!canCloseWindow()) return;
 				
 				// Dispose this window, which should close the application
@@ -104,7 +104,7 @@ public class EditWindow extends JFrame {
 			@Override
 			public void windowClosed(WindowEvent e)
 			{
-				logger.info("QuestionWindow.windowClosed");
+				logger.log(java.util.logging.Level.INFO, "QuestionWindow.windowClosed");
 			}
 		
 		});
@@ -200,7 +200,7 @@ public class EditWindow extends JFrame {
 	 */
 	public void initialize(File questionFile)
 	{
-		logger.info(getClass().getSimpleName()+".initialize()");
+		logger.log(java.util.logging.Level.INFO, getClass().getSimpleName()+".initialize()");
 		this.questionFile = questionFile;
 		
 		try {
@@ -267,7 +267,7 @@ public class EditWindow extends JFrame {
 		
 		public void handleActionPerformed(ActionEvent e)
 		{
-			logger.debug("EditWindow#newQuestionAction.handleActionPerformed()");
+			logger.log(java.util.logging.Level.FINE, "EditWindow#newQuestionAction.handleActionPerformed()");
 			String questionText = questionField.getText().trim();
 			if (questionText.length() == 0)
 			{
@@ -378,7 +378,7 @@ public class EditWindow extends JFrame {
 			{
 				// First backup old question file
 				File backupFile = File.createTempFile("FlashTeacher_"+questionFile.getName(), null);
-				logger.info("Writing backup file \""+backupFile+"\"...");
+				logger.log(java.util.logging.Level.INFO, "Writing backup file \""+backupFile+"\"...");
 				
 				BufferedInputStream bis = new BufferedInputStream(new FileInputStream(questionFile));	
 				BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(backupFile));	
@@ -389,9 +389,9 @@ public class EditWindow extends JFrame {
 				bos.close();
 				
 				// Then save the new file
-				logger.info("Writing data file...");
+				logger.log(java.util.logging.Level.INFO, "Writing data file...");
 				XMLUtils.saveXML(xmlDocument, questionFile);
-				logger.info("Save complete.");
+				logger.log(java.util.logging.Level.INFO, "Save complete.");
 				return true;
 			} catch (IOException ioe)
 			{

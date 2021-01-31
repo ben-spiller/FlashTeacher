@@ -12,7 +12,7 @@ import java.util.Set;
 
 import javax.swing.JPanel;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.jdom.Attribute;
 import org.jdom.Content;
 import org.jdom.DocType;
@@ -72,13 +72,13 @@ public class ModelHolder
 	@SuppressWarnings("unchecked")
 	public void load(JPanel questionFieldPanel) throws IOException
 	{
-		logger.info(getClass().getSimpleName()+ ".load()");
+		logger.log(java.util.logging.Level.INFO, getClass().getSimpleName()+ ".load()");
 		long time1 = System.currentTimeMillis();
 		// always reload - otherwise state of QM may be wrong (need to reset it otherwise)
 		/*// If already loaded and modification date hasn't changed, don't bother to reload
 		if (lastLoaded != null && lastLoaded.after(new Date(questionFile.lastModified())))
 		{
-			logger.info("ModelHolder is not reloading question file because it hasn't changed since last load");
+			logger.log(java.util.logging.Level.INFO, "ModelHolder is not reloading question file because it hasn't changed since last load");
 			return;
 		}*/
 		
@@ -96,10 +96,10 @@ public class ModelHolder
 			historyListElement = XMLUtils.loadXML(historyFile).getRootElement();
 		}
 		else
-			logger.info("Not loading history file because none exists (\""+historyFile+"\"");
+			logger.log(java.util.logging.Level.INFO, "Not loading history file because none exists (\""+historyFile+"\"");
 
 		long time2 = System.currentTimeMillis();
-		logger.info("Loaded XML data in "+(time2-time1)+" ms.");
+		logger.log(java.util.logging.Level.INFO, "Loaded XML data in "+(time2-time1)+" ms.");
 
 		// Stash the plugin class names we had before, as to keep things simple we 
 		// don't support changing the plugin class names each time the question file is loaded
@@ -122,14 +122,14 @@ public class ModelHolder
 					else
 						throw new IOException("Unexpected element under plugin: '"+prop.getName()+"'");
 				
-				logger.info("Loading plugin with properties: "+props);
+				logger.log(java.util.logging.Level.INFO, "Loading plugin with properties: "+props);
 				
 				String className = props.remove("class");
 				Plugin p = plugins.get(className);
 				if (p == null)
 					try
 					{
-						logger.info("Creating plugin class: "+className);
+						logger.log(java.util.logging.Level.INFO, "Creating plugin class: "+className);
 						Class<?> c = Class.forName(className);
 						p = (Plugin)c.newInstance();
 						plugins.put(className, p); // add it here in case there are exceptions later
@@ -144,7 +144,7 @@ public class ModelHolder
 				{
 					throw new IOException("Plugin failed to load questions: "+ex, ex);
 				}
-				logger.info("Loaded "+allQuestions.size()+" questions using plugin");
+				logger.log(java.util.logging.Level.INFO, "Loaded "+allQuestions.size()+" questions using plugin");
 				
 			} else if (!"question".equals(questionElement.getName()))
 			{
@@ -186,7 +186,7 @@ public class ModelHolder
 		if (!pluginClasses.isEmpty() && !plugins.keySet().equals(pluginClasses))
 			throw new RuntimeException("The question file was changed to have different plugin classes; please restart the application after making such changes");
 		
-		logger.info("Loaded questions in "+(System.currentTimeMillis()-time2)+" ms.");
+		logger.log(java.util.logging.Level.INFO, "Loaded questions in "+(System.currentTimeMillis()-time2)+" ms.");
 
 		try
 		{
@@ -194,17 +194,17 @@ public class ModelHolder
 			qm = new QuestionManager(allQuestions, historyListElement, options, questionFieldPanel);
 			
 			long time3 = System.currentTimeMillis();
-			logger.info("Loaded QuestionManager in "+(time3-time2)+" ms.");
-			logger.info("Loaded entire model in "+(time3-time1)+" ms.");
+			logger.log(java.util.logging.Level.INFO, "Loaded QuestionManager in "+(time3-time2)+" ms.");
+			logger.log(java.util.logging.Level.INFO, "Loaded entire model in "+(time3-time1)+" ms.");
 		} catch (NumberFormatException e)
 		{
-			logger.error("Failed to load data from files: "+e.getMessage());
-			logger.info("Stack trace is: ", e);
+			logger.log(java.util.logging.Level.SEVERE, "Failed to load data from files: "+e.getMessage());
+			logger.log(java.util.logging.Level.INFO, "Stack trace is: ", e);
 			throw new IOException("Invalid data encountered in XML file(s): "+e.getMessage(), e);
 		}
 		
 		lastLoaded = new Date();
-		logger.debug(getClass().getSimpleName()+".load() done");
+		logger.log(java.util.logging.Level.FINE, getClass().getSimpleName()+".load() done");
 	}
 	
 	/** This ensures we have a singleton of each plugin class (typically just one), 
@@ -241,7 +241,7 @@ public class ModelHolder
 	
 	public void saveHistory() throws IOException
 	{
-		logger.info(getClass().getSimpleName()+".saveHistory()");
+		logger.log(java.util.logging.Level.INFO, getClass().getSimpleName()+".saveHistory()");
 		
 		Element rootElement = qm.save();
 		Document doc = new Document(rootElement);
@@ -249,7 +249,7 @@ public class ModelHolder
 
 		XMLUtils.saveXML(doc, historyFile);
 		
-		logger.debug(getClass().getSimpleName()+".saveHistory() done");
+		logger.log(java.util.logging.Level.FINE, getClass().getSimpleName()+".saveHistory() done");
 	}
 	
 	private QuestionManager qm = null;

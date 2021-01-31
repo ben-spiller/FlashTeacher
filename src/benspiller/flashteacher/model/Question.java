@@ -4,7 +4,7 @@ import java.text.Collator;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * A question and answer. 
@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
  */
 public class Question 
 {
-	static final Logger logger = Logger.getLogger(Question.class);
+	static final Logger logger = Logger.getLogger(Question.class.getName());
 	
 	private final String question;
 	private final String answer;

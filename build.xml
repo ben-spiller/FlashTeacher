@@ -29,7 +29,6 @@
 			<property name="binZipStageDir" location="${buildDir}/flashteacher-zip-stage"/>
 			<property name="binZipPath" location="${buildDir}/flashteacher${jar-version}-win.zip"/>
 
-			<property name="log4jJarName" value="log4j-1.2.14.jar"/>
 			<property name="jgoodiesLooksJarName" value="looks-2.1.1.jar"/>
 			<property name="jgoodiesFormsJarName" value="forms-1.0.7.jar"/>
 			<property name="jdomJarName" value="jdom.jar"/>
@@ -62,13 +61,13 @@
 		<depend 
 			srcdir="${basedir}/${srcDirName}"
 			destdir="${basedir}/${classesDirName}"
-			classpath="${libDir}/${jgoodiesLooksJarName};${libDir}/${jdomJarName};${libDir}/${log4jJarName};${libDir}/${jgoodiesFormsJarName};${libDir}/${freechartJarName}"
+			classpath="${libDir}/${jgoodiesLooksJarName};${libDir}/${jdomJarName};${libDir}/${jgoodiesFormsJarName};${libDir}/${freechartJarName}"
 		/>
 
 		<javac 
 			srcdir="${basedir}/${srcDirName}"
 			destdir="${classesDirName}"
-			classpath="${libDir}/${jgoodiesLooksJarName};${libDir}/${jdomJarName};${libDir}/${log4jJarName};${libDir}/${jgoodiesFormsJarName};${libDir}/${freechartJarName};${libDir}/${jcommonJarName}"
+			classpath="${libDir}/${jgoodiesLooksJarName};${libDir}/${jdomJarName};${libDir}/${jgoodiesFormsJarName};${libDir}/${freechartJarName};${libDir}/${jcommonJarName}"
 			debug="on"
 			includeantruntime="false" 
 		/>
@@ -80,7 +79,7 @@
 			<manifest>
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Build-Date" value="${ISO_DateTime}"/>
-				<attribute name="Class-Path" value="${libDirName}/${jgoodiesLooksJarName} ${libDirName}/${jdomJarName} ${libDirName}/${log4jJarName} ${libDirName}/${jgoodiesFormsJarName} ${libDirName}/${freechartJarName} ${libDirName}/${jcommonJarName}"/>
+				<attribute name="Class-Path" value="${libDirName}/${jgoodiesLooksJarName} ${libDirName}/${jdomJarName} ${libDirName}/${jgoodiesFormsJarName} ${libDirName}/${freechartJarName} ${libDirName}/${jcommonJarName}"/>
 				<attribute name="Main-Class" value="benspiller.flashteacher.Main"/>
 			</manifest>
 		</jar>
@@ -90,6 +89,7 @@
 	<target name="package" depends="init,jar" description="Generate zip and staging dir">
 		<delete dir="${binZipStageDir}"/>
 		<mkdir dir="${binZipStageDir}"/>
+		<mkdir dir="${binZipStageDir}/logs"/> <!-- Java util logger doesn't create this automatically, so make sure we put it into the zip -->
 		<copy todir="${binZipStageDir}">
 			<fileset dir="${basedir}" includes="${libDirName}/*"/>
 			<fileset dir="${basedir}" includes="${xmlDirName}/*.dtd"/>
@@ -103,7 +103,7 @@
 			<fileset dir="${basedir}" includes="FlashTeacher.exe"/>
 			<fileset dir="${basedir}" includes="FlashTeacherEditor.exe"/>
 			<fileset dir="${basedir}" includes="LICENSE"/>
-			<fileset dir="${basedir}" includes="*.txt"/>
+			<fileset dir="${basedir}" includes="3rd*.txt"/>
 			<fileset dir="${basedir}" includes="*.md"/>
 		</copy>
 

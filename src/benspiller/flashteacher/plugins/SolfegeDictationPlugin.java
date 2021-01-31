@@ -22,7 +22,8 @@ import javax.sound.midi.*;
 import java.awt.*;
 import javax.swing.*;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import benspiller.flashteacher.model.Plugin;
 import benspiller.flashteacher.model.Question;
@@ -36,7 +37,7 @@ import benspiller.flashteacher.model.Question;
  */
 public class SolfegeDictationPlugin implements Plugin
 {
-	private static final Logger logger = Logger.getLogger(SolfegeDictationPlugin.class);
+	private static final Logger logger = Logger.getLogger(SolfegeDictationPlugin.class.getName());
 
 	final Random random = new Random();
 	
@@ -106,7 +107,7 @@ public class SolfegeDictationPlugin implements Plugin
 				if (i.getName().toLowerCase().contains(droneInstrument.toLowerCase().trim()))
 				{
 					dronePatch = i.getPatch();
-					logger.info("Found requested MIDI instrument '"+i.getName().trim()+"' at program "+i.getPatch().getProgram());
+					logger.log(java.util.logging.Level.INFO, "Found requested MIDI instrument '"+i.getName().trim()+"' at program "+i.getPatch().getProgram());
 					droneInstrument = null;
 					break;
 				}
@@ -121,12 +122,12 @@ public class SolfegeDictationPlugin implements Plugin
 				if (i.getName().toLowerCase().contains(patchName))
 				{
 					midiPatches[p] = i.getPatch();
-					logger.info("Found requested MIDI instrument '"+i.getName().trim()+"' at program "+i.getPatch().getProgram());
+					logger.log(java.util.logging.Level.INFO, "Found requested MIDI instrument '"+i.getName().trim()+"' at program "+i.getPatch().getProgram());
 					break;
 				}
 			if (midiPatches[p] == null) throw new IllegalArgumentException("Cannot find any instrument name on this machine containing: \""+instruments[p]+"\"");
 		}
-		logger.debug("Loaded instruments in "+(System.currentTimeMillis()-startTime)+" ms");
+		logger.log(java.util.logging.Level.FINE, "Loaded instruments in "+(System.currentTimeMillis()-startTime)+" ms");
 			
 		String[] solfegeValues = normalizeSolfegeString(properties.remove("solfegeValues")).split(" ");
 		possibleSolfegeValues = solfegeValues;
@@ -190,10 +191,10 @@ public class SolfegeDictationPlugin implements Plugin
 	{
 		if (sequencer == null) return;
 		
-		logger.info("Shutting down MIDI");
+		logger.log(java.util.logging.Level.INFO, "Shutting down MIDI");
 		sequencer.close();
 		sequencer = null;
-		logger.debug("Done shutting down MIDI");
+		logger.log(java.util.logging.Level.FINE, "Done shutting down MIDI");
 	}
 
 	
@@ -512,7 +513,7 @@ public class SolfegeDictationPlugin implements Plugin
 	{
 		public SolfegeQuestion(String[] solfege) {
 			super(String.join(" ", solfege), String.join(" ", solfege), false);
-			logger.debug("Added question: "+this);
+			logger.log(java.util.logging.Level.FINE, "Added question: "+this);
 		}
 	}
 	
@@ -561,7 +562,7 @@ public class SolfegeDictationPlugin implements Plugin
     	/** Asynchronously play this sequence. Any currently playing sequence is implicitly stopped first. */
     	void play()
     	{
-    		if (contents.size() > 2) logger.info("Playing MIDI sequence: "+contents);
+    		if (contents.size() > 2) logger.log(java.util.logging.Level.INFO, "Playing MIDI sequence: "+contents);
     		try {
 	    	    sequencer.setSequence(sequence);
 				sequencer.setTickPosition(0);
@@ -569,7 +570,7 @@ public class SolfegeDictationPlugin implements Plugin
 	    	    sequencer.start();
     		} catch (Exception ex)
     		{
-    			logger.error("Cannot play midi sequence: ", ex);
+    			logger.log(java.util.logging.Level.SEVERE, "Cannot play midi sequence: ", ex);
     			throw new RuntimeException(ex);
     		}
     	}
@@ -582,7 +583,7 @@ public class SolfegeDictationPlugin implements Plugin
 	        	.addNote(note, timeBetweenNotesMillisMax).play();
 		} catch (Exception ex)
 		{
-			logger.error("Failed to play MIDI: ", ex);
+			logger.log(java.util.logging.Level.SEVERE, "Failed to play MIDI: ", ex);
 			throw new RuntimeException(ex);
 		}
 
@@ -597,7 +598,7 @@ public class SolfegeDictationPlugin implements Plugin
 		// On Windows 10 MIDI sometimes gets into a bad state if devices change e.g. turning off/on speakers overnight. 
 		// Since that's hard to detect, reset midi after 6 hours of non-use
 		if (midiLastUsedTime != 0 && System.currentTimeMillis()-midiLastUsedTime > 1000*60*60*6) {
-			logger.info("Resetting MIDI as it's been several hours since it was last used");
+			logger.log(java.util.logging.Level.INFO, "Resetting MIDI as it's been several hours since it was last used");
 			close();
 		}
 		midiLastUsedTime = System.currentTimeMillis();
@@ -606,27 +607,27 @@ public class SolfegeDictationPlugin implements Plugin
 		
 		
 		long startTime = System.currentTimeMillis();
-		logger.debug("Loading MIDI sequencer");
+		logger.log(java.util.logging.Level.FINE, "Loading MIDI sequencer");
         sequencer = MidiSystem.getSequencer();
         sequencer.open();
-        logger.info("Loaded MIDI sequencer in "+(System.currentTimeMillis()-startTime)+" ms");
+        logger.log(java.util.logging.Level.INFO, "Loaded MIDI sequencer in "+(System.currentTimeMillis()-startTime)+" ms");
         
-		if (logger.isDebugEnabled())
+		if (logger.isLoggable(Level.FINE))
 			for (MidiDevice.Info i : MidiSystem.getMidiDeviceInfo())
-				logger.debug("Got MIDI device: "+i.getName());
+				logger.log(java.util.logging.Level.FINE, "Got MIDI device: "+i.getName());
 
-		logger.debug("Loading MIDI synthesizer");
+		logger.log(java.util.logging.Level.FINE, "Loading MIDI synthesizer");
 		startTime = System.currentTimeMillis();
 		Synthesizer midiSynth = MidiSystem.getSynthesizer();
-        logger.info("Loaded MIDI synthesizer in "+(System.currentTimeMillis()-startTime)+" ms");
+        logger.log(java.util.logging.Level.INFO, "Loaded MIDI synthesizer in "+(System.currentTimeMillis()-startTime)+" ms");
 
         startTime = System.currentTimeMillis();
 		
         allInstruments = midiSynth.getDefaultSoundbank().getInstruments();
 		// NB: if we want to support other banks we need to use multiple ShortMessage.CONTROL messages to do it; probably not worth the hassle
-		logger.info(allInstruments.length+" MIDI instruments are available in bank 0: "+
+		logger.log(java.util.logging.Level.INFO, allInstruments.length+" MIDI instruments are available in bank 0: "+
 				Arrays.asList(allInstruments).stream().filter(i -> i.getPatch().getBank()==0) .map(i -> i.getName().trim()).collect(Collectors.joining(", ")));
-        logger.info("Loaded MIDI instruments in "+(System.currentTimeMillis()-startTime)+" ms");
+        logger.log(java.util.logging.Level.INFO, "Loaded MIDI instruments in "+(System.currentTimeMillis()-startTime)+" ms");
 
 	}
 	
@@ -636,7 +637,7 @@ public class SolfegeDictationPlugin implements Plugin
 	 */
 	private void showStandaloneGUI()
 	{
-		logger.info("Loading as standalone application");
+		logger.log(java.util.logging.Level.INFO, "Loading as standalone application");
 		try 
 		{ 
 			initMIDI();
@@ -710,7 +711,7 @@ public class SolfegeDictationPlugin implements Plugin
 			frame.setVisible(true);
 			
 		} catch (Exception ex) {
-			logger.error("Failed to initialize: ", ex);
+			logger.log(java.util.logging.Level.SEVERE, "Failed to initialize: ", ex);
 			close();
 			throw new RuntimeException(ex);
 		}

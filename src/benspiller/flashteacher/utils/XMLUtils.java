@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import org.jdom.Document;
 import org.jdom.JDOMException;
@@ -61,7 +61,7 @@ public class XMLUtils
 				}
 			} catch (Exception e2)
 			{
-				logger.debug("Failed to extract relevant bit of XML for error message: "+e2.getMessage());
+				logger.log(java.util.logging.Level.FINE, "Failed to extract relevant bit of XML for error message: "+e2.getMessage());
 				// ignore
 			} finally {
 				r.close();
