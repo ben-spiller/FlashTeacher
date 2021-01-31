@@ -38,6 +38,14 @@ public class SolfegeDictationPlugin implements Plugin
 {
 	private static final Logger logger = Logger.getLogger(SolfegeDictationPlugin.class);
 
+	final Random random = new Random();
+	
+	/** True if this is the first question since this set of questions was loaded/started. */
+	boolean isFirstQuestion;
+
+	
+	// Configuration properties:
+	
 	int timeBetweenNotesMillisMin = 800;
 	int timeBetweenNotesMillisMax = timeBetweenNotesMillisMin;
 
@@ -52,21 +60,22 @@ public class SolfegeDictationPlugin implements Plugin
 	/** The pitch used for "do" in this session, where 60 = C4. */
 	int currentDo;
 	
-	Random random = new Random();
-	
-	/** True if this is the first question since this set of questions was loaded/started. */
-	boolean isFirstQuestion;
-	
-	/** Convert either or a single value or a min-max range into an array with two elements. */
-	private static String[] parseRange(String x) {
-		String[] result = x.replace(" ", "").split("-");
-		if (result.length == 1) return new String[] {result[0], result[0]};
-		return result;		
-	}
 	
 	/** Null for none, else an instrument to continuously sound "do" */
 	Patch dronePatch = null;
 	
+	/** The number of additional random notes to play after each question. 
+	 * 
+	 * This is useful for improving the ability to recognize one or more notes 
+	 * without being confused by following notes. Accurately recognizing the initial note  
+	 * when followed by some random ones is a good skill to build in isolation before increasing the 
+	 * number of notes to be recognized. 
+	 */
+	int additionalRandomNotes;
+	
+	/** The possible solfege values in this question set; used for generating additional random notes */
+	String[] possibleSolfegeValues;
+
 	/*
 	 * The entrypoint for plugins. 
 	 */
@@ -85,11 +94,12 @@ public class SolfegeDictationPlugin implements Plugin
 		
 		isFirstQuestion = true; // so we can play the tonic anchor at the beginning
 
-		String[] instruments = properties.remove("instruments").toLowerCase().split(",");
-		if (instruments.length==0) instruments = new String[] {"Piano"};
+		String[] instruments = valueOrDefault(properties.remove("instruments"), "Piano").toLowerCase().split(",");
 		
 		long startTime = System.currentTimeMillis();
 
+		additionalRandomNotes = Integer.valueOf(valueOrDefault(properties.remove("additionalRandomNotes"), "0"));
+		
 		String droneInstrument = properties.remove("droneInstrument");
 		if (droneInstrument != null)
 			for (Instrument i: allInstruments)
@@ -119,6 +129,7 @@ public class SolfegeDictationPlugin implements Plugin
 		logger.debug("Loaded instruments in "+(System.currentTimeMillis()-startTime)+" ms");
 			
 		String[] solfegeValues = normalizeSolfegeString(properties.remove("solfegeValues")).split(" ");
+		possibleSolfegeValues = solfegeValues;
 		
 		int notesPerQuestion = Integer.parseInt(properties.remove("notesPerQuestion"));
 
@@ -133,6 +144,21 @@ public class SolfegeDictationPlugin implements Plugin
 		return qs;
 	}
 	
+	/** Returns the specified String unless it is null or empty, in which case defaultValue is returned instead. 
+	 */
+	static String valueOrDefault(String value, String defaultValue)
+	{
+		if (value == null || value.trim().length()==0) return defaultValue;
+		return value;
+	}
+	
+	/** Convert either or a single value or a min-max range into an array with two elements. */
+	private static String[] parseRange(String x) {
+		String[] result = x.replace(" ", "").split("-");
+		if (result.length == 1) return new String[] {result[0], result[0]};
+		return result;		
+	}
+	
 	@Override
 	public boolean checkAnswer(Question question, String answer)
 	{
@@ -142,7 +168,7 @@ public class SolfegeDictationPlugin implements Plugin
 
 		// This is to avoid typos (pressing enter too early) counting as wrong answers
 		if (stripSolfegeOctaves(question.getAnswer()).length() != normalizeSolfegeString(stripSolfegeOctaves(answer)).length())
-			throw new IllegalArgumentException("Incorrect number of notes");
+			throw new IllegalArgumentException("There should be "+question.getAnswer().split(" ").length+" note(s) in the answer");
 		
 		// on correct answer, play it again to solidify the learning
 		if (result)
@@ -310,7 +336,12 @@ public class SolfegeDictationPlugin implements Plugin
 			}
 			
 			for (String solfege: question.getQuestion().split(" "))
-				currentQuestionMidiSequence.addNote(currentDo+solfegeToSemitonesAboveDo(solfege), randomInt(timeBetweenNotesMillisMin, timeBetweenNotesMillisMax));
+				currentQuestionMidiSequence.addNote(currentDo+solfegeToSemitonesAboveDo(solfege), 
+						randomInt(timeBetweenNotesMillisMin, timeBetweenNotesMillisMax));
+			for (int i = 0; i < additionalRandomNotes; i++)
+				currentQuestionMidiSequence.addNote(currentDo+solfegeToSemitonesAboveDo(possibleSolfegeValues[randomInt(0, possibleSolfegeValues.length-1)]), 
+						randomInt(timeBetweenNotesMillisMin, timeBetweenNotesMillisMax));
+
 			currentQuestionMidiSequence.play();
 		} catch (Exception ex)
 		{
@@ -323,31 +354,46 @@ public class SolfegeDictationPlugin implements Plugin
 	{
 		s = s.toLowerCase();
 		String[] solfegeValues = (s.contains(" ")) ? s.split(" ") : s.split("");
+		
+		// This is just in case s is a single solfege note (with no spaces). 
+		// Not very a very efficient solution, but this method is currently not performance-critical
+		try {
+			return normalizeSolfegeNote(s);
+		} catch (IllegalArgumentException ex)
+		{
+			// Do nothing, continue to following loop
+		}
+		
 		for (int i = 0; i < solfegeValues.length; i++)
 		{
-			String v = solfegeValues[i];
-			
-			Matcher m = OCTAVE_REGEX.matcher(v);
-			String octaves = (m.find()) ? m.group() : "";
-			v = v.replace(octaves, ""); // strip off octaves before re-adding after normalization
-			switch(v)
-			{
-			case "t": v = "ti"; break;
-			case "l": v = "la"; break;
-			case "s": v = "so"; break;
-			case "f": v = "fa"; break;
-			case "m": v = "me"; break;
-			case "r": v = "re"; break;
-			case "d": v = "do"; break;
-			case "ti": case "la": case "so": case "fa": case "me": case "re": case "do": break;
-			default:
-				throw new IllegalArgumentException("Expecting a solfege symbol such as 'do' but got: '"+solfegeValues[i]+"'");
-			}
-			solfegeValues[i] = v + octaves;
+			solfegeValues[i] = normalizeSolfegeNote(solfegeValues[i]);
 		}
 		return String.join(" ", solfegeValues);
 
 	}
+	
+	protected String normalizeSolfegeNote(String note)
+	{
+		String v = note;
+		Matcher m = OCTAVE_REGEX.matcher(v);
+		String octaves = (m.find()) ? m.group() : "";
+		v = v.replace(octaves, ""); // strip off octaves before re-adding after normalization
+		switch(v)
+		{
+		case "t": v = "ti"; break;
+		case "l": v = "la"; break;
+		case "s": v = "so"; break;
+		case "f": v = "fa"; break;
+		case "m": v = "me"; break;
+		case "r": v = "re"; break;
+		case "d": v = "do"; break;
+		case "ti": case "la": case "so": case "fa": case "me": case "re": case "do": break;
+		default:
+			throw new IllegalArgumentException("Expecting a solfege symbol such as 'do' but got: '"+note+"'");
+		}
+		return v + octaves;
+	}
+
 	
 	static final String OCTAVE_DOWN = ",";
 	static final String OCTAVE_UP = "'";

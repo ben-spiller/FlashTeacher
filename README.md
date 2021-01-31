@@ -50,8 +50,7 @@ The algorithm then randomly chooses a question as follows:
     * With probability 75% we select a question at random from the **slowest/wrongest** 20% of questions (where wrong answers are treated as having an especially high time-to-answer). 
     * With probability 25% (or if any of the above are not possible) we select a question at random from the 10% of questions that were **least recently asked**, to ensure nothing gets forgotten. 
 
-
 # License
-Copyright (C) Ben Spiller 2007-2020
+Copyright (C) Ben Spiller 2007-2021
 
 MIT License

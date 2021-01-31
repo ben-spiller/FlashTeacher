@@ -14,7 +14,7 @@ public final class Constants
 	/**
 	 * Automatically incremented by the build
 	 */
-	private static final String BUILD_NUMBER = "98";
+	private static final String BUILD_NUMBER = "100";
 	
 	/**
 	 * The full 4-part version number
