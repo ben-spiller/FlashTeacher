@@ -131,7 +131,8 @@ public class PerformanceWindow extends JDialog
 				"averageTimeToAnswer", 
 				"averageTimeToAllowPerCharacter",
 				null,
-				"averageMinutesPerDay"
+				"averageMinutesPerDay",
+				"totalTimeSpent"
 				};
 		for (String key: detailsKeys)
 		{
@@ -401,6 +402,8 @@ public class PerformanceWindow extends JDialog
 				args = new Object[]{ scores.averageTimePerCharacter/1000d, (previousScores.averageTimePerCharacter == 0) ? 0 : 100d*(scores.averageTimePerCharacter-previousScores.averageTimePerCharacter)/previousScores.averageTimePerCharacter };
 			else if ("detailsPanel.averageMinutesPerDay".equals(s))
 				args = new Object[]{ knowledgeIndexHistory.getAverageMinutesPerDayThisWeek() };
+			else if ("detailsPanel.totalTimeSpent".equals(s))
+				args = new Object[] {formatDuration(knowledgeIndexHistory.totalTimeSpentMillis())};
 			else
 				throw new RuntimeException("Unhandled text component: "+s);
 			

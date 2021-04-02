@@ -144,7 +144,17 @@ public class KnowledgeIndexHistory implements Iterable<KnowledgeIndexHistory.Dat
 		}
 		return (totalMillisSpent/1000.0/60)/days;
 	}
-	
+
+	public long totalTimeSpentMillis()
+	{
+		long totalMillisSpent = 0;
+		for (int i = 0; i < dates.size(); i++)
+		{
+			totalMillisSpent += sessionDurationMillis.get(i);
+		}
+		return totalMillisSpent;
+	}
+
 	/** Returns an iterator over the data points in this object, returned in 
 	 * ascending date order. 
 	 * @see java.lang.Iterable#iterator()
